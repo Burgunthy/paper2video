@@ -1,6 +1,7 @@
 from __future__ import annotations
 import json
 import os
+import subprocess
 import time
 from typing import Protocol
 
@@ -73,9 +74,83 @@ class AnthropicClient:
     def complete_json(self, prompt: str, system: str | None = None) -> dict:
         sys_prompt = (system or "") + "\n\nRespond with valid JSON only. No prose, no code fences."
         raw = self.complete(prompt, sys_prompt.strip())
-        raw = raw.strip()
-        if raw.startswith("```"):
-            raw = raw.split("\n", 1)[1]
-            if raw.endswith("```"):
-                raw = raw.rsplit("```", 1)[0]
-        return json.loads(raw)
+        return _parse_json_payload(raw)
+
+
+def _parse_json_payload(raw: str) -> dict:
+    raw = raw.strip()
+    if raw.startswith("```"):
+        raw = raw.split("\n", 1)[1]
+        if raw.endswith("```"):
+            raw = raw.rsplit("```", 1)[0]
+    return json.loads(raw)
+
+
+class CodexCLIClient:
+    """LLM client backed by `codex exec` (uses local Codex CLI auth, e.g. gpt-6-luna)."""
+
+    def __init__(self, model: str | None = None):
+        self.model = model or os.environ.get("PAPER2VIDEO_MODEL", "gpt-6-luna")
+
+    def complete(self, prompt: str, system: str | None = None) -> str:
+        full_prompt = f"{system}\n\n{prompt}" if system else prompt
+        cmd = [
+            "codex", "exec",
+            "-s", "read-only",
+            "--ephemeral",
+            "--skip-git-repo-check",
+            "--json",
+            "-m", self.model,
+            full_prompt,
+        ]
+        # Retry transient failures (non-zero exit, missing agent_message, timeout).
+        backoff_schedule = [5, 15, 45]
+        last_exc: Exception | None = None
+        for wait in [*backoff_schedule, None]:
+            try:
+                proc = subprocess.run(
+                    cmd, capture_output=True, text=True, timeout=900,
+                    stdin=subprocess.DEVNULL,
+                )
+                if proc.returncode == 0:
+                    text = _last_agent_message(proc.stdout)
+                    if text is not None:
+                        return text
+                    last_exc = RuntimeError(
+                        "codex exec produced no agent_message; stderr tail: "
+                        + proc.stderr[-500:]
+                    )
+                else:
+                    last_exc = RuntimeError(
+                        f"codex exec exited {proc.returncode}; stderr tail: {proc.stderr[-500:]}"
+                    )
+            except subprocess.TimeoutExpired as e:
+                last_exc = e
+            if wait is None:
+                break
+            time.sleep(wait)
+        assert last_exc is not None
+        raise last_exc
+
+    def complete_json(self, prompt: str, system: str | None = None) -> dict:
+        sys_prompt = (system or "") + "\n\nRespond with valid JSON only. No prose, no code fences."
+        raw = self.complete(prompt, sys_prompt.strip())
+        return _parse_json_payload(raw)
+
+
+def _last_agent_message(stdout: str) -> str | None:
+    """Extract the final agent_message text from `codex exec --json` JSONL output."""
+    text: str | None = None
+    for line in stdout.splitlines():
+        line = line.strip()
+        if not line.startswith("{"):
+            continue
+        try:
+            ev = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if ev.get("type") == "item.completed":
+            item = ev.get("item") or {}
+            if item.get("type") == "agent_message":
+                text = item.get("text")
+    return text

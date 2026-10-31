@@ -1,5 +1,9 @@
 from __future__ import annotations
+import asyncio
+import os
 import struct
+import subprocess
+import tempfile
 import wave
 from dataclasses import dataclass
 from pathlib import Path
@@ -63,6 +67,38 @@ class KokoroTTS:
         else:
             audio_full = np.concatenate(chunks).astype(np.float32)
         sf.write(str(out_path), audio_full, self.sample_rate)
+        return out_path
+
+
+class EdgeTTS:
+    """Online TTS via Microsoft Edge voices (Korean etc.). Writes 24kHz mono WAV.
+
+    Kokoro does not support Korean, so this engine covers ko (and any other
+    edge-tts voice) at neural quality without an API key.
+    """
+
+    def __init__(self, voice: str | None = None):
+        import edge_tts  # type: ignore
+        self._edge_tts = edge_tts
+        self.voice = voice or os.environ.get("PAPER2VIDEO_TTS_VOICE", "ko-KR-SunHiNeural")
+        self.sample_rate = 24000
+
+    def synthesize(self, text: str, out_path: Path) -> Path:
+        out_path = Path(out_path)
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        with tempfile.NamedTemporaryFile(suffix=".mp3", delete=False) as f:
+            tmp = Path(f.name)
+        try:
+            asyncio.run(self._edge_tts.Communicate(text, self.voice).save(str(tmp)))
+            ffmpeg = os.environ.get("PAPER2VIDEO_FFMPEG", "ffmpeg")
+            subprocess.run(
+                [ffmpeg, "-y", "-v", "error", "-i", str(tmp),
+                 "-ar", str(self.sample_rate), "-ac", "1", "-sample_fmt", "s16",
+                 str(out_path)],
+                check=True, stdin=subprocess.DEVNULL,
+            )
+        finally:
+            tmp.unlink(missing_ok=True)
         return out_path
 
 

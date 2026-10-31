@@ -1,8 +1,23 @@
 from __future__ import annotations
 import json
+import os
 from .llm import LLMClient
 from .research import ResearchResult
 from .types import Scene, ScriptDoc
+
+
+LANG_RULES = {
+    "ko": """
+
+=== LANGUAGE RULES (OVERRIDES ANY LANGUAGE INSTRUCTION ABOVE) ===
+Write ALL user-facing content in natural Korean (한국어): title, summary, narration,
+and every visual_spec field (title, direction, elements, caption).
+- Narration: 구어체 (~합니다/~요 스타일) — 친구에게 설명하듯 자연스럽게.
+- Keep widely-used English technical terms as-is when natural (예: 'Keypoint', '로봇 핸드').
+- On-screen labels (title, elements, caption) are short Korean phrases (<= 25 chars).
+=== END LANGUAGE RULES ===
+""",
+}
 
 
 SCRIPT_PROMPT = """You are writing the script for a 2-5 minute explainer video in the style of
@@ -189,7 +204,7 @@ def write_script(research_result: ResearchResult, llm: LLMClient) -> ScriptDoc:
             source_text=research_result.source_text[:10000],
             key_points=key_points_str,
             notes=notes_str,
-        )
+        ) + LANG_RULES.get(os.environ.get("PAPER2VIDEO_LANG", "").lower(), "")
     )
 
     scenes: list[Scene] = []

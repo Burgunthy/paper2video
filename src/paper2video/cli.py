@@ -261,12 +261,19 @@ def main(argv: list[str] | None = None) -> int:
     if args.uninstall_scheduler:
         return _uninstall_scheduler()
 
-    from .llm import AnthropicClient
-    llm = AnthropicClient()
+    if os.environ.get("PAPER2VIDEO_LLM", "").lower() == "codex":
+        from .llm import CodexCLIClient
+        llm = CodexCLIClient()
+    else:
+        from .llm import AnthropicClient
+        llm = AnthropicClient()
 
     if args.fake_tts:
         from .tts import FakeTTS
         tts = FakeTTS()
+    elif os.environ.get("PAPER2VIDEO_TTS", "").lower() == "edge":
+        from .tts import EdgeTTS
+        tts = EdgeTTS()
     else:
         try:
             from .tts import KokoroTTS

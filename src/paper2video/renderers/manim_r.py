@@ -7,6 +7,7 @@ Flow:
   4. Return the path to the rendered mp4 (silent video).
 """
 from __future__ import annotations
+import os
 import shutil
 import subprocess
 import sys
@@ -420,6 +421,26 @@ def lint_manim_code(code: str, social_mode: bool = False) -> list[str]:
         if "MathTex(" in stripped or "Tex(" in stripped and "Text(" not in stripped:
             errors.append(f"Line {i}: uses Tex/MathTex which requires LaTeX. Use Text() instead.")
 
+    # 2b. Korean mode: a text-mobject constructor whose line contains Hangul needs an
+    #     explicit Hangul font, otherwise Pango falls back to a font without Korean
+    #     glyphs (renders as boxes). Line-scoped: multi-line calls put font= on another
+    #     line, and pure-ASCII labels (numbers, English terms) render fine regardless.
+    if os.environ.get("PAPER2VIDEO_LANG", "").lower() == "ko":
+        import re as _re
+        text_ctor = _re.compile(r"\b(Text|MarkupText|Paragraph|Title)\s*\(")
+        has_hangul = _re.compile(r"[가-힣]")
+        for i, line in enumerate(lines, start=1):
+            stripped = line.split("#", 1)[0]
+            if (
+                text_ctor.search(stripped)
+                and has_hangul.search(stripped)
+                and "font" not in stripped
+            ):
+                errors.append(
+                    f"Line {i}: Text/MarkupText/Paragraph call with Korean text but no font= — "
+                    f"Korean renders as boxes without font=\"Noto Sans CJK KR\"."
+                )
+
     # 3. CRITICAL: scale_to_fit_width / scale_to_fit_height called directly on text-like
     #    objects scales them UP if they're smaller than the target. We forbid these calls
     #    entirely; the code should use the fit() helper instead.
@@ -700,6 +721,18 @@ Common fixes:
     system_prompt = CODEGEN_SYSTEM.format(duration=duration_sec)
     if is_portrait:
         system_prompt += PORTRAIT_ADDENDUM.format(duration=duration_sec)
+    if os.environ.get("PAPER2VIDEO_LANG", "").lower() == "ko":
+        system_prompt += """
+
+=== KOREAN TEXT RULES (OVERRIDES FONT DEFAULTS) ===
+All on-screen text is in Korean. The default Manim font has NO Hangul glyphs — without
+an explicit font, Korean renders as empty boxes. Therefore every Text()/MarkupText()/
+Paragraph() call MUST pass font="Noto Sans CJK KR":
+    title = Text("로봇 핸드의 관절", font="Noto Sans CJK KR", font_size=44)
+English technical terms inside labels (e.g. "Keypoint") may stay in English, but still
+pass the same font (it covers Latin). Never call Text() without the font argument.
+=== END KOREAN TEXT RULES ===
+"""
 
     last_code = ""
     last_err = ""
