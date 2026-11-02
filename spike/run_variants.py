@@ -62,6 +62,16 @@ def build_env(base: dict[str, str], keypoints: int) -> dict[str, str]:
 def main() -> int:
     logs = REPO / "spike" / "logs"
     logs.mkdir(parents=True, exist_ok=True)
+
+    # Guard against double-launch (bit us once already).
+    import fcntl
+    lock = open(logs / ".orchestrator.lock", "w")
+    try:
+        fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except OSError:
+        print("another orchestrator is running — aborting", flush=True)
+        return 2
+
     base = load_env()
     remaining = list(VARIANTS)
     running: dict[str, subprocess.Popen] = {}
