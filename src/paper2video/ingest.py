@@ -84,11 +84,16 @@ def extract_from_file(path: Path) -> IngestedDoc:
     return extract_from_html(html, source_url=str(path))
 
 
-def extract_from_url(url: str, timeout: float = 30.0) -> IngestedDoc:
+def extract_from_url(url: str, timeout: float = 30.0, keep_pdf: Path | None = None) -> IngestedDoc:
     req = urllib.request.Request(url, headers={"User-Agent": "paper2video/0.1"})
     with urllib.request.urlopen(req, timeout=timeout) as resp:
         raw = resp.read()
     if raw[:4] == b"%PDF":
+        if keep_pdf is not None:
+            keep_pdf.parent.mkdir(parents=True, exist_ok=True)
+            keep_pdf.write_bytes(raw)
+            doc = extract_from_pdf(keep_pdf)
+            return IngestedDoc(text=doc.text, title=doc.title, source_url=url)
         import tempfile
         with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as f:
             f.write(raw)

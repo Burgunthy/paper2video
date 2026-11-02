@@ -1,5 +1,6 @@
 from __future__ import annotations
 import json
+import os
 import time
 import traceback
 from dataclasses import dataclass, asdict
@@ -7,9 +8,11 @@ from pathlib import Path
 
 from .ingest import extract_from_url, extract_from_file, IngestedDoc
 from .research import research, ResearchResult
-from .script import write_script
+from .script import write_script, VARIANTS
+from .figures import extract_figures
 from .renderers.slide import render_slide
 from .renderers.manim_r import render_manim_scene, ManimRenderError
+from .renderers.figure_r import render_figure_scene, FigureRenderError
 from .tts import TTSEngine, synthesize_scene_audio, SceneAudio
 from .assemble import mux_scene_clip, concat_clips, build_scene_clip_from_image
 from .llm import LLMClient
@@ -57,11 +60,31 @@ def _render_scene_visual(
     llm: LLMClient,
     cfg: PipelineConfig,
     theme_seed: str | None = None,
+    fig_dir: Path | None = None,
 ) -> tuple[Path, str]:
     """Render one scene's visual track. Returns (mp4_or_png_path, kind) where kind is 'video' or 'image'.
 
     theme_seed: deterministic seed for slide color/layout variation (e.g. source_id).
     """
+    if scene.visual_type == "figure":
+        try:
+            mp4 = render_figure_scene(
+                scene=scene,
+                duration_sec=duration_sec,
+                fig_dir=fig_dir or (run_dir / "figures"),
+                out_dir=run_dir / "figure_out",
+                width=cfg.width,
+                height=cfg.height,
+                fps=cfg.fps,
+            )
+            _log(run_dir, f"  scene {scene.id}: figure OK -> {mp4.name}")
+            return mp4, "video"
+        except (FigureRenderError, Exception) as e:
+            _log(run_dir, f"  scene {scene.id}: figure FAILED, falling back to slide. err: {e}")
+            img_dir = run_dir / "images"
+            png = render_slide(scene, img_dir, size=(cfg.width, cfg.height), theme_seed=theme_seed)
+            return png, "image"
+
     if cfg.use_manim:
         try:
             manim_dir = run_dir / "manim"
@@ -104,7 +127,7 @@ def run_pipeline(
 
     _log(run_dir, f"=== run_id={run_id} ===")
 
-    # 1-3. Ingest / Research / Script — cached as script.json for resumability
+    # 1-3. Ingest / Figures / Research / Script — cached as script.json for resumability
     script_cache = run_dir / "script.json"
     if script_cache.exists():
         _log(run_dir, "stage: script (CACHED — reusing script.json)")
@@ -112,12 +135,33 @@ def run_pipeline(
         _log(run_dir, f"  title={script_doc.title!r} scenes={len(script_doc.scenes)}")
     else:
         _log(run_dir, "stage: ingest")
+        pdf_path: Path | None = None
         if _is_url(source):
-            doc: IngestedDoc = extract_from_url(source)
+            pdf_path = run_dir / "paper.pdf"
+            doc: IngestedDoc = extract_from_url(source, keep_pdf=pdf_path)
+            if not pdf_path.exists():
+                pdf_path = None  # HTML source — no PDF to mine
         else:
-            doc = extract_from_file(Path(source))
+            src = Path(source)
+            doc = extract_from_file(src)
+            if src.suffix.lower() == ".pdf":
+                pdf_path = src
         _write_json(run_dir / "ingest.json", asdict(doc))
         _log(run_dir, f"  title={doc.title!r} chars={len(doc.text)}")
+
+        # Figures are extracted BEFORE the script so the writer can reference them.
+        variant_name = os.environ.get("PAPER2VIDEO_VARIANT", "classic")
+        figure_manifest: list[dict] = []
+        if variant_name in VARIANTS and VARIANTS[variant_name].get("figures") and pdf_path:
+            try:
+                _log(run_dir, "stage: figures")
+                figs = extract_figures(pdf_path, run_dir / "figures")
+                figure_manifest = [
+                    {"id": f.id, "page": f.page, "caption": f.caption} for f in figs
+                ]
+                _log(run_dir, f"  extracted {len(figs)} figures: {[f.id for f in figs]}")
+            except Exception as e:
+                _log(run_dir, f"  figure extraction failed (continuing without): {e}")
 
         _log(run_dir, "stage: research")
         research_result: ResearchResult = research(doc, llm=llm, enable_search=config.enable_search)
@@ -129,7 +173,7 @@ def run_pipeline(
         _log(run_dir, f"  concepts={research_result.concepts}")
 
         _log(run_dir, "stage: script")
-        script_doc = write_script(research_result, llm=llm)
+        script_doc = write_script(research_result, llm=llm, figure_manifest=figure_manifest)
         _write_json(script_cache, script_doc.model_dump())
         _log(run_dir, f"  title={script_doc.title!r} scenes={len(script_doc.scenes)}")
 
@@ -142,7 +186,7 @@ def run_pipeline(
     for s, a in zip(script_doc.scenes, scene_audios):
         _log(run_dir, f"  scene {s.id}: audio {a.duration_sec:.2f}s")
 
-    # 5. Render visuals per scene (Manim primary, slide fallback)
+    # 5. Render visuals per scene (figure scenes first-class, Manim primary, slide fallback)
     _log(run_dir, "stage: render visuals")
     visual_tracks: list[tuple[Path, str]] = []
     for s, a in zip(script_doc.scenes, scene_audios):

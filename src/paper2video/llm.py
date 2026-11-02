@@ -41,7 +41,7 @@ class AnthropicClient:
         import anthropic  # lazy
         kwargs = {
             "model": self.model,
-            "max_tokens": 4096,
+            "max_tokens": int(os.environ.get("PAPER2VIDEO_MAX_TOKENS", "4096")),
             "messages": [{"role": "user", "content": prompt}],
         }
         if system:
@@ -58,7 +58,15 @@ class AnthropicClient:
         for attempt, wait in enumerate([*backoff_schedule, None]):
             try:
                 msg = self._client.messages.create(**kwargs)
-                return msg.content[0].text
+                # GLM-style responses may lead with thinking blocks; keep all
+                # text blocks and skip empty payloads.
+                parts = [
+                    getattr(b, "text", "") for b in msg.content
+                    if getattr(b, "type", "") == "text"
+                ]
+                if parts:
+                    return "".join(parts)
+                return msg.content[0].text  # fallback for odd shapes
             except retryable as e:
                 last_exc = e
             except anthropic.APIStatusError as e:
@@ -83,7 +91,14 @@ def _parse_json_payload(raw: str) -> dict:
         raw = raw.split("\n", 1)[1]
         if raw.endswith("```"):
             raw = raw.rsplit("```", 1)[0]
-    return json.loads(raw)
+    try:
+        return json.loads(raw)
+    except json.JSONDecodeError:
+        # Salvage: some models wrap JSON in prose or truncate trailing fences.
+        start, end = raw.find("{"), raw.rfind("}")
+        if start >= 0 and end > start:
+            return json.loads(raw[start:end + 1])
+        raise
 
 
 class CodexCLIClient:

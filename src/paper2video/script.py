@@ -195,17 +195,187 @@ Rules:
 """
 
 
-def write_script(research_result: ResearchResult, llm: LLMClient) -> ScriptDoc:
+VARIANTS: dict[str, dict] = {
+    # V1 — depth fix only, no figures
+    "deep": dict(
+        label="V1 딥스크립트",
+        scenes=(12, 14), minutes="5-7분", narration="3-5문장",
+        figures=False,
+        structure=(
+            "Cover the full arc of the paper: (1) problem and why it is hard, "
+            "(2) why prior approaches fall short, (3) the method's components "
+            "in detail — name each one and say what it contributes, "
+            "(4) experiments with concrete numbers (tasks, baselines, success "
+            "rates, training time), (5) limitations and takeaways."
+        ),
+    ),
+    # V2 — figure walkthrough
+    "figurewalk": dict(
+        label="V2 피규어 워크스루",
+        scenes=(9, 11), minutes="4-5분", narration="2-4문장",
+        figures=True, figure_min=6,
+        structure=(
+            "Walk through the paper's own figures as the backbone of the video: "
+            "overview/tasks → architecture → training procedure → learning "
+            "curves/results → robustness/qualitative behavior. Most scenes show "
+            "a real figure; use manim only for an opening hook and abstract "
+            "ideas no figure captures."
+        ),
+    ),
+    # V3 — hybrid
+    "hybrid": dict(
+        label="V3 하이브리드",
+        scenes=(13, 16), minutes="6-8분", narration="3-5문장",
+        figures=True, figure_min=5,
+        structure=(
+            "Animated manim scenes explain concepts and mechanisms step by step; "
+            "the paper's REAL figures appear for the architecture diagram, "
+            "experiment setups, and result plots. Alternate deliberately: "
+            "concept (manim) → evidence (figure) → analysis (manim)."
+        ),
+    ),
+    # V4 — full lecture deep-dive
+    "deepdive": dict(
+        label="V4 풀 딥다이브",
+        scenes=(17, 21), minutes="10-12분", narration="3-6문장",
+        figures=True, figure_min=8,
+        structure=(
+            "A full lecture: (1) problem & motivation, (2) related approaches "
+            "and the gap, (3) method deep-dive — EVERY major component, the "
+            "training objective, and how human input enters learning, "
+            "(4) experiment protocols, tasks and baselines, (5) headline "
+            "results AND ablations with numbers, (6) failure modes and "
+            "limitations, (7) takeaways. Use the paper's figures generously "
+            "for architecture, task photos, learning curves, ablation tables."
+        ),
+    ),
+    # V5 — compact hybrid
+    "compact": dict(
+        label="V5 컴팩트 하이브리드",
+        scenes=(8, 9), minutes="3-4분", narration="2-3문장",
+        figures=True, figure_min=4,
+        structure=(
+            "Tight and fast: problem → core mechanism (manim) → key results "
+            "(real figures) → takeaway. No detours, but keep concrete numbers."
+        ),
+    ),
+}
+
+FIGURE_SCENE_SCHEMA = """When the best visual is the paper's OWN figure, emit a figure scene:
+  "visual_type": "figure",
+  "visual_spec": {{
+    "figure_id": "fig2",
+    "focus": "full|left|right|top|bottom|center|top-left|top-right|bottom-left|bottom-right",
+    "highlight": "same vocab as focus — the region to outline during the scene, or empty string",
+    "caption": "short Korean on-screen callout (<= 40 chars)"
+  }}
+Rules for figure scenes:
+- figure_id MUST be copied exactly from the AVAILABLE FIGURES list. Never invent one.
+- focus points the camera at the part of the figure the narration discusses.
+- highlight outlines the specific region being talked about (empty if whole figure).
+- {figure_min_rule}"""
+
+SCRIPT_PROMPT_V2 = """You are writing the script for a {minutes} explainer video in the style of
+3Blue1Brown: clear, progressive, heavily visual — but with LECTURE-LEVEL substance.
+The audience is a smart novice who wants to actually UNDERSTAND the paper, not just hear it exists.
+
+INPUT ARTICLE (the paper, in full):
+{source_text}
+
+KEY POINTS (story beats, in order):
+{key_points}
+
+RESEARCH NOTES:
+{notes}
+{figure_block}
+STRUCTURE FOR THIS VIDEO:
+{structure}
+
+Produce a JSON object with this exact shape:
+{{
+  "title": "short video title",
+  "summary": "one-sentence summary",
+  "scenes": [
+    {{
+      "id": 1,
+      "narration": "spoken narration, {narration}",
+      "visual_type": "manim",
+      "visual_spec": {{
+        "title": "optional short on-screen label (<=40 chars), may be empty",
+        "direction": "REQUIRED. A concrete visual description of the animation: what objects appear, how they move, what transforms into what. Use verbs like 'fade in', 'transform into', 'slide from left', 'highlight', 'draw arrow from X to Y'. 2-4 sentences.",
+        "elements": ["key visual objects to draw"],
+        "caption": "optional 1-line Korean callout"
+      }},
+      "duration_hint_sec": 20.0
+    }}
+  ]
+}}
+
+SUBSTANCE RULES — this is the most important part:
+- Narration must TEACH concrete content. Every method scene names the actual
+  components and explains the mechanism. Every results scene cites actual
+  numbers from the paper (success rates, training hours, comparison gaps).
+- FORBIDDEN: vague filler like "다양한 작업에서 좋은 성능을 보였습니다" without
+  numbers, "효율적인 방법을 제안합니다" without saying WHAT makes it efficient.
+- The viewer should be able to explain the paper's core mechanism to a colleague
+  after watching. Depth beats polish.
+- Progressively build understanding: each scene assumes exactly the previous scenes.
+
+FORM RULES:
+- {scene_count} scenes total.
+- Narration {narration} per scene, no markdown.
+- duration_hint_sec ≈ your narration's spoken length (Korean ~5 chars/sec).
+- manim scenes: pure Manim shapes + Text only — no LaTeX, no equations, no images.{figure_rule}
+- Output JSON only, no prose, no code fences."""
+
+
+def _figure_block(manifest: list[dict], variant: dict) -> str:
+    if not variant.get("figures") or not manifest:
+        return ""
+    lines = ["", "AVAILABLE FIGURES (extracted from the paper):"]
+    for f in manifest:
+        cap = str(f.get("caption", "")).replace("\n", " ")[:150]
+        lines.append(f"- {f['id']} (page {f.get('page', '?')}): {cap}")
+    figure_min = variant.get("figure_min", 0)
+    rule = (
+        f"At least {figure_min} scenes must be figure scenes."
+        if figure_min
+        else "Use figure scenes where they beat abstract animation."
+    )
+    return "\n".join(lines) + "\n\n" + FIGURE_SCENE_SCHEMA.format(figure_min_rule=rule)
+
+
+def write_script(research_result: ResearchResult, llm: LLMClient,
+                 variant: str | None = None, figure_manifest: list[dict] | None = None) -> ScriptDoc:
+    variant_name = variant or os.environ.get("PAPER2VIDEO_VARIANT", "classic")
     notes_str = "\n".join(f"- {n.claim}" for n in research_result.notes) or "(none)"
     key_points_str = "\n".join(f"- {p}" for p in research_result.key_points) or "(none)"
 
-    raw = llm.complete_json(
-        SCRIPT_PROMPT.format(
+    if variant_name in VARIANTS:
+        v = VARIANTS[variant_name]
+        prompt = SCRIPT_PROMPT_V2.format(
+            minutes=v["minutes"],
+            source_text=research_result.source_text,
+            key_points=key_points_str,
+            notes=notes_str,
+            figure_block=_figure_block(figure_manifest or [], v),
+            structure=v["structure"],
+            narration=v["narration"],
+            scene_count=f"{v['scenes'][0]} to {v['scenes'][1]}",
+            figure_rule=(
+                " Figure scenes may reference figure_id from the list above — that is the ONLY image use allowed."
+                if v.get("figures") else " Do NOT reference any images or figures."
+            ),
+        )
+        prompt += LANG_RULES.get(os.environ.get("PAPER2VIDEO_LANG", "").lower(), "")
+    else:
+        prompt = SCRIPT_PROMPT.format(
             source_text=research_result.source_text[:10000],
             key_points=key_points_str,
             notes=notes_str,
         ) + LANG_RULES.get(os.environ.get("PAPER2VIDEO_LANG", "").lower(), "")
-    )
+
+    raw = llm.complete_json(prompt)
 
     scenes: list[Scene] = []
     for i, s in enumerate(raw.get("scenes", []), start=1):
