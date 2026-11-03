@@ -106,6 +106,13 @@ def research(
         '"key_points": ["3-6 short bullet points capturing the main ideas"]',
         f'"key_points": ["{max(3, n_kp - 2)}-{n_kp + 2} short bullet points capturing the main ideas, in narrative order"]',
     )
+    lang = os.environ.get("PAPER2VIDEO_LANG", "").lower()
+    if lang == "ko":
+        synthesis_prompt += (
+            "\n\nLANGUAGE: write key_points in natural Korean (한국어). "
+            "Keep widely-used English technical terms as-is where natural. "
+            "notes claims may stay in English."
+        )
     synthesis = llm.complete_json(
         synthesis_prompt.format(text=doc.text[:_text_cap()], search_context=search_context)
     )
