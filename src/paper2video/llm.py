@@ -11,6 +11,10 @@ class LLMClient(Protocol):
     def complete_json(self, prompt: str, system: str | None = None) -> dict: ...
 
 
+class EmptyCompletionError(RuntimeError):
+    """Model returned no text blocks (e.g. thinking consumed the whole budget)."""
+
+
 class FakeLLMClient:
     """Test double. Returns queued responses in order."""
 
@@ -41,7 +45,7 @@ class AnthropicClient:
         import anthropic  # lazy
         kwargs = {
             "model": self.model,
-            "max_tokens": 4096,
+            "max_tokens": int(os.environ.get("PAPER2VIDEO_MAX_TOKENS", "4096")),
             "messages": [{"role": "user", "content": prompt}],
         }
         if system:
@@ -52,13 +56,22 @@ class AnthropicClient:
             anthropic.APIConnectionError,
             anthropic.APITimeoutError,
             anthropic.InternalServerError,
+            EmptyCompletionError,
         )
         backoff_schedule = [3, 8, 20, 45, 90]  # ~166s total, then raise
         last_exc: Exception | None = None
         for attempt, wait in enumerate([*backoff_schedule, None]):
             try:
                 msg = self._client.messages.create(**kwargs)
-                return msg.content[0].text
+                # GLM-style responses may lead with thinking blocks; keep all
+                # text blocks and skip empty payloads.
+                parts = [
+                    getattr(b, "text", "") for b in msg.content
+                    if getattr(b, "type", "") == "text"
+                ]
+                if not parts:
+                    raise EmptyCompletionError("response contained no text blocks")
+                return "".join(parts)
             except retryable as e:
                 last_exc = e
             except anthropic.APIStatusError as e:
@@ -73,8 +86,24 @@ class AnthropicClient:
 
     def complete_json(self, prompt: str, system: str | None = None) -> dict:
         sys_prompt = (system or "") + "\n\nRespond with valid JSON only. No prose, no code fences."
-        raw = self.complete(prompt, sys_prompt.strip())
-        return _parse_json_payload(raw)
+        err: json.JSONDecodeError | None = None
+        for attempt in range(3):
+            p = prompt
+            if attempt > 0 and err is not None:
+                p = (
+                    prompt
+                    + f"\n\nNOTE: your previous reply was not valid JSON "
+                    f"(error near position {err.pos}: {err.msg}). "
+                    "Resend the COMPLETE corrected JSON. Escape every double quote "
+                    "inside string values (\\\") or replace inner double quotes with single quotes."
+                )
+            raw = self.complete(p, sys_prompt.strip())
+            try:
+                return _parse_json_payload(raw)
+            except json.JSONDecodeError as e:
+                err = e
+        assert err is not None
+        raise err
 
 
 def _parse_json_payload(raw: str) -> dict:
@@ -83,7 +112,14 @@ def _parse_json_payload(raw: str) -> dict:
         raw = raw.split("\n", 1)[1]
         if raw.endswith("```"):
             raw = raw.rsplit("```", 1)[0]
-    return json.loads(raw)
+    try:
+        return json.loads(raw)
+    except json.JSONDecodeError:
+        # Salvage: some models wrap JSON in prose or truncate trailing fences.
+        start, end = raw.find("{"), raw.rfind("}")
+        if start >= 0 and end > start:
+            return json.loads(raw[start:end + 1])
+        raise
 
 
 class CodexCLIClient:

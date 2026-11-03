@@ -1,0 +1,965 @@
+
+===== 17:24:36 launch deep =====
+2026-11-02 17:24:49,715 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 17:25:42,679 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 17:28:57,952 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 17:32:56,056 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 17:35:46,197 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 17:40:58,812 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 17:45:11,948 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 17:49:22,655 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 17:54:07,582 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 17:59:29,148 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 18:05:10,319 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 18:07:44,546 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 18:14:29,171 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 18:22:55,072 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 18:31:37,118 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 18:39:55,079 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 18:40:40,294 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:40:40,294 [anthropic._base_client] Retrying request to /v1/messages in 0.391003 seconds
+2026-11-02 18:40:40,825 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:40:40,826 [anthropic._base_client] Retrying request to /v1/messages in 0.802096 seconds
+2026-11-02 18:40:41,828 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:42:12,008 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:42:12,010 [anthropic._base_client] Retrying request to /v1/messages in 0.447288 seconds
+2026-11-02 18:42:12,856 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:42:12,857 [anthropic._base_client] Retrying request to /v1/messages in 0.844185 seconds
+2026-11-02 18:42:13,835 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 44592 (\N{HANGUL SYLLABLE GI}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 51316 (\N{HANGUL SYLLABLE JON}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 48169 (\N{HANGUL SYLLABLE BANG}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 48277 (\N{HANGUL SYLLABLE BEOB}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 51032 (\N{HANGUL SYLLABLE YI}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 54620 (\N{HANGUL SYLLABLE HAN}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 44228 (\N{HANGUL SYLLABLE GYE}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 47784 (\N{HANGUL SYLLABLE MO}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 47564 (\N{HANGUL SYLLABLE MAN}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 51004 (\N{HANGUL SYLLABLE EU}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 47196 (\N{HANGUL SYLLABLE RO}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 45716 (\N{HANGUL SYLLABLE NEUN}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 44032 (\N{HANGUL SYLLABLE GA}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 51080 (\N{HANGUL SYLLABLE ISS}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 45796 (\N{HANGUL SYLLABLE DA}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+2026-11-02 18:42:14,717 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:42:14,717 [anthropic._base_client] Retrying request to /v1/messages in 0.439278 seconds
+2026-11-02 18:42:15,338 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:42:15,339 [anthropic._base_client] Retrying request to /v1/messages in 0.798731 seconds
+2026-11-02 18:42:16,312 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:42:19,485 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:42:19,486 [anthropic._base_client] Retrying request to /v1/messages in 0.489463 seconds
+2026-11-02 18:42:20,097 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:42:20,099 [anthropic._base_client] Retrying request to /v1/messages in 0.847359 seconds
+2026-11-02 18:42:21,103 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:42:29,254 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:42:29,255 [anthropic._base_client] Retrying request to /v1/messages in 0.408679 seconds
+2026-11-02 18:42:29,841 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:42:29,842 [anthropic._base_client] Retrying request to /v1/messages in 0.810586 seconds
+2026-11-02 18:42:30,787 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:42:50,944 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:42:50,945 [anthropic._base_client] Retrying request to /v1/messages in 0.399956 seconds
+2026-11-02 18:42:51,522 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:42:51,522 [anthropic._base_client] Retrying request to /v1/messages in 0.916271 seconds
+2026-11-02 18:42:52,599 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:43:37,814 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:43:37,814 [anthropic._base_client] Retrying request to /v1/messages in 0.395403 seconds
+2026-11-02 18:43:38,328 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:43:38,328 [anthropic._base_client] Retrying request to /v1/messages in 0.820329 seconds
+2026-11-02 18:43:39,287 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:45:09,525 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:45:09,526 [anthropic._base_client] Retrying request to /v1/messages in 0.385126 seconds
+2026-11-02 18:45:10,038 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:45:10,038 [anthropic._base_client] Retrying request to /v1/messages in 0.866182 seconds
+2026-11-02 18:45:11,027 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 46321 (\N{HANGUL SYLLABLE DEUNG}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 51109 (\N{HANGUL SYLLABLE JANG}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 53685 (\N{HANGUL SYLLABLE TONG}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 54633 (\N{HANGUL SYLLABLE HAB}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 51060 (\N{HANGUL SYLLABLE I}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 44263 (\N{HANGUL SYLLABLE GOD}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 54785 (\N{HANGUL SYLLABLE HYEOG}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 49888 (\N{HANGUL SYLLABLE SIN}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+2026-11-02 18:45:11,316 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:45:11,317 [anthropic._base_client] Retrying request to /v1/messages in 0.463594 seconds
+2026-11-02 18:45:11,940 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:45:11,941 [anthropic._base_client] Retrying request to /v1/messages in 0.843173 seconds
+2026-11-02 18:45:12,938 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:45:16,067 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:45:16,071 [anthropic._base_client] Retrying request to /v1/messages in 0.465441 seconds
+2026-11-02 18:45:16,663 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:45:16,664 [anthropic._base_client] Retrying request to /v1/messages in 0.834827 seconds
+2026-11-02 18:45:17,651 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:45:25,875 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:45:25,875 [anthropic._base_client] Retrying request to /v1/messages in 0.384165 seconds
+2026-11-02 18:45:26,449 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:45:26,452 [anthropic._base_client] Retrying request to /v1/messages in 0.778386 seconds
+2026-11-02 18:45:27,364 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:45:47,588 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:45:47,588 [anthropic._base_client] Retrying request to /v1/messages in 0.401968 seconds
+2026-11-02 18:45:48,118 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:45:48,119 [anthropic._base_client] Retrying request to /v1/messages in 0.781893 seconds
+2026-11-02 18:45:49,072 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:46:34,260 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:46:34,261 [anthropic._base_client] Retrying request to /v1/messages in 0.379557 seconds
+2026-11-02 18:46:34,798 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:46:34,799 [anthropic._base_client] Retrying request to /v1/messages in 0.932576 seconds
+2026-11-02 18:46:35,883 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:48:06,053 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:48:06,054 [anthropic._base_client] Retrying request to /v1/messages in 0.388941 seconds
+2026-11-02 18:48:06,642 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:48:06,643 [anthropic._base_client] Retrying request to /v1/messages in 0.977138 seconds
+2026-11-02 18:48:07,785 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+[pipeline] === run_id=spike-v1-deep ===
+[pipeline] stage: ingest
+[pipeline]   title='paper' chars=137948
+[pipeline] stage: research
+[pipeline]   concepts=['Reinforcement learning', 'Human-in-the-loop corrections', 'Imitation learning (demonstrations)', 'Reward function from success classifier', 'Sample efficiency']
+[pipeline] stage: script
+[pipeline]   title='HIL-SERL: 실물 로봇을 1시간 만에 가르치는 법' scenes=13
+[pipeline] stage: tts
+[pipeline]   scene 1: audio 24.86s
+[pipeline]   scene 2: audio 29.69s
+[pipeline]   scene 3: audio 30.43s
+[pipeline]   scene 4: audio 27.17s
+[pipeline]   scene 5: audio 30.94s
+[pipeline]   scene 6: audio 30.86s
+[pipeline]   scene 7: audio 34.18s
+[pipeline]   scene 8: audio 32.64s
+[pipeline]   scene 9: audio 35.26s
+[pipeline]   scene 10: audio 33.91s
+[pipeline]   scene 11: audio 40.58s
+[pipeline]   scene 12: audio 33.91s
+[pipeline]   scene 13: audio 33.96s
+[pipeline] stage: render visuals
+[pipeline]   scene 1: manim OK -> scene_001.mp4
+[pipeline]   scene 2: manim crashed: Error code: 429 - {'type': 'error', 'error': {'type': 'rate_limit_error', 'code': '1308', 'message': '[1308][Usage limit reached for 5 hour. Your limit will reset at 2026-11-02 19:20:34][20261102174213703862caf26e4bc5]'}, 'request_id': '20261102174213703862caf26e4bc5'}
+Traceback (most recent call last):
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/pipeline.py", line 93, in _render_scene_visual
+    mp4 = render_manim_scene(
+          ^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/manim_r.py", line 742, in render_manim_scene
+    raw = llm.complete(user_prompt, system=system_prompt)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/llm.py", line 85, in complete
+    raise last_exc
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/llm.py", line 65, in complete
+    msg = self._client.messages.create(**kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/_utils/_utils.py", line 294, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/resources/messages/messages.py", line 1070, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/_base_client.py", line 1679, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/_base_client.py", line 1230, in request
+    return self._request(cast_to, options, stream=stream, stream_cls=stream_cls)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/_base_client.py", line 1333, in _request
+    raise self._make_status_error_from_response(response) from None
+anthropic.RateLimitError: Error code: 429 - {'type': 'error', 'error': {'type': 'rate_limit_error', 'code': '1308', 'message': '[1308][Usage limit reached for 5 hour. Your limit will reset at 2026-11-02 19:20:34][20261102174213703862caf26e4bc5]'}, 'request_id': '20261102174213703862caf26e4bc5'}
+
+[pipeline]   scene 3: manim crashed: Error code: 429 - {'type': 'error', 'error': {'type': 'rate_limit_error', 'code': '1308', 'message': '[1308][Usage limit reached for 5 hour. Your limit will reset at 2026-11-02 19:20:34][20261102174510134edb9230dd4550]'}, 'request_id': '20261102174510134edb9230dd4550'}
+Traceback (most recent call last):
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/pipeline.py", line 93, in _render_scene_visual
+    mp4 = render_manim_scene(
+          ^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/manim_r.py", line 742, in render_manim_scene
+    raw = llm.complete(user_prompt, system=system_prompt)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/llm.py", line 85, in complete
+    raise last_exc
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/llm.py", line 65, in complete
+    msg = self._client.messages.create(**kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/_utils/_utils.py", line 294, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/resources/messages/messages.py", line 1070, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/_base_client.py", line 1679, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/_base_client.py", line 1230, in request
+    return self._request(cast_to, options, stream=stream, stream_cls=stream_cls)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/_base_client.py", line 1333, in _request
+    raise self._make_status_error_from_response(response) from None
+anthropic.RateLimitError: Error code: 429 - {'type': 'error', 'error': {'type': 'rate_limit_error', 'code': '1308', 'message': '[1308][Usage limit reached for 5 hour. Your limit will reset at 2026-11-02 19:20:34][20261102174510134edb9230dd4550]'}, 'request_id': '20261102174510134edb9230dd4550'}
+
+[pipeline]   scene 4: manim crashed: Error code: 429 - {'type': 'error', 'error': {'type': 'rate_limit_error', 'code': '1308', 'message': '[1308][Usage limit reached for 5 hour. Your limit will reset at 2026-11-02 19:20:34][202611021748074cdc8f54e41c4881]'}, 'request_id': '202611021748074cdc8f54e41c4881'}
+Traceback (most recent call last):
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/pipeline.py", line 93, in _render_scene_visual
+    mp4 = render_manim_scene(
+          ^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/manim_r.py", line 742, in render_manim_scene
+    raw = llm.complete(user_prompt, system=system_prompt)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/llm.py", line 85, in complete
+    raise last_exc
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/llm.py", line 65, in complete
+    msg = self._client.messages.create(**kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/_utils/_utils.py", line 294, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/resources/messages/messages.py", line 1070, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/_base_client.py", line 1679, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/_base_client.py", line 1230, in request
+    return self._request(cast_to, options, stream=stream, stream_cls=stream_cls)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/_base_client.py", line 1333, in _request
+    raise self._make_status_error_from_response(response) from None
+anthropic.RateLimitError: Error code: 429 - {'type': 'error', 'error': {'type': 'rate_limit_error', 'code': '1308', 'message': '[1308][Usage limit reached for 5 hour. Your limit will reset at 2026-11-02 19:20:34][202611021748074cdc8f54e41c4881]'}, 'request_id': '202611021748074cdc8f54e41c4881'}
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 49324 (\N{HANGUL SYLLABLE SA}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 51204 (\N{HANGUL SYLLABLE JEON}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 54617 (\N{HANGUL SYLLABLE HAG}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 49845 (\N{HANGUL SYLLABLE SEUB}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 48708 (\N{HANGUL SYLLABLE BI}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 48177 (\N{HANGUL SYLLABLE BAEG}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 48376 (\N{HANGUL SYLLABLE BON}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 48120 (\N{HANGUL SYLLABLE MI}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 51648 (\N{HANGUL SYLLABLE JI}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 51076 (\N{HANGUL SYLLABLE IM}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 48288 (\N{HANGUL SYLLABLE BE}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 46377 (\N{HANGUL SYLLABLE DING}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 48148 (\N{HANGUL SYLLABLE BA}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 45012 (\N{HANGUL SYLLABLE GGWEO}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 49436 (\N{HANGUL SYLLABLE SEO}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+2026-11-02 18:48:07,989 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:48:07,989 [anthropic._base_client] Retrying request to /v1/messages in 0.377761 seconds
+2026-11-02 18:48:08,532 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:48:08,532 [anthropic._base_client] Retrying request to /v1/messages in 0.829854 seconds
+2026-11-02 18:48:09,525 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:48:12,687 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:48:12,688 [anthropic._base_client] Retrying request to /v1/messages in 0.378910 seconds
+2026-11-02 18:48:13,236 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:48:13,237 [anthropic._base_client] Retrying request to /v1/messages in 0.837133 seconds
+2026-11-02 18:48:14,231 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:48:22,444 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:48:22,444 [anthropic._base_client] Retrying request to /v1/messages in 0.422425 seconds
+2026-11-02 18:48:22,974 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:48:22,975 [anthropic._base_client] Retrying request to /v1/messages in 0.837680 seconds
+2026-11-02 18:48:23,973 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:48:44,113 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:48:44,114 [anthropic._base_client] Retrying request to /v1/messages in 0.379154 seconds
+2026-11-02 18:48:44,683 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:48:44,684 [anthropic._base_client] Retrying request to /v1/messages in 0.831534 seconds
+2026-11-02 18:48:45,697 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:49:30,834 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:49:30,835 [anthropic._base_client] Retrying request to /v1/messages in 0.397096 seconds
+2026-11-02 18:49:31,348 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:49:31,349 [anthropic._base_client] Retrying request to /v1/messages in 0.991202 seconds
+2026-11-02 18:49:32,509 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:51:02,678 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:51:02,679 [anthropic._base_client] Retrying request to /v1/messages in 0.419495 seconds
+2026-11-02 18:51:03,226 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:51:03,227 [anthropic._base_client] Retrying request to /v1/messages in 0.908091 seconds
+2026-11-02 18:51:04,289 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 46168 (\N{HANGUL SYLLABLE DUL}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 51012 (\N{HANGUL SYLLABLE EUL}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 49438 (\N{HANGUL SYLLABLE SEOGG}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 50612 (\N{HANGUL SYLLABLE EO}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 49884 (\N{HANGUL SYLLABLE SI}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 50672 (\N{HANGUL SYLLABLE YEON}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 44284 (\N{HANGUL SYLLABLE GWA}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 44221 (\N{HANGUL SYLLABLE GYEONG}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 54744 (\N{HANGUL SYLLABLE HEOM}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 45824 (\N{HANGUL SYLLABLE DAE}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+2026-11-02 18:51:04,586 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:51:04,587 [anthropic._base_client] Retrying request to /v1/messages in 0.493397 seconds
+2026-11-02 18:51:05,216 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:51:05,217 [anthropic._base_client] Retrying request to /v1/messages in 0.753145 seconds
+2026-11-02 18:51:06,095 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:51:09,280 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:51:09,281 [anthropic._base_client] Retrying request to /v1/messages in 0.392149 seconds
+2026-11-02 18:51:09,809 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:51:09,810 [anthropic._base_client] Retrying request to /v1/messages in 0.856635 seconds
+2026-11-02 18:51:10,825 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:51:18,992 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:51:18,993 [anthropic._base_client] Retrying request to /v1/messages in 0.480089 seconds
+2026-11-02 18:51:19,652 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:51:19,653 [anthropic._base_client] Retrying request to /v1/messages in 0.822196 seconds
+2026-11-02 18:51:20,613 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:51:40,791 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:51:40,792 [anthropic._base_client] Retrying request to /v1/messages in 0.459877 seconds
+2026-11-02 18:51:41,375 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:51:41,376 [anthropic._base_client] Retrying request to /v1/messages in 0.778477 seconds
+2026-11-02 18:51:42,263 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:52:27,437 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:52:27,437 [anthropic._base_client] Retrying request to /v1/messages in 0.437935 seconds
+2026-11-02 18:52:27,998 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:52:27,999 [anthropic._base_client] Retrying request to /v1/messages in 0.950376 seconds
+2026-11-02 18:52:29,114 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:53:59,284 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:53:59,285 [anthropic._base_client] Retrying request to /v1/messages in 0.423846 seconds
+2026-11-02 18:53:59,849 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:53:59,850 [anthropic._base_client] Retrying request to /v1/messages in 0.958540 seconds
+2026-11-02 18:54:00,943 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 51652 (\N{HANGUL SYLLABLE JIN}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 48372 (\N{HANGUL SYLLABLE BO}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 49345 (\N{HANGUL SYLLABLE SANG}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 48516 (\N{HANGUL SYLLABLE BUN}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 47448 (\N{HANGUL SYLLABLE RYU}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 49457 (\N{HANGUL SYLLABLE SEONG}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 44277 (\N{HANGUL SYLLABLE GONG}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 45264 (\N{HANGUL SYLLABLE NYA}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 50500 (\N{HANGUL SYLLABLE A}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 45768 (\N{HANGUL SYLLABLE NI}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 44536 (\N{HANGUL SYLLABLE GEU}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 44163 (\N{HANGUL SYLLABLE GEOS}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+2026-11-02 18:54:01,238 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:54:01,239 [anthropic._base_client] Retrying request to /v1/messages in 0.399206 seconds
+2026-11-02 18:54:01,770 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:54:01,770 [anthropic._base_client] Retrying request to /v1/messages in 0.937077 seconds
+2026-11-02 18:54:02,857 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:54:06,084 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:54:06,085 [anthropic._base_client] Retrying request to /v1/messages in 0.398742 seconds
+2026-11-02 18:54:06,653 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:54:06,654 [anthropic._base_client] Retrying request to /v1/messages in 0.970398 seconds
+2026-11-02 18:54:07,754 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:54:15,916 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:54:15,917 [anthropic._base_client] Retrying request to /v1/messages in 0.410729 seconds
+2026-11-02 18:54:16,443 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:54:16,444 [anthropic._base_client] Retrying request to /v1/messages in 0.803708 seconds
+2026-11-02 18:54:17,441 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:54:37,585 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:54:37,586 [anthropic._base_client] Retrying request to /v1/messages in 0.412254 seconds
+2026-11-02 18:54:38,203 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:54:38,203 [anthropic._base_client] Retrying request to /v1/messages in 0.960990 seconds
+2026-11-02 18:54:39,292 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:55:24,524 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:55:24,525 [anthropic._base_client] Retrying request to /v1/messages in 0.470688 seconds
+2026-11-02 18:55:25,170 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:55:25,171 [anthropic._base_client] Retrying request to /v1/messages in 0.986482 seconds
+2026-11-02 18:55:26,280 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:56:56,464 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:56:56,465 [anthropic._base_client] Retrying request to /v1/messages in 0.497676 seconds
+2026-11-02 18:56:57,079 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:56:57,080 [anthropic._base_client] Retrying request to /v1/messages in 0.863151 seconds
+2026-11-02 18:56:58,090 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 46988 (\N{HANGUL SYLLABLE RAM}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 49892 (\N{HANGUL SYLLABLE SIL}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 44036 (\N{HANGUL SYLLABLE GAN}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 44368 (\N{HANGUL SYLLABLE GYO}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 51221 (\N{HANGUL SYLLABLE JEONG}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 44060 (\N{HANGUL SYLLABLE GAE}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 51077 (\N{HANGUL SYLLABLE IB}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 51008 (\N{HANGUL SYLLABLE EUN}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 51216 (\N{HANGUL SYLLABLE JEOM}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 51460 (\N{HANGUL SYLLABLE JUL}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+2026-11-02 18:56:58,322 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:56:58,323 [anthropic._base_client] Retrying request to /v1/messages in 0.462438 seconds
+2026-11-02 18:56:58,903 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:56:58,903 [anthropic._base_client] Retrying request to /v1/messages in 0.871890 seconds
+2026-11-02 18:56:59,892 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:57:03,035 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:57:03,036 [anthropic._base_client] Retrying request to /v1/messages in 0.444481 seconds
+2026-11-02 18:57:03,598 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:57:03,599 [anthropic._base_client] Retrying request to /v1/messages in 0.843861 seconds
+2026-11-02 18:57:04,554 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:57:12,756 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:57:12,756 [anthropic._base_client] Retrying request to /v1/messages in 0.422481 seconds
+2026-11-02 18:57:13,330 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:57:13,331 [anthropic._base_client] Retrying request to /v1/messages in 0.987098 seconds
+2026-11-02 18:57:14,481 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:57:34,759 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:57:34,760 [anthropic._base_client] Retrying request to /v1/messages in 0.476701 seconds
+2026-11-02 18:57:35,368 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:57:35,369 [anthropic._base_client] Retrying request to /v1/messages in 0.781080 seconds
+2026-11-02 18:57:36,266 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:58:21,453 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:58:21,453 [anthropic._base_client] Retrying request to /v1/messages in 0.434995 seconds
+2026-11-02 18:58:22,052 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:58:22,053 [anthropic._base_client] Retrying request to /v1/messages in 0.866639 seconds
+2026-11-02 18:58:23,102 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:59:53,304 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:59:53,305 [anthropic._base_client] Retrying request to /v1/messages in 0.435029 seconds
+2026-11-02 18:59:53,857 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:59:53,858 [anthropic._base_client] Retrying request to /v1/messages in 0.917588 seconds
+2026-11-02 18:59:54,899 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+
+[pipeline]   scene 5: manim crashed: Error code: 429 - {'type': 'error', 'error': {'type': 'rate_limit_error', 'code': '1308', 'message': '[1308][Usage limit reached for 5 hour. Your limit will reset at 2026-11-02 19:20:34][202611021751044074b5c0b3e04622]'}, 'request_id': '202611021751044074b5c0b3e04622'}
+Traceback (most recent call last):
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/pipeline.py", line 93, in _render_scene_visual
+    mp4 = render_manim_scene(
+          ^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/manim_r.py", line 742, in render_manim_scene
+    raw = llm.complete(user_prompt, system=system_prompt)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/llm.py", line 85, in complete
+    raise last_exc
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/llm.py", line 65, in complete
+    msg = self._client.messages.create(**kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/_utils/_utils.py", line 294, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/resources/messages/messages.py", line 1070, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/_base_client.py", line 1679, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/_base_client.py", line 1230, in request
+    return self._request(cast_to, options, stream=stream, stream_cls=stream_cls)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/_base_client.py", line 1333, in _request
+    raise self._make_status_error_from_response(response) from None
+anthropic.RateLimitError: Error code: 429 - {'type': 'error', 'error': {'type': 'rate_limit_error', 'code': '1308', 'message': '[1308][Usage limit reached for 5 hour. Your limit will reset at 2026-11-02 19:20:34][202611021751044074b5c0b3e04622]'}, 'request_id': '202611021751044074b5c0b3e04622'}
+
+[pipeline]   scene 6: manim crashed: Error code: 429 - {'type': 'error', 'error': {'type': 'rate_limit_error', 'code': '1308', 'message': '[1308][Usage limit reached for 5 hour. Your limit will reset at 2026-11-02 19:20:34][202611021754009e93022938f9473b]'}, 'request_id': '202611021754009e93022938f9473b'}
+Traceback (most recent call last):
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/pipeline.py", line 93, in _render_scene_visual
+    mp4 = render_manim_scene(
+          ^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/manim_r.py", line 742, in render_manim_scene
+    raw = llm.complete(user_prompt, system=system_prompt)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/llm.py", line 85, in complete
+    raise last_exc
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/llm.py", line 65, in complete
+    msg = self._client.messages.create(**kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/_utils/_utils.py", line 294, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/resources/messages/messages.py", line 1070, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/_base_client.py", line 1679, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/_base_client.py", line 1230, in request
+    return self._request(cast_to, options, stream=stream, stream_cls=stream_cls)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/_base_client.py", line 1333, in _request
+    raise self._make_status_error_from_response(response) from None
+anthropic.RateLimitError: Error code: 429 - {'type': 'error', 'error': {'type': 'rate_limit_error', 'code': '1308', 'message': '[1308][Usage limit reached for 5 hour. Your limit will reset at 2026-11-02 19:20:34][202611021754009e93022938f9473b]'}, 'request_id': '202611021754009e93022938f9473b'}
+
+[pipeline]   scene 7: manim crashed: Error code: 429 - {'type': 'error', 'error': {'type': 'rate_limit_error', 'code': '1308', 'message': '[1308][Usage limit reached for 5 hour. Your limit will reset at 2026-11-02 19:20:34][20261102175657a32c98a7296a41f1]'}, 'request_id': '20261102175657a32c98a7296a41f1'}
+Traceback (most recent call last):
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/pipeline.py", line 93, in _render_scene_visual
+    mp4 = render_manim_scene(
+          ^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/manim_r.py", line 742, in render_manim_scene
+    raw = llm.complete(user_prompt, system=system_prompt)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/llm.py", line 85, in complete
+    raise last_exc
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/llm.py", line 65, in complete
+    msg = self._client.messages.create(**kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/_utils/_utils.py", line 294, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/resources/messages/messages.py", line 1070, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/_base_client.py", line 1679, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/_base_client.py", line 1230, in request
+    return self._request(cast_to, options, stream=stream, stream_cls=stream_cls)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/_base_client.py", line 1333, in _request
+    raise self._make_status_error_from_response(response) from None
+anthropic.RateLimitError: Error code: 429 - {'type': 'error', 'error': {'type': 'rate_limit_error', 'code': '1308', 'message': '[1308][Usage limit reached for 5 hour. Your limit will reset at 2026-11-02 19:20:34][20261102175657a32c98a7296a41f1]'}, 'request_id': '20261102175657a32c98a7296a41f1'}
+
+[pipeline]   scene 8: manim crashed: Error code: 429 - {'type': 'error', 'error': {'type': 'rate_limit_error', 'code': '1308', 'message': '[1308][Usage limit reached for 5 hour. Your limit will reset at 2026-11-02 19:20:34][202611021759546059c6cff5124a0c]'}, 'request_id': '202611021759546059c6cff5124a0c'}
+Traceback (most recent call last):
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/pipeline.py", line 93, in _render_scene_visual
+    mp4 = render_manim_scene(
+          ^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/manim_r.py", line 742, in render_manim_scene
+    raw = llm.complete(user_prompt, system=system_prompt)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/llm.py", line 85, in complete
+    raise last_exc
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/llm.py", line 65, in complete
+    msg = self._client.messages.create(**kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/_utils/_utils.py", line 294, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/resources/messages/messages.py", line 1070, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/_base_client.py", line 1679, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/_base_client.py", line 1230, in request
+    return self._request(cast_to, options, stream=stream, stream_cls=stream_cls)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/_base_client.py", line 1333, in _request
+    raise self._make_status_error_from_response(response) from None
+anthropic.RateLimitError: Error code: 429 - {'type': 'error', 'error': {'type': 'rate_limit_error', 'code': '1308', 'message': '[1308][Usage limit reached for 5 hour. Your limit will reset at 2026-11-02 19:20:34][202611021759546059c6cff5124a0c]'}, 'request_id': '202611021759546059c6cff5124a0c'}
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 49828 (\N{HANGUL SYLLABLE SEU}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 53596 (\N{HANGUL SYLLABLE TEM}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 46356 (\N{HANGUL SYLLABLE DI}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 53580 (\N{HANGUL SYLLABLE TE}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 51068 (\N{HANGUL SYLLABLE IL}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 47532 (\N{HANGUL SYLLABLE RI}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 54140 (\N{HANGUL SYLLABLE PEO}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 48324 (\N{HANGUL SYLLABLE BYEOL}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 46020 (\N{HANGUL SYLLABLE DO}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 53356 (\N{HANGUL SYLLABLE KEU}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 54001 (\N{HANGUL SYLLABLE TIG}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+2026-11-02 18:59:55,156 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:59:55,157 [anthropic._base_client] Retrying request to /v1/messages in 0.490416 seconds
+2026-11-02 18:59:55,784 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:59:55,785 [anthropic._base_client] Retrying request to /v1/messages in 0.801441 seconds
+2026-11-02 18:59:56,735 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:59:59,922 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:59:59,923 [anthropic._base_client] Retrying request to /v1/messages in 0.420861 seconds
+2026-11-02 19:00:00,490 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:00:00,492 [anthropic._base_client] Retrying request to /v1/messages in 0.817938 seconds
+2026-11-02 19:00:01,454 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:00:09,612 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:00:09,612 [anthropic._base_client] Retrying request to /v1/messages in 0.433847 seconds
+2026-11-02 19:00:10,194 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:00:10,194 [anthropic._base_client] Retrying request to /v1/messages in 0.762829 seconds
+2026-11-02 19:00:11,133 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:00:31,323 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:00:31,324 [anthropic._base_client] Retrying request to /v1/messages in 0.456838 seconds
+2026-11-02 19:00:31,961 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:00:31,962 [anthropic._base_client] Retrying request to /v1/messages in 0.956779 seconds
+2026-11-02 19:00:33,039 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:01:18,238 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:01:18,239 [anthropic._base_client] Retrying request to /v1/messages in 0.376384 seconds
+2026-11-02 19:01:18,742 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:01:18,743 [anthropic._base_client] Retrying request to /v1/messages in 0.879021 seconds
+2026-11-02 19:01:19,744 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:02:49,956 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:02:49,956 [anthropic._base_client] Retrying request to /v1/messages in 0.486580 seconds
+2026-11-02 19:02:50,693 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:02:50,694 [anthropic._base_client] Retrying request to /v1/messages in 0.809857 seconds
+2026-11-02 19:02:51,636 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 48373 (\N{HANGUL SYLLABLE BOG}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 51089 (\N{HANGUL SYLLABLE JAG}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 50629 (\N{HANGUL SYLLABLE EOB}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 46308 (\N{HANGUL SYLLABLE DEUL}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 48128 (\N{HANGUL SYLLABLE MIL}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 51312 (\N{HANGUL SYLLABLE JO}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 47549 (\N{HANGUL SYLLABLE RIB}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 48512 (\N{HANGUL SYLLABLE BU}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 53552 (\N{HANGUL SYLLABLE TEO}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 44256 (\N{HANGUL SYLLABLE GO}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 49549 (\N{HANGUL SYLLABLE SOG}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 46041 (\N{HANGUL SYLLABLE DONG}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 44620 (\N{HANGUL SYLLABLE GGA}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+2026-11-02 19:02:51,901 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:02:51,901 [anthropic._base_client] Retrying request to /v1/messages in 0.401681 seconds
+2026-11-02 19:02:52,409 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:02:52,409 [anthropic._base_client] Retrying request to /v1/messages in 0.863222 seconds
+2026-11-02 19:02:53,404 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:02:56,528 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:02:56,529 [anthropic._base_client] Retrying request to /v1/messages in 0.393052 seconds
+2026-11-02 19:02:57,026 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:02:57,028 [anthropic._base_client] Retrying request to /v1/messages in 0.949482 seconds
+2026-11-02 19:02:58,198 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:03:06,437 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:03:06,439 [anthropic._base_client] Retrying request to /v1/messages in 0.471352 seconds
+2026-11-02 19:03:07,105 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:03:07,106 [anthropic._base_client] Retrying request to /v1/messages in 0.866499 seconds
+2026-11-02 19:03:08,167 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:03:28,370 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:03:28,371 [anthropic._base_client] Retrying request to /v1/messages in 0.464606 seconds
+2026-11-02 19:03:28,936 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:03:28,936 [anthropic._base_client] Retrying request to /v1/messages in 0.855721 seconds
+2026-11-02 19:03:29,927 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:04:15,101 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:04:15,102 [anthropic._base_client] Retrying request to /v1/messages in 0.434894 seconds
+2026-11-02 19:04:15,678 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:04:15,679 [anthropic._base_client] Retrying request to /v1/messages in 0.909640 seconds
+2026-11-02 19:04:16,773 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:05:46,972 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:05:46,973 [anthropic._base_client] Retrying request to /v1/messages in 0.437604 seconds
+2026-11-02 19:05:47,556 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:05:47,557 [anthropic._base_client] Retrying request to /v1/messages in 0.897722 seconds
+2026-11-02 19:05:48,580 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 54756 (\N{HANGUL SYLLABLE HE}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 46300 (\N{HANGUL SYLLABLE DEU}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 46972 (\N{HANGUL SYLLABLE RA}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 51064 (\N{HANGUL SYLLABLE IN}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 44208 (\N{HANGUL SYLLABLE GYEOL}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 50640 (\N{HANGUL SYLLABLE E}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+2026-11-02 19:05:48,783 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:05:48,784 [anthropic._base_client] Retrying request to /v1/messages in 0.390182 seconds
+2026-11-02 19:05:49,302 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:05:49,303 [anthropic._base_client] Retrying request to /v1/messages in 0.753914 seconds
+2026-11-02 19:05:50,192 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:05:53,349 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:05:53,350 [anthropic._base_client] Retrying request to /v1/messages in 0.429401 seconds
+2026-11-02 19:05:53,913 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:05:53,913 [anthropic._base_client] Retrying request to /v1/messages in 0.824739 seconds
+2026-11-02 19:05:54,892 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:06:03,066 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:06:03,067 [anthropic._base_client] Retrying request to /v1/messages in 0.396427 seconds
+2026-11-02 19:06:03,630 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:06:03,632 [anthropic._base_client] Retrying request to /v1/messages in 0.781399 seconds
+2026-11-02 19:06:04,554 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:06:24,687 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:06:24,689 [anthropic._base_client] Retrying request to /v1/messages in 0.473491 seconds
+2026-11-02 19:06:25,304 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:06:25,305 [anthropic._base_client] Retrying request to /v1/messages in 0.880345 seconds
+2026-11-02 19:06:26,325 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:07:11,565 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:07:11,566 [anthropic._base_client] Retrying request to /v1/messages in 0.384334 seconds
+2026-11-02 19:07:12,097 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:07:12,099 [anthropic._base_client] Retrying request to /v1/messages in 0.901752 seconds
+2026-11-02 19:07:13,120 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:08:43,320 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:08:43,321 [anthropic._base_client] Retrying request to /v1/messages in 0.425029 seconds
+2026-11-02 19:08:43,866 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:08:43,866 [anthropic._base_client] Retrying request to /v1/messages in 0.839022 seconds
+2026-11-02 19:08:44,874 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 51208 (\N{HANGUL SYLLABLE JEOL}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 51228 (\N{HANGUL SYLLABLE JE}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 45936 (\N{HANGUL SYLLABLE DE}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 50752 (\N{HANGUL SYLLABLE WA}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 54596 (\N{HANGUL SYLLABLE PIL}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 49688 (\N{HANGUL SYLLABLE SU}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+2026-11-02 19:08:45,134 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:08:45,135 [anthropic._base_client] Retrying request to /v1/messages in 0.376126 seconds
+2026-11-02 19:08:45,639 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:08:45,640 [anthropic._base_client] Retrying request to /v1/messages in 0.872863 seconds
+2026-11-02 19:08:46,658 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:08:49,797 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:08:49,798 [anthropic._base_client] Retrying request to /v1/messages in 0.419343 seconds
+2026-11-02 19:08:50,352 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:08:50,354 [anthropic._base_client] Retrying request to /v1/messages in 0.913759 seconds
+2026-11-02 19:08:51,406 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:08:59,582 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:08:59,583 [anthropic._base_client] Retrying request to /v1/messages in 0.487795 seconds
+2026-11-02 19:09:00,170 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:09:00,171 [anthropic._base_client] Retrying request to /v1/messages in 0.768326 seconds
+2026-11-02 19:09:01,069 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:09:21,222 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:09:21,223 [anthropic._base_client] Retrying request to /v1/messages in 0.428771 seconds
+2026-11-02 19:09:21,813 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:09:21,814 [anthropic._base_client] Retrying request to /v1/messages in 0.967977 seconds
+2026-11-02 19:09:22,929 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:10:08,117 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:10:08,118 [anthropic._base_client] Retrying request to /v1/messages in 0.471849 seconds
+2026-11-02 19:10:08,830 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:10:08,831 [anthropic._base_client] Retrying request to /v1/messages in 0.951948 seconds
+2026-11-02 19:10:09,957 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:11:40,182 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:11:40,183 [anthropic._base_client] Retrying request to /v1/messages in 0.488367 seconds
+2026-11-02 19:11:40,782 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:11:40,783 [anthropic._base_client] Retrying request to /v1/messages in 0.940928 seconds
+2026-11-02 19:11:41,850 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+
+[pipeline]   scene 9: manim crashed: Error code: 429 - {'type': 'error', 'error': {'type': 'rate_limit_error', 'code': '1308', 'message': '[1308][Usage limit reached for 5 hour. Your limit will reset at 2026-11-02 19:20:34][202611021802519c3eace4cbff49b8]'}, 'request_id': '202611021802519c3eace4cbff49b8'}
+Traceback (most recent call last):
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/pipeline.py", line 93, in _render_scene_visual
+    mp4 = render_manim_scene(
+          ^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/manim_r.py", line 742, in render_manim_scene
+    raw = llm.complete(user_prompt, system=system_prompt)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/llm.py", line 85, in complete
+    raise last_exc
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/llm.py", line 65, in complete
+    msg = self._client.messages.create(**kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/_utils/_utils.py", line 294, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/resources/messages/messages.py", line 1070, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/_base_client.py", line 1679, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/_base_client.py", line 1230, in request
+    return self._request(cast_to, options, stream=stream, stream_cls=stream_cls)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/_base_client.py", line 1333, in _request
+    raise self._make_status_error_from_response(response) from None
+anthropic.RateLimitError: Error code: 429 - {'type': 'error', 'error': {'type': 'rate_limit_error', 'code': '1308', 'message': '[1308][Usage limit reached for 5 hour. Your limit will reset at 2026-11-02 19:20:34][202611021802519c3eace4cbff49b8]'}, 'request_id': '202611021802519c3eace4cbff49b8'}
+
+[pipeline]   scene 10: manim crashed: Error code: 429 - {'type': 'error', 'error': {'type': 'rate_limit_error', 'code': '1308', 'message': '[1308][Usage limit reached for 5 hour. Your limit will reset at 2026-11-02 19:20:34][20261102180548ecf3ddf25b3d476e]'}, 'request_id': '20261102180548ecf3ddf25b3d476e'}
+Traceback (most recent call last):
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/pipeline.py", line 93, in _render_scene_visual
+    mp4 = render_manim_scene(
+          ^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/manim_r.py", line 742, in render_manim_scene
+    raw = llm.complete(user_prompt, system=system_prompt)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/llm.py", line 85, in complete
+    raise last_exc
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/llm.py", line 65, in complete
+    msg = self._client.messages.create(**kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/_utils/_utils.py", line 294, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/resources/messages/messages.py", line 1070, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/_base_client.py", line 1679, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/_base_client.py", line 1230, in request
+    return self._request(cast_to, options, stream=stream, stream_cls=stream_cls)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/_base_client.py", line 1333, in _request
+    raise self._make_status_error_from_response(response) from None
+anthropic.RateLimitError: Error code: 429 - {'type': 'error', 'error': {'type': 'rate_limit_error', 'code': '1308', 'message': '[1308][Usage limit reached for 5 hour. Your limit will reset at 2026-11-02 19:20:34][20261102180548ecf3ddf25b3d476e]'}, 'request_id': '20261102180548ecf3ddf25b3d476e'}
+
+[pipeline]   scene 11: manim crashed: Error code: 429 - {'type': 'error', 'error': {'type': 'rate_limit_error', 'code': '1308', 'message': '[1308][Usage limit reached for 5 hour. Your limit will reset at 2026-11-02 19:20:34][20261102180844294236d8b987435f]'}, 'request_id': '20261102180844294236d8b987435f'}
+Traceback (most recent call last):
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/pipeline.py", line 93, in _render_scene_visual
+    mp4 = render_manim_scene(
+          ^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/manim_r.py", line 742, in render_manim_scene
+    raw = llm.complete(user_prompt, system=system_prompt)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/llm.py", line 85, in complete
+    raise last_exc
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/llm.py", line 65, in complete
+    msg = self._client.messages.create(**kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/_utils/_utils.py", line 294, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/resources/messages/messages.py", line 1070, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/_base_client.py", line 1679, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/_base_client.py", line 1230, in request
+    return self._request(cast_to, options, stream=stream, stream_cls=stream_cls)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/_base_client.py", line 1333, in _request
+    raise self._make_status_error_from_response(response) from None
+anthropic.RateLimitError: Error code: 429 - {'type': 'error', 'error': {'type': 'rate_limit_error', 'code': '1308', 'message': '[1308][Usage limit reached for 5 hour. Your limit will reset at 2026-11-02 19:20:34][20261102180844294236d8b987435f]'}, 'request_id': '20261102180844294236d8b987435f'}
+
+[pipeline]   scene 12: manim crashed: Error code: 429 - {'type': 'error', 'error': {'type': 'rate_limit_error', 'code': '1308', 'message': '[1308][Usage limit reached for 5 hour. Your limit will reset at 2026-11-02 19:20:34][20261102181141894ee51419bb443a]'}, 'request_id': '20261102181141894ee51419bb443a'}
+Traceback (most recent call last):
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/pipeline.py", line 93, in _render_scene_visual
+    mp4 = render_manim_scene(
+          ^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/manim_r.py", line 742, in render_manim_scene
+    raw = llm.complete(user_prompt, system=system_prompt)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/llm.py", line 85, in complete
+    raise last_exc
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/llm.py", line 65, in complete
+    msg = self._client.messages.create(**kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/_utils/_utils.py", line 294, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/resources/messages/messages.py", line 1070, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/_base_client.py", line 1679, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/_base_client.py", line 1230, in request
+    return self._request(cast_to, options, stream=stream, stream_cls=stream_cls)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/_base_client.py", line 1333, in _request
+    raise self._make_status_error_from_response(response) from None
+anthropic.RateLimitError: Error code: 429 - {'type': 'error', 'error': {'type': 'rate_limit_error', 'code': '1308', 'message': '[1308][Usage limit reached for 5 hour. Your limit will reset at 2026-11-02 19:20:34][20261102181141894ee51419bb443a]'}, 'request_id': '20261102181141894ee51419bb443a'}
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 50780 (\N{HANGUL SYLLABLE WAE}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 44053 (\N{HANGUL SYLLABLE GANG}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 44148 (\N{HANGUL SYLLABLE GEON}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 45328 (\N{HANGUL SYLLABLE NEOL}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 53468 (\N{HANGUL SYLLABLE TAE}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+2026-11-02 19:11:42,043 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:11:42,044 [anthropic._base_client] Retrying request to /v1/messages in 0.458530 seconds
+2026-11-02 19:11:42,688 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:11:42,689 [anthropic._base_client] Retrying request to /v1/messages in 0.790730 seconds
+2026-11-02 19:11:43,602 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:11:46,764 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:11:46,765 [anthropic._base_client] Retrying request to /v1/messages in 0.460808 seconds
+2026-11-02 19:11:47,353 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:11:47,354 [anthropic._base_client] Retrying request to /v1/messages in 0.977112 seconds
+2026-11-02 19:11:48,502 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:11:56,723 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:11:56,724 [anthropic._base_client] Retrying request to /v1/messages in 0.433051 seconds
+2026-11-02 19:11:57,287 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:11:57,287 [anthropic._base_client] Retrying request to /v1/messages in 0.962222 seconds
+2026-11-02 19:11:58,400 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:12:18,650 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:12:18,650 [anthropic._base_client] Retrying request to /v1/messages in 0.388087 seconds
+2026-11-02 19:12:19,194 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:12:19,195 [anthropic._base_client] Retrying request to /v1/messages in 0.929466 seconds
+2026-11-02 19:12:20,286 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:13:05,584 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:13:05,584 [anthropic._base_client] Retrying request to /v1/messages in 0.388201 seconds
+2026-11-02 19:13:06,145 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:13:06,146 [anthropic._base_client] Retrying request to /v1/messages in 0.840765 seconds
+2026-11-02 19:13:07,117 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:14:37,341 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:14:37,342 [anthropic._base_client] Retrying request to /v1/messages in 0.461017 seconds
+2026-11-02 19:14:37,953 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 19:14:37,954 [anthropic._base_client] Retrying request to /v1/messages in 0.992563 seconds
+2026-11-02 19:14:39,115 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 47932 (\N{HANGUL SYLLABLE MUL}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 48391 (\N{HANGUL SYLLABLE BOS}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 54868 (\N{HANGUL SYLLABLE HWA}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 46372 (\N{HANGUL SYLLABLE DIM}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 46028 (\N{HANGUL SYLLABLE DOL}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+
+[pipeline]   scene 13: manim crashed: Error code: 429 - {'type': 'error', 'error': {'type': 'rate_limit_error', 'code': '1308', 'message': '[1308][Usage limit reached for 5 hour. Your limit will reset at 2026-11-02 19:20:34][2026110218143876184321819d4fc6]'}, 'request_id': '2026110218143876184321819d4fc6'}
+Traceback (most recent call last):
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/pipeline.py", line 93, in _render_scene_visual
+    mp4 = render_manim_scene(
+          ^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/manim_r.py", line 742, in render_manim_scene
+    raw = llm.complete(user_prompt, system=system_prompt)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/llm.py", line 85, in complete
+    raise last_exc
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/llm.py", line 65, in complete
+    msg = self._client.messages.create(**kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/_utils/_utils.py", line 294, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/resources/messages/messages.py", line 1070, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/_base_client.py", line 1679, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/_base_client.py", line 1230, in request
+    return self._request(cast_to, options, stream=stream, stream_cls=stream_cls)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/_base_client.py", line 1333, in _request
+    raise self._make_status_error_from_response(response) from None
+anthropic.RateLimitError: Error code: 429 - {'type': 'error', 'error': {'type': 'rate_limit_error', 'code': '1308', 'message': '[1308][Usage limit reached for 5 hour. Your limit will reset at 2026-11-02 19:20:34][2026110218143876184321819d4fc6]'}, 'request_id': '2026110218143876184321819d4fc6'}
+
+[pipeline] stage: mux + concat
+[pipeline] DONE: out/spike-v1-deep/video.mp4
+video: out/spike-v1-deep/video.mp4
+run dir: out/spike-v1-deep
