@@ -111,7 +111,11 @@ def research(
         synthesis_prompt += (
             "\n\nLANGUAGE: write key_points in natural Korean (한국어). "
             "Keep widely-used English technical terms as-is where natural. "
-            "notes claims may stay in English."
+            "notes claims may stay in English.\n"
+            "STYLE (중요): 연구자의 리뷰 노트 어조로 쓸 것 — 각 항목은 '주장 + 근거/인과'를 "
+            "단정 서술한다(~이다/~한다/~때문에 ~할 수 없다). 수사적 표현 금지: 은유, "
+            "극적 전개('갈등의 뿌리', '길이 열린다' 류), 감탄, 나열형 채움말. "
+            "'문제는 ~에 있다' 식의 직접 문제 제기가 좋은 예다."
         )
     synthesis = llm.complete_json(
         synthesis_prompt.format(text=doc.text[:_text_cap()], search_context=search_context)
