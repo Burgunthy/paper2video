@@ -170,8 +170,24 @@ class CodexCLIClient:
 
     def complete_json(self, prompt: str, system: str | None = None) -> dict:
         sys_prompt = (system or "") + "\n\nRespond with valid JSON only. No prose, no code fences."
-        raw = self.complete(prompt, sys_prompt.strip())
-        return _parse_json_payload(raw)
+        err: json.JSONDecodeError | None = None
+        for attempt in range(3):
+            p = prompt
+            if attempt > 0 and err is not None:
+                p = (
+                    prompt
+                    + f"\n\nNOTE: your previous reply was not valid JSON "
+                    f"(error near position {err.pos}: {err.msg}). "
+                    "Resend the COMPLETE corrected JSON. Escape every double quote "
+                    "inside string values (\\\") or replace inner double quotes with single quotes."
+                )
+            raw = self.complete(p, sys_prompt.strip())
+            try:
+                return _parse_json_payload(raw)
+            except json.JSONDecodeError as e:
+                err = e
+        assert err is not None
+        raise err
 
 
 def _last_agent_message(stdout: str) -> str | None:
