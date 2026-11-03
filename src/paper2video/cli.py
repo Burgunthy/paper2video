@@ -276,7 +276,9 @@ def main(argv: list[str] | None = None) -> int:
     codegen_choice = os.environ.get("PAPER2VIDEO_CODEGEN_LLM", "").lower()
     if codegen_choice == "codex" and os.environ.get("PAPER2VIDEO_LLM", "").lower() != "codex":
         from .llm import CodexCLIClient
-        codegen_llm = CodexCLIClient()
+        # Explicit default: PAPER2VIDEO_MODEL names the SCRIPT model (e.g. glm-5.3);
+        # codex would reject it with model_not_found. Override separately if ever needed.
+        codegen_llm = CodexCLIClient(model=os.environ.get("PAPER2VIDEO_CODEGEN_MODEL", "gpt-6-luna"))
 
     if args.fake_tts:
         from .tts import FakeTTS
