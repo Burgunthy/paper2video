@@ -120,7 +120,10 @@ def run_pipeline(
     config: PipelineConfig,
     llm: LLMClient,
     tts: TTSEngine,
+    codegen_llm: LLMClient | None = None,
 ) -> PipelineResult:
+    # codegen_llm: optional separate client for manim codegen (see cli.py).
+    cg_llm = codegen_llm or llm
     run_id = config.run_id or time.strftime("%Y%m%d-%H%M%S")
     run_dir = Path(config.out_dir) / run_id
     run_dir.mkdir(parents=True, exist_ok=True)
@@ -190,7 +193,7 @@ def run_pipeline(
     _log(run_dir, "stage: render visuals")
     visual_tracks: list[tuple[Path, str]] = []
     for s, a in zip(script_doc.scenes, scene_audios):
-        path_kind = _render_scene_visual(s, a.duration_sec, run_dir, llm, config)
+        path_kind = _render_scene_visual(s, a.duration_sec, run_dir, cg_llm, config)
         visual_tracks.append(path_kind)
 
     # 6. Mux audio + video per scene (with pad/trim to audio duration), then concat

@@ -49,13 +49,18 @@ def build_env(base: dict[str, str], keypoints: int) -> dict[str, str]:
     env.update({
         "ANTHROPIC_BASE_URL": "https://api.z.ai/api/anthropic",
         "ANTHROPIC_API_KEY": base["ZAI_API_KEY"],
-        "PAPER2VIDEO_MODEL": "glm-5.3",
+        "PAPER2VIDEO_MODEL": os.environ.get("PAPER2VIDEO_MODEL") or "glm-5.3",
         "PAPER2VIDEO_MAX_TOKENS": "16384",
         "PAPER2VIDEO_TEXT_CAP": "150000",
         "PAPER2VIDEO_KEYPOINTS": str(keypoints),
         "PAPER2VIDEO_LANG": "ko",
         "PAPER2VIDEO_TTS": "edge",
     })
+    # Allow codegen override: PAPER2VIDEO_LLM=codex (gpt-6-luna) when GLM
+    # thinking-only responses stall manim codegen.
+    if os.environ.get("PAPER2VIDEO_LLM"):
+        env["PAPER2VIDEO_LLM"] = os.environ["PAPER2VIDEO_LLM"]
+        env.pop("ANTHROPIC_API_KEY", None)
     return env
 
 
@@ -72,8 +77,17 @@ def main() -> int:
         print("another orchestrator is running — aborting", flush=True)
         return 2
 
+    # Optional filter: run only given variants, e.g. `run_variants.py v3 v4`
+    wanted = {a.lower() for a in sys.argv[1:]}
+    variants = [
+        (rid, v, kp) for (rid, v, kp) in VARIANTS
+        if not wanted or v in wanted or f"v{v[0]}" in wanted
+        or any(a in rid for a in wanted)
+    ]
+    print(f"[plan] running: {[v for _, v, _ in variants]}", flush=True)
+
     base = load_env()
-    remaining = list(VARIANTS)
+    remaining = list(variants)
     running: dict[str, subprocess.Popen] = {}
     done: dict[str, int] = {}
     max_parallel = 2

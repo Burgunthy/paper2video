@@ -54,14 +54,14 @@ def shrink(video: Path) -> Path:
 def main() -> int:
     env = load_env()
     token = env["DISCORD_BOT_TOKEN"]
-    owner = env["DISCORD_OWNER_IDS"].replace(",", " ").split()[0]
     headers = {"Authorization": f"Bot {token}"}
 
-    r = requests.post(f"{API}/users/@me/channels", headers=headers,
-                      json={"recipient_id": int(owner)}, timeout=30)
-    r.raise_for_status()
-    channel_id = r.json()["id"]
-    print(f"DM channel: {channel_id}")
+    # Deliver to #ai-dev (where the user is actively watching videos).
+    guild_id = "1438394667367399506"
+    chs = requests.get(f"{API}/guilds/{guild_id}/channels", headers=headers, timeout=30)
+    chs.raise_for_status()
+    channel_id = next(c["id"] for c in chs.json() if c.get("name") == "ai-dev")
+    print(f"#ai-dev channel: {channel_id}")
 
     intro = requests.post(
         f"{API}/channels/{channel_id}/messages", headers=headers,

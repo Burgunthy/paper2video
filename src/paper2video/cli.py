@@ -268,6 +268,16 @@ def main(argv: list[str] | None = None) -> int:
         from .llm import AnthropicClient
         llm = AnthropicClient()
 
+    # Optional split: research/script on one client, manim codegen on another.
+    # GLM writes the best long-form scripts but stalls on codegen (thinking-only
+    # responses); codex/gpt-6-luna is the opposite. PAPER2VIDEO_CODEGEN_LLM=codex
+    # selects the codex client for codegen while the script stays on the main LLM.
+    codegen_llm = llm
+    codegen_choice = os.environ.get("PAPER2VIDEO_CODEGEN_LLM", "").lower()
+    if codegen_choice == "codex" and os.environ.get("PAPER2VIDEO_LLM", "").lower() != "codex":
+        from .llm import CodexCLIClient
+        codegen_llm = CodexCLIClient()
+
     if args.fake_tts:
         from .tts import FakeTTS
         tts = FakeTTS()
@@ -353,7 +363,7 @@ def main(argv: list[str] | None = None) -> int:
         height=args.height,
         fps=args.fps,
     )
-    result = run_pipeline(args.source, cfg, llm=llm, tts=tts)
+    result = run_pipeline(args.source, cfg, llm=llm, tts=tts, codegen_llm=codegen_llm)
     print(f"video: {result.video_path}")
     print(f"run dir: {result.run_dir}")
     return 0

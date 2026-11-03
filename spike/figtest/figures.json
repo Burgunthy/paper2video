@@ -1,0 +1,128 @@
+[
+  {
+    "id": "fig1",
+    "number": 1,
+    "page": 2,
+    "caption": "Figure 1: Overview of experimental tasks. A subset of tasks considered in this paper, they include whipping out a Jenga block from its tower, flipping an object in a pan, assembling complex devices such as a timing belt, a dashboard, a moth",
+    "path": "fig1.png",
+    "width_px": 1210,
+    "height_px": 1268
+  },
+  {
+    "id": "fig2",
+    "number": 2,
+    "page": 6,
+    "caption": "Figure 2: Overview of HIL-SERL. This figure illustrates the architecture of HIL-SERL, which comprises three primary components: the actor process, the learner process, and replay buffers. These components communicate asynchronously to facil",
+    "path": "fig2.png",
+    "width_px": 1342,
+    "height_px": 844
+  },
+  {
+    "id": "fig3",
+    "number": 3,
+    "page": 8,
+    "caption": "Figure 3: This diagram illustrates the process for training HIL-SERL. First, we tele-operate the robot to collect positive and negative samples and train a binary reward classifier. We then collect a small set of demonstrations, which is ad",
+    "path": "fig3.png",
+    "width_px": 1341,
+    "height_px": 675
+  },
+  {
+    "id": "fig4",
+    "number": 4,
+    "page": 10,
+    "caption": "Figure 4: Illustrations of the tasks in our experiments. (A)-(E) A sequence of motherboard assembly tasks: SSD installation, RAM insertion, USB cable grasping and insertion into a slot and a clip, and booting up the computer to ensure mothe",
+    "path": "fig4.png",
+    "width_px": 1409,
+    "height_px": 1449
+  },
+  {
+    "id": "fig5",
+    "number": 5,
+    "page": 14,
+    "caption": "Figure 5: Learning curves for experimental tasks. This figure presents the success rate, cycle time, and intervention rates for both HIL-SERL and DAgger across few representative tasks, displayed as a running average over 20 episodes. For H",
+    "path": "fig5.png",
+    "width_px": 1341,
+    "height_px": 819
+  },
+  {
+    "id": "fig6",
+    "number": 6,
+    "page": 16,
+    "caption": "Figure 6: Robustness evaluation for policies learned by our method. (A) RAM insertion under external perturbations, such as a moving motherboard. (B) Retrying behavior during a handover task after the grippers are forced open. (C-D) Reactiv",
+    "path": "fig6.png",
+    "width_px": 1470,
+    "height_px": 533
+  },
+  {
+    "id": "fig7",
+    "number": 7,
+    "page": 18,
+    "caption": "Figure 7: Visualization of policy training dynamics. (A) State visitation heatmaps during HIL-SERL training: The policy progressively forms a “funnel\" shape, concentrating more on areas around the demonstrations and corrections, showing rob",
+    "path": "fig7.png",
+    "width_px": 1341,
+    "height_px": 778
+  },
+  {
+    "id": "fig8",
+    "number": 8,
+    "page": 20,
+    "caption": "Figure 8: Reactive vs Predictive Behavior. (A-D) A sequence of reactive behaviors in the dashboard assembly task: after getting stuck in contact, the policy breaks the contact by quickly lifting two arms, then re-establishing the contact wh",
+    "path": "fig8.png",
+    "width_px": 1342,
+    "height_px": 886
+  },
+  {
+    "id": "fig9",
+    "number": 9,
+    "page": 32,
+    "caption": "Figure 9: Hardware setup for the motherboard assembly task.",
+    "path": "fig9.png",
+    "width_px": 1341,
+    "height_px": 908
+  },
+  {
+    "id": "fig10",
+    "number": 10,
+    "page": 32,
+    "caption": "Figure 10: Sample input images from cameras used as inputs to the policy.",
+    "path": "fig10.png",
+    "width_px": 1341,
+    "height_px": 1481
+  },
+  {
+    "id": "fig11",
+    "number": 11,
+    "page": 34,
+    "caption": "Figure 11: Sample input images from cameras used as inputs to the policy.",
+    "path": "fig11.png",
+    "width_px": 1341,
+    "height_px": 486
+  },
+  {
+    "id": "fig12",
+    "number": 12,
+    "page": 35,
+    "caption": "Figure 12: Sample input images from cameras used as inputs to the policy.",
+    "path": "fig12.png",
+    "width_px": 1341,
+    "height_px": 390
+  },
+  {
+    "id": "fig13",
+    "number": 13,
+    "page": 36,
+    "caption": "Figure 13: Sample input images from cameras used as inputs to the policy.",
+    "path": "fig13.png",
+    "width_px": 819,
+    "height_px": 451
+  },
+  {
+    "id": "fig14",
+    "number": 14,
+    "page": 37,
+    "caption": "Figure 14: Hardware setup for the IKEA furniture assembly task.",
+    "path": "fig14.png",
+    "width_px": 1341,
+    "height_px": 901
+  }
+]

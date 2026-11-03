@@ -345,6 +345,165 @@ def _figure_block(manifest: list[dict], variant: dict) -> str:
     return "\n".join(lines) + "\n\n" + FIGURE_SCENE_SCHEMA.format(figure_min_rule=rule)
 
 
+OUTLINE_PROMPT = """You are planning the scene outline for a {minutes} explainer video about a paper.
+Audience: smart novice who wants to actually understand it.
+
+INPUT ARTICLE (the paper, in full):
+{source_text}
+
+KEY POINTS (story beats, in order):
+{key_points}
+
+RESEARCH NOTES:
+{notes}
+{figure_block}
+STRUCTURE:
+{structure}
+
+Produce ONLY a JSON outline with this exact shape:
+{{
+  "title": "short video title",
+  "summary": "one-sentence summary",
+  "scenes": [
+    {{
+      "id": 1,
+      "beat": "what this scene teaches, 1-2 sentences",
+      "visual_type": "manim",
+      "figure_id": "fig2 or empty"
+    }}
+  ]
+}}
+
+Rules:
+- {scene_count} scenes.
+- visual_type is "manim" or "figure" only.{figure_use}
+- Each beat must carry concrete substance (mechanism, numbers, comparisons) — no filler.
+- Output JSON only, no prose, no code fences."""
+
+
+SCENE_CHUNK_PROMPT = """You are writing FULL scenes {first}–{last} of a {minutes} explainer video script.
+The outline and earlier scenes are fixed. Write complete, final scenes for the IDs listed below.
+
+INPUT ARTICLE (the paper, in full):
+{source_text}
+
+FULL OUTLINE:
+{outline}
+
+SCENES ALREADY WRITTEN (for continuity — match tone and build on these):
+{previous}
+
+NOW WRITE FULLY (outline entries):
+{chunk}
+{figure_block}
+Each scene must be JSON:
+{{
+  "id": {first},
+  "narration": "spoken narration, {narration}, concrete substance (names, numbers), no markdown",
+  "visual_type": "manim",
+  "visual_spec": {{
+    "title": "optional short on-screen label (<=40 chars), may be empty",
+    "direction": "REQUIRED. Concrete animation description: objects, motion, transforms. 2-4 sentences.",
+    "elements": ["key visual objects"],
+    "caption": "optional short Korean callout"
+  }},
+  "duration_hint_sec": 20.0
+}}
+For figure scenes instead use:
+{{
+  "id": {first},
+  "narration": "...",
+  "visual_type": "figure",
+  "visual_spec": {{
+    "figure_id": "fig2",
+    "focus": "full|left|right|top|bottom|center|top-left|top-right|bottom-left|bottom-right",
+    "highlight": "region to outline, same vocab, or empty string",
+    "caption": "short Korean on-screen callout (<= 40 chars)"
+  }},
+  "duration_hint_sec": 20.0
+}}
+
+Rules:
+- duration_hint_sec ≈ narration spoken length (Korean ~5 chars/sec).
+- figure_id must come from the AVAILABLE FIGURES list only.
+- Output ONLY: {{"scenes": [...]}} with exactly the {n} requested scenes, in order.
+- No prose, no code fences."""
+
+
+def _parse_scenes(raw: dict, start_id: int) -> list[Scene]:
+    scenes: list[Scene] = []
+    for i, s in enumerate(raw.get("scenes", []), start=start_id):
+        scenes.append(
+            Scene(
+                id=s.get("id") or i,
+                narration=s["narration"],
+                visual_type=s.get("visual_type", "manim"),
+                visual_spec=s.get("visual_spec", {}),
+                duration_hint_sec=float(s.get("duration_hint_sec", 5.0)),
+            )
+        )
+    return scenes
+
+
+def write_script_chunked(research_result: ResearchResult, llm: LLMClient, v: dict,
+                         figure_manifest: list[dict] | None = None) -> ScriptDoc:
+    """Two-phase script writing for long variants: outline, then scenes in
+    chunks of 4. Keeps every LLM response small enough to stay valid JSON."""
+    notes_str = "\n".join(f"- {n.claim}" for n in research_result.notes) or "(none)"
+    key_points_str = "\n".join(f"- {p}" for p in research_result.key_points) or "(none)"
+    manifest = figure_manifest or []
+    fblock = _figure_block(manifest, v)
+    lang = LANG_RULES.get(os.environ.get("PAPER2VIDEO_LANG", "").lower(), "")
+
+    outline_raw = llm.complete_json(
+        OUTLINE_PROMPT.format(
+            minutes=v["minutes"],
+            source_text=research_result.source_text,
+            key_points=key_points_str,
+            notes=notes_str,
+            figure_block=fblock,
+            structure=v["structure"],
+            scene_count=f"{v['scenes'][0]} to {v['scenes'][1]}",
+            figure_use=(
+                " Use the paper's real figures (figure_id from the list) where they beat animation."
+                if v.get("figures") else " Do NOT use figures."
+            ),
+        ) + lang
+    )
+    title = outline_raw.get("title", "Untitled")
+    summary = outline_raw.get("summary", "")
+    outline_scenes = outline_raw.get("scenes", [])
+    outline_json = json.dumps(outline_raw, ensure_ascii=False, indent=1)
+
+    chunk_size = 4
+    scenes: list[Scene] = []
+    for cstart in range(0, len(outline_scenes), chunk_size):
+        chunk = outline_scenes[cstart:cstart + chunk_size]
+        if not chunk:
+            continue
+        first_id = chunk[0].get("id", cstart + 1)
+        previous = "\n".join(
+            f"- scene {s.id}: {s.narration[:120]}" for s in scenes[-4:]
+        ) or "(none — this is the opening)"
+        raw = llm.complete_json(
+            SCENE_CHUNK_PROMPT.format(
+                first=first_id,
+                last=chunk[-1].get("id", first_id + len(chunk) - 1),
+                minutes=v["minutes"],
+                source_text=research_result.source_text,
+                outline=outline_json,
+                previous=previous,
+                chunk=json.dumps(chunk, ensure_ascii=False, indent=1),
+                figure_block=fblock,
+                narration=v["narration"],
+                n=len(chunk),
+            ) + lang
+        )
+        scenes.extend(_parse_scenes(raw, first_id))
+
+    return ScriptDoc(title=title, summary=summary, scenes=scenes)
+
+
 def write_script(research_result: ResearchResult, llm: LLMClient,
                  variant: str | None = None, figure_manifest: list[dict] | None = None) -> ScriptDoc:
     variant_name = variant or os.environ.get("PAPER2VIDEO_VARIANT", "classic")
@@ -353,6 +512,10 @@ def write_script(research_result: ResearchResult, llm: LLMClient,
 
     if variant_name in VARIANTS:
         v = VARIANTS[variant_name]
+        # Long scripts (13+ scenes) exceed what GLM returns as valid JSON in one
+        # shot — write those as outline + scene chunks instead.
+        if v["scenes"][1] >= 13:
+            return write_script_chunked(research_result, llm, v, figure_manifest)
         prompt = SCRIPT_PROMPT_V2.format(
             minutes=v["minutes"],
             source_text=research_result.source_text,
