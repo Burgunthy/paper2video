@@ -127,6 +127,31 @@ class CodexCLIClient:
 
     def __init__(self, model: str | None = None):
         self.model = model or os.environ.get("PAPER2VIDEO_MODEL", "gpt-6-luna")
+        self._codex_home = self._prepare_codex_home()
+
+    @staticmethod
+    def _prepare_codex_home() -> Path:
+        """Clean CODEX_HOME with only auth symlinked.
+
+        The user's interactive codex setup (OmO plugins/MCP/hooks) must not
+        affect pipeline codegen — an auth-expired MCP server there made
+        `codex exec` exit 1 on every call. Override the dir with
+        PAPER2VIDEO_CODEX_HOME if needed.
+        """
+        from pathlib import Path as _P
+        home = _P(os.environ.get(
+            "PAPER2VIDEO_CODEX_HOME",
+            str(_P.home() / ".cache" / "paper2video" / "codex-home"),
+        ))
+        try:
+            home.mkdir(parents=True, exist_ok=True)
+            dst = home / "auth.json"
+            if dst.is_symlink() or dst.exists():
+                dst.unlink()
+            dst.symlink_to(_P.home() / ".codex" / "auth.json")
+        except OSError:
+            return None  # fall back to the default CODEX_HOME
+        return home
 
     def complete(self, prompt: str, system: str | None = None) -> str:
         full_prompt = f"{system}\n\n{prompt}" if system else prompt
@@ -143,11 +168,14 @@ class CodexCLIClient:
         # Retry transient failures (non-zero exit, missing agent_message, timeout).
         backoff_schedule = [5, 15, 45]
         last_exc: Exception | None = None
+        run_env = {**os.environ}
+        if self._codex_home is not None:
+            run_env["CODEX_HOME"] = str(self._codex_home)
         for wait in [*backoff_schedule, None]:
             try:
                 proc = subprocess.run(
                     cmd, capture_output=True, text=True, timeout=900,
-                    stdin=subprocess.DEVNULL,
+                    stdin=subprocess.DEVNULL, env=run_env,
                 )
                 if proc.returncode == 0:
                     text = _last_agent_message(proc.stdout)
