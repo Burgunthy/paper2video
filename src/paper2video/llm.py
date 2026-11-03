@@ -136,6 +136,7 @@ class CodexCLIClient:
             "--ephemeral",
             "--skip-git-repo-check",
             "--json",
+            "-c", "mcp_servers={}",  # isolate from user MCP health (auth-expiry fatals)
             "-m", self.model,
             full_prompt,
         ]
