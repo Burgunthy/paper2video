@@ -166,7 +166,7 @@ def _extract_embedded(doc: pymupdf.Document, out_dir: Path) -> list[FigureInfo]:
     return out
 
 
-def extract_figures(pdf_path: Path, out_dir: Path, dpi: int = 200) -> list[FigureInfo]:
+def extract_figures(pdf_path: Path, out_dir: Path, dpi: int = 300) -> list[FigureInfo]:
     out_dir.mkdir(parents=True, exist_ok=True)
     doc = pymupdf.open(str(pdf_path))
     try:

@@ -160,7 +160,9 @@ def run_pipeline(
                 _log(run_dir, "stage: figures")
                 figs = extract_figures(pdf_path, run_dir / "figures")
                 figure_manifest = [
-                    {"id": f.id, "page": f.page, "caption": f.caption} for f in figs
+                    {"id": f.id, "page": f.page, "caption": f.caption,
+                     "width_px": f.width_px, "height_px": f.height_px}
+                    for f in figs
                 ]
                 _log(run_dir, f"  extracted {len(figs)} figures: {[f.id for f in figs]}")
             except Exception as e:

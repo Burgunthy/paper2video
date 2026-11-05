@@ -273,6 +273,13 @@ Rules for figure scenes:
 - figure_id MUST be copied exactly from the AVAILABLE FIGURES list. Never invent one.
 - focus points the camera at the part of the figure the narration discusses.
 - highlight outlines the specific region being talked about (empty if whole figure).
+- NARRATION MUST WALK THE VIEWER THROUGH THE FIGURE, not talk past it: name what
+  is on screen in reading order — the panel ("왼쪽 (a) 패널"), the axis or curve
+  ("세로축이 오류, 아래로 갈수록 좋습니다"), the table row ("표에서 W-MPJPE 행"),
+  the color or arrow being discussed. Every figure scene contains at least one
+  such explicit visual pointer, and explains what the viewer is SEEING while the
+  numbers/mechanism are read out of it. A figure scene whose narration never
+  refers to the figure's own visual content is a failed scene.
 - {figure_min_rule}"""
 
 SCRIPT_PROMPT_V2 = """You are writing the script for a {minutes} explainer video in the style of
@@ -334,8 +341,11 @@ def _figure_block(manifest: list[dict], variant: dict) -> str:
         return ""
     lines = ["", "AVAILABLE FIGURES (extracted from the paper):"]
     for f in manifest:
-        cap = str(f.get("caption", "")).replace("\n", " ")[:150]
-        lines.append(f"- {f['id']} (page {f.get('page', '?')}): {cap}")
+        cap = str(f.get("caption", "")).replace("\n", " ")[:400]
+        size = ""
+        if f.get("width_px") and f.get("height_px"):
+            size = f" [{f['width_px']}x{f['height_px']}px]"
+        lines.append(f"- {f['id']} (page {f.get('page', '?')}){size}: {cap}")
     figure_min = variant.get("figure_min", 0)
     rule = (
         f"At least {figure_min} scenes must be figure scenes."

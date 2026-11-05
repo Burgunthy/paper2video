@@ -1,8 +1,11 @@
 """Deterministic renderer for figure scenes — no LLM, no manim.
 
-Composes the paper figure onto a black canvas (matching manim scenes), adds
-an optional highlight box, then animates a slow zoom-in with ffmpeg zoompan
-plus a caption strip and a source tag. Output is a silent mp4 whose duration
+The figure is composed onto its own layer (rendered at 2x for zoom headroom)
+and only that layer is animated with a slow ffmpeg zoompan, then overlaid onto
+a static canvas. Because the zoom lives inside the figure box, the figure can
+never expand into the caption strip at the bottom — subtitles stay readable.
+A caption strip and a source tag are drawn (both on opaque boxes) after the
+overlay, so text is always legible. Output is a silent mp4 whose duration
 covers the narration; the pipeline muxes audio and trims to length.
 """
 from __future__ import annotations
@@ -19,7 +22,7 @@ ACCENT = (255, 201, 64)        # amber highlight
 MARGIN_X = 56
 MARGIN_TOP = 44
 CAPTION_STRIP_H = 84
-TAG_H = 54
+LAYER_SCALE = 2                # figure layer supersampling for smooth zoompan
 
 REGIONS = {
     "full":        (0.0, 0.0, 1.0, 1.0),
@@ -68,8 +71,14 @@ def _load_manifest(fig_dir: Path) -> list[dict]:
     return json.loads(mf.read_text(encoding="utf-8"))
 
 
-def _compose_base(scene: Scene, fig_dir: Path, width: int, height: int, out_png: Path) -> tuple[float, float]:
-    """Draw figure+highlight on canvas. Returns focus point (fx, fy) in 0..1."""
+def _compose_layers(
+    scene: Scene, fig_dir: Path, width: int, height: int, out_dir: Path,
+) -> tuple[Path, Path, tuple[int, int, int, int], tuple[float, float]]:
+    """Build the static background canvas and the 2x supersampled figure layer.
+
+    Returns (bg_png, layer_png, box(x, y, w, h) on the final canvas,
+    focus point (fx, fy) in 0..1 on the layer).
+    """
     from PIL import Image, ImageDraw
 
     spec = scene.visual_spec or {}
@@ -87,36 +96,58 @@ def _compose_base(scene: Scene, fig_dir: Path, width: int, height: int, out_png:
         w, h = fig.size
         fig = fig.crop((int(w * fx0), int(h * fy0), int(w * fx1), int(h * fy1)))
 
-    canvas = Image.new("RGB", (width, height), BG)
+    # Figure box on the final canvas — must NEVER overlap the caption strip.
     avail_w = width - 2 * MARGIN_X
     avail_h = height - MARGIN_TOP - CAPTION_STRIP_H - 16
     scale = min(avail_w / fig.width, avail_h / fig.height)
-    new_size = (max(1, int(fig.width * scale)), max(1, int(fig.height * scale)))
-    fig = fig.resize(new_size, Image.LANCZOS)
-    pos_x = (width - fig.width) // 2
-    pos_y = MARGIN_TOP + max(0, (avail_h - fig.height) // 2)
-    canvas.paste(fig, (pos_x, pos_y))
+    box_w = max(2, int(fig.width * scale)) & ~1   # even dims for yuv420p safety
+    box_h = max(2, int(fig.height * scale)) & ~1
+    box_x = (width - box_w) // 2
+    box_y = MARGIN_TOP + max(0, (avail_h - box_h) // 2)
 
-    # Highlight box over a sub-region of the placed figure
+    bg = Image.new("RGB", (width, height), BG)
+
+    # Figure layer at LAYER_SCALE x — zoompan crops inside it, so extra
+    # resolution directly becomes zoom sharpness.
+    layer = Image.new("RGB", (box_w * LAYER_SCALE, box_h * LAYER_SCALE), BG)
+    s2 = min(layer.width / fig.width, layer.height / fig.height)
+    fw, fh = max(1, int(fig.width * s2)), max(1, int(fig.height * s2))
+    fig_scaled = fig.resize((fw, fh), Image.LANCZOS)
+    fx_off = (layer.width - fw) // 2
+    fy_off = (layer.height - fh) // 2
+    layer.paste(fig_scaled, (fx_off, fy_off))
+
+    # Highlight box over a sub-region of the placed figure (drawn on the layer
+    # so it zooms together with the figure).
     hl = str(spec.get("highlight", "") or "").strip().lower()
-    if hl and hl != "none" and hl != "full":
-        hx0, hy0, hx1, hy1 = _region(hl)
-        box = (pos_x + int(fig.width * hx0), pos_y + int(fig.height * hy0),
-               pos_x + int(fig.width * hx1), pos_y + int(fig.height * hy1))
-        overlay = Image.new("RGBA", canvas.size, (0, 0, 0, 0))
-        od = ImageDraw.Draw(overlay)
-        od.rectangle(box, fill=ACCENT + (34,), outline=ACCENT + (255,), width=5)
-        canvas = Image.alpha_composite(canvas.convert("RGBA"), overlay).convert("RGB")
+    if hl and hl != "none" and hl != "full" and hl in REGIONS:
+        hx0, hy0, hx1, hy1 = REGIONS[hl]
+        od = ImageDraw.Draw(layer)
+        od.rectangle(
+            (fx_off + int(fw * hx0), fy_off + int(fh * hy0),
+             fx_off + int(fw * hx1), fy_off + int(fh * hy1)),
+            outline=ACCENT, width=8,
+        )
 
-    # Focus point for zoompan = center of focus/highlight region on canvas
-    cx = (fx0 + fx1) / 2 if (fx0, fy0, fx1, fy1) != REGIONS["full"] else 0.5
-    cy = (fy0 + fy1) / 2 if (fx0, fy0, fx1, fy1) != REGIONS["full"] else 0.5
+    # Focus point for the zoom = center of the focus/highlight region
+    cx = (fx0 + fx1) / 2
+    cy = (fy0 + fy1) / 2
     if hl and hl in REGIONS:
         hx0, hy0, hx1, hy1 = REGIONS[hl]
         cx, cy = (hx0 + hx1) / 2, (hy0 + hy1) / 2
 
-    canvas.save(out_png)
-    return cx, cy
+    out_dir.mkdir(parents=True, exist_ok=True)
+    bg_png = out_dir / f"figscene_{scene.id:03d}_bg.png"
+    layer_png = out_dir / f"figscene_{scene.id:03d}_layer.png"
+    bg.save(bg_png)
+    layer.save(layer_png)
+
+    # Flattened preview at 1x for debugging/QA
+    preview = bg.copy()
+    preview.paste(layer.resize((box_w, box_h), Image.LANCZOS), (box_x, box_y))
+    preview.save(out_dir / f"figscene_{scene.id:03d}.png")
+
+    return bg_png, layer_png, (box_x, box_y, box_w, box_h), (cx, cy)
 
 
 def render_figure_scene(
@@ -129,9 +160,9 @@ def render_figure_scene(
     fps: int = 30,
 ) -> Path:
     out_dir.mkdir(parents=True, exist_ok=True)
-    base_png = out_dir / f"figscene_{scene.id:03d}.png"
     out_mp4 = out_dir / f"figscene_{scene.id:03d}.mp4"
-    fx, fy = _compose_base(scene, fig_dir, width, height, base_png)
+    bg_png, layer_png, (bx, by, bw, bh), (fx, fy) = _compose_layers(
+        scene, fig_dir, width, height, out_dir)
 
     dur = max(4.0, duration_sec) + 0.8
     frames = int(dur * fps)
@@ -143,28 +174,34 @@ def render_figure_scene(
     tag = f"Figure {fig_id.replace('fig', '')} · p.{page}".replace(":", "\\:")
     font = _find_font()
 
-    # Upscale 4x first so zoompan steps stay sub-pixel smooth.
-    up_w = width * 4
-    cx_expr = f"(iw-iw/zoom)*{fx:.4f}"
-    cy_expr = f"(ih-ih/zoom)*{fy:.4f}"
+    # Zoom ONLY the figure layer; the layer is always scaled back to the figure
+    # box, so the figure can never leave the box (caption strip stays clean).
     zoom_expr = "'min(1+0.0016*on,1.14)'"
-    vf = (
-        f"scale={up_w}:-2,"
-        f"zoompan=z={zoom_expr}:x={cx_expr}:y={cy_expr}:d={frames}:s={width}x{height}:fps={fps},"
-        f"drawtext=fontfile={font}:text='{tag}':x=28:y=h-th-28:fontsize=26:fontcolor=0xE8E8EF:"
-        f"box=1:boxcolor=0x000000@0.55:boxborderw=10,"
-        f"drawtext=fontfile={font}:text='{caption}':x=(w-text_w)/2:y=h-CAPTION:fontsize=34:fontcolor=0xFFD666"
-        .replace("CAPTION", "92")
+    chain = (
+        f"[1:v]zoompan=z={zoom_expr}"
+        f":x='(iw-iw/zoom)*{fx:.4f}':y='(ih-ih/zoom)*{fy:.4f}'"
+        f":d={frames}:s={bw}x{bh}:fps={fps}[fig];"
+        f"[0:v][fig]overlay={bx}:{by}:shortest=1[comp];"
+        f"[comp]drawtext=fontfile={font}:text='{tag}'"
+        f":x=w-tw-28:y=10:fontsize=24:fontcolor=0xE8E8EF"
+        f":box=1:boxcolor=0x000000@0.55:boxborderw=8"
     )
     if caption:
-        pass  # caption strip already drawn above
-    vf += ",fade=t=in:st=0:d=0.45,format=yuv420p"
+        chain += (
+            f",drawtext=fontfile={font}:text='{caption}'"
+            f":x=(w-text_w)/2:y=h-92:fontsize=34:fontcolor=0xFFD666"
+            f":box=1:boxcolor=0x000000@0.75:boxborderw=12"
+        )
+    chain += ",fade=t=in:st=0:d=0.45,format=yuv420p[v]"
 
     cmd = [
         "ffmpeg", "-y", "-loglevel", "error",
-        "-loop", "1", "-i", str(base_png),
-        "-vf", vf, "-frames:v", str(frames),
-        "-c:v", "libx264", "-preset", "medium", "-crf", "20",
+        "-loop", "1", "-framerate", str(fps), "-i", str(bg_png),
+        "-loop", "1", "-framerate", str(fps), "-i", str(layer_png),
+        "-filter_complex", chain,
+        "-map", "[v]",
+        "-frames:v", str(frames),
+        "-c:v", "libx264", "-preset", "medium", "-crf", "17",
         str(out_mp4),
     ]
     proc = subprocess.run(cmd, capture_output=True, text=True, timeout=600)

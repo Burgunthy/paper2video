@@ -10,7 +10,10 @@ def test_run_pipeline_end_to_end(tmp_path, monkeypatch):
         title="LLM Wikis",
         source_url="https://example.com/a",
     )
-    monkeypatch.setattr("paper2video.pipeline.extract_from_url", lambda url: fake_doc)
+    monkeypatch.setattr(
+        "paper2video.pipeline.extract_from_url",
+        lambda url, keep_pdf=None: fake_doc,
+    )
 
     llm = FakeLLMClient(responses=[
         '["LLM", "wiki", "RAG"]',
