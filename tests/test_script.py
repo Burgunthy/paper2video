@@ -75,3 +75,20 @@ def test_scene_chunk_prompt_carries_figure_narration_rule():
     assert "panel" in FIGURE_SCENE_SCHEMA.lower()
     assert "narration" in FIGURE_SCENE_SCHEMA.lower()
     assert "{figure_block}" in SCENE_CHUNK_PROMPT
+
+
+def test_figure_reference_spoken_form_rule():
+    """"그림 6 (a) 패널" is heard as "그림 6개의 패널" — the schema must force
+    the possessive form with a position word."""
+    from paper2video.script import FIGURE_SCENE_SCHEMA
+    assert "그림 6의" in FIGURE_SCENE_SCHEMA
+
+
+def test_external_tool_grounding_rule():
+    """Naming an external model/dataset/tracker requires a one-line identity
+    (what it does) and, when the paper's figure shows it, a pointer there."""
+    from paper2video.script import FIGURE_SCENE_SCHEMA, SCRIPT_PROMPT_V2
+    blob = FIGURE_SCENE_SCHEMA + SCRIPT_PROMPT_V2
+    low = blob.lower()
+    assert "external" in low or "외부" in blob
+    assert "identity" in low or "정체" in blob or "무엇을 하는" in blob

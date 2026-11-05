@@ -272,7 +272,7 @@ FIGURE_SCENE_SCHEMA = """When the best visual is the paper's OWN figure, emit a 
 Rules for figure scenes:
 - figure_id MUST be copied exactly from the AVAILABLE FIGURES list. Never invent one.
 - focus points the camera at the part of the figure the narration discusses.
-- highlight outlines the specific region being talked about (empty if whole figure).
+- highlight: leave empty (deprecated — the renderer ignores it).
 - NARRATION MUST WALK THE VIEWER THROUGH THE FIGURE, not talk past it: name what
   is on screen in reading order — the panel ("왼쪽 (a) 패널"), the axis or curve
   ("세로축이 오류, 아래로 갈수록 좋습니다"), the table row ("표에서 W-MPJPE 행"),
@@ -280,6 +280,16 @@ Rules for figure scenes:
   such explicit visual pointer, and explains what the viewer is SEEING while the
   numbers/mechanism are read out of it. A figure scene whose narration never
   refers to the figure's own visual content is a failed scene.
+- Figure references in narration MUST use the possessive spoken form:
+  write "그림 6의 (a) 패널" (always with 의, and pair the panel letter with a
+  position word like 왼쪽/오른쪽). NEVER write "그림 6 (a) 패널" — spoken aloud
+  it sounds like "그림 6개의 패널" (six panels), which confuses viewers.
+- EXTERNAL TOOL GROUNDING: when narration names an external model, dataset, or
+  tracker (SAM3, Depth Anything 3, HaWoR, Ego4D, ...), its identity must be
+  stated on first mention — what it is and what it does (input → output), in one
+  clause. If the tool appears as a block in this paper's own figure, point the
+  viewer at it there ("그림 2의 왼쪽 깊이 모듈이 바로 그것"). Dropping a name
+  with no explanation ("오른쪽 핸드 트래커", "depth 모델") is a failed scene.
 - {figure_min_rule}"""
 
 SCRIPT_PROMPT_V2 = """You are writing the script for a {minutes} explainer video in the style of
@@ -327,6 +337,9 @@ SUBSTANCE RULES — this is the most important part:
 - The viewer should be able to explain the paper's core mechanism to a colleague
   after watching. Depth beats polish.
 - Progressively build understanding: each scene assumes exactly the previous scenes.
+- EXTERNAL TOOL GROUNDING: any external model, dataset, or tracker named in
+  narration gets its identity (what it does, input → output) on first mention —
+  never a bare name. Point at this paper's figure when the tool is visible there.
 
 FORM RULES:
 - {scene_count} scenes total.

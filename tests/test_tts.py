@@ -27,3 +27,21 @@ def test_fake_tts_duration_proportional_to_text(tmp_path):
     long = engine.synthesize("this is a much longer sentence with many words", tmp_path / "long.wav")
     with wave.open(str(short)) as s, wave.open(str(long)) as l:
         assert l.getnframes() > s.getnframes()
+
+
+def test_tts_pronunciation_glossary():
+    """Korean TTS mangles tech terms (SAM3 -> 삼삼, Ego4D -> 에고4디).
+    Narration must be phonetically normalized before synthesis."""
+    from paper2video.tts import normalize_for_tts
+
+    src = "SAM3가 객체를 분할하고 Ego4D와 Ego-Exo4D, EPIC-KITCHENS를 씁니다. HaWoR 트래커, Depth Anything 3, VITRA 코퍼스."
+    out = normalize_for_tts(src)
+    assert "샘쓰리" in out and "SAM3" not in out
+    assert "에고포디" in out and "Ego4D" not in out
+    assert "에고엑소포디" in out and "Ego-Exo4D" not in out
+    assert "에픽키친즈" in out
+    assert "하워" in out and "HaWoR" not in out
+    assert "뎁스애니띵쓰리" in out
+    assert "비트라" in out
+    # Unrelated digits/words untouched
+    assert normalize_for_tts("오늘 500개를 3시간에") == "오늘 500개를 3시간에"

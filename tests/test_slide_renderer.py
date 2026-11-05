@@ -59,3 +59,25 @@ def test_render_slide_same_seed_is_deterministic(tmp_path):
     out_a = render_slide(scene, tmp_path / "a", theme_seed="same_seed")
     out_b = render_slide(scene, tmp_path / "b", theme_seed="same_seed")
     assert out_a.read_bytes() == out_b.read_bytes()
+
+
+def test_landscape_slide_renders_body_text(tmp_path):
+    """Landscape slides must draw the direction/body like portrait does —
+    a title-only slide reads as 'broken' to viewers (empty black frame)."""
+    import numpy as np
+    from PIL import Image
+    from paper2video.types import Scene
+    from paper2video.renderers.slide import render_slide
+
+    scene = Scene(
+        id=1, narration="n", visual_type="slide",
+        visual_spec={"title": "제목", "direction": "본문 설명 텍스트가 여기 들어간다",
+                     "caption": "캡션"},
+        duration_hint_sec=5.0,
+    )
+    png = render_slide(scene, tmp_path, size=(1280, 720))
+    im = np.array(Image.open(png).convert("RGB"))
+    bg = im[0, 0]
+    nb = (np.abs(im.astype(int) - bg.astype(int)).sum(axis=2) > 40)
+    # body zone (between title ~y<250 and caption ~y>620) must have content
+    assert nb[300:580].mean() > 0.005, "landscape slide rendered no body text"

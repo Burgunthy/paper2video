@@ -109,3 +109,22 @@ def test_figure_scene_high_quality_encode(tmp_path, monkeypatch):
     cmd = captured["cmd"]
     assert "-crf" in cmd
     assert int(cmd[cmd.index("-crf") + 1]) <= 18
+
+
+def test_no_highlight_box_lines(tmp_path):
+    """Fractional highlight boxes don't match real panel boundaries and read
+    as arbitrary vertical/horizontal lines — the renderer must not draw them."""
+    fig_dir = _make_fig_dir(tmp_path)
+    out_dir = tmp_path / "figure_out"
+    scene = Scene(
+        id=2, narration="n", visual_type="figure",
+        visual_spec={"figure_id": "fig1", "focus": "left", "highlight": "left", "caption": "캡"},
+        duration_hint_sec=5.0,
+    )
+    from paper2video.renderers.figure_r import _compose_layers
+    _compose_layers(scene, fig_dir, 1280, 720, out_dir)
+    from PIL import Image
+    import numpy as np
+    layer = np.array(Image.open(out_dir / "figscene_002_layer.png").convert("RGB"))
+    amber = (np.abs(layer.astype(int) - np.array([255, 201, 64])).sum(axis=2) < 90)
+    assert amber.sum() == 0, f"highlight lines drawn: {amber.sum()} amber px"

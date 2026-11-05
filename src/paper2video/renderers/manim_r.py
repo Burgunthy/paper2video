@@ -33,6 +33,15 @@ HARD RULES — violating any of these will break the pipeline:
 7. Use a dark background (Manim's default) with light text. Good colors: WHITE, YELLOW, BLUE, GREEN, RED, GREY_A.
 8. Animations should feel like 3Blue1Brown: smooth transforms, progressive reveals,
    highlights, arrows, diagrams. NOT a static slide with a title and bullets.
+9. ALL on-screen Text must be KOREAN (the narration language). Only proper nouns
+   that are inherently Latin (model/dataset names like Ego4D, SAM3) may stay in
+   Latin script — titles, labels, captions, and callouts are Korean.
+10. NO OVERLAPS: text must never sit on top of bars, shapes, or other text.
+    Place labels beside or above their object with clear spacing (use .arrange()
+    with buff, .next_to(obj, direction, buff=0.3), or position bars lower).
+    Long Latin names get a smaller font or stack on two lines. Before finishing,
+    mentally check every Text's bounding box against nearby objects — the frame
+    is ~14.2 x 8 units; keep everything inside x=[-6.8, 6.8], y=[-3.6, 3.6].
 
 === ENTRANCE-POSITIONING RULE — CRITICAL ===
 

@@ -79,7 +79,7 @@ def _compose_layers(
     Returns (bg_png, layer_png, box(x, y, w, h) on the final canvas,
     focus point (fx, fy) in 0..1 on the layer).
     """
-    from PIL import Image, ImageDraw
+    from PIL import Image
 
     spec = scene.visual_spec or {}
     fig_id = str(spec.get("figure_id", "")).strip()
@@ -117,24 +117,13 @@ def _compose_layers(
     fy_off = (layer.height - fh) // 2
     layer.paste(fig_scaled, (fx_off, fy_off))
 
-    # Highlight box over a sub-region of the placed figure (drawn on the layer
-    # so it zooms together with the figure).
-    hl = str(spec.get("highlight", "") or "").strip().lower()
-    if hl and hl != "none" and hl != "full" and hl in REGIONS:
-        hx0, hy0, hx1, hy1 = REGIONS[hl]
-        od = ImageDraw.Draw(layer)
-        od.rectangle(
-            (fx_off + int(fw * hx0), fy_off + int(fh * hy0),
-             fx_off + int(fw * hx1), fy_off + int(fh * hy1)),
-            outline=ACCENT, width=8,
-        )
+    # NOTE: no highlight boxes. Fractional-region outlines never line up with
+    # real panel boundaries and read as arbitrary vertical/horizontal lines.
+    # The zoom centers on the focus region only.
 
-    # Focus point for the zoom = center of the focus/highlight region
+    # Focus point for the zoom = center of the focus region
     cx = (fx0 + fx1) / 2
     cy = (fy0 + fy1) / 2
-    if hl and hl in REGIONS:
-        hx0, hy0, hx1, hy1 = REGIONS[hl]
-        cx, cy = (hx0 + hx1) / 2, (hy0 + hy1) / 2
 
     out_dir.mkdir(parents=True, exist_ok=True)
     bg_png = out_dir / f"figscene_{scene.id:03d}_bg.png"

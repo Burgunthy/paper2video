@@ -70,6 +70,42 @@ class KokoroTTS:
         return out_path
 
 
+# Korean TTS mispronounces common tech terms (SAM3 -> 삼삼, Ego4D -> 에고4디).
+# Map them to the intended spoken form before synthesis. Longest-first so
+# "Ego-Exo4D" wins over "Ego4D". Word-boundary regex keeps "4D" inside other
+# tokens untouched.
+_TTS_GLOSSARY: list[tuple[str, str]] = [
+    ("Ego-Exo4D", "에고엑소포디"),
+    ("Ego4D", "에고포디"),
+    ("Ego-Exo", "에고엑소"),
+    ("EPIC-KITCHENS", "에픽키친즈"),
+    ("EPIC KITCHENS", "에픽키친즈"),
+    ("Something-Something", "썸싱썸싱"),
+    ("Depth Anything 3", "뎁스애니띵쓰리"),
+    ("Depth Anything", "뎁스애니띵"),
+    ("ZoeDepth", "조우뎁스"),
+    ("SAM3", "샘쓰리"),
+    ("SAM 3", "샘쓰리"),
+    ("HaWoR", "하워"),
+    ("WiLoR", "윌로"),
+    ("VITRA", "비트라"),
+    ("MANO", "마노"),
+    ("ARCTIC", "아틱틱"),
+    ("HOT3D", "핫쓰리디"),
+    ("HACO", "하코"),
+    ("DexYCB", "덱스와이씨비"),
+]
+
+
+def normalize_for_tts(text: str) -> str:
+    import re
+
+    out = text
+    for term, spoken in sorted(_TTS_GLOSSARY, key=lambda t: -len(t[0])):
+        out = re.sub(rf"(?<![A-Za-z0-9]){re.escape(term)}(?![A-Za-z0-9])", spoken, out)
+    return out
+
+
 class EdgeTTS:
     """Online TTS via Microsoft Edge voices (Korean etc.). Writes 24kHz mono WAV.
 
@@ -110,5 +146,5 @@ def _wav_duration(path: Path) -> float:
 def synthesize_scene_audio(scene: Scene, engine: TTSEngine, out_dir: Path) -> SceneAudio:
     out_dir = Path(out_dir)
     path = out_dir / f"scene_{scene.id:03d}.wav"
-    engine.synthesize(scene.narration, path)
+    engine.synthesize(normalize_for_tts(scene.narration), path)
     return SceneAudio(scene_id=scene.id, audio_path=path, duration_sec=_wav_duration(path))
