@@ -178,7 +178,7 @@ def render_figure_scene(
     if caption:
         chain += (
             f",drawtext=fontfile={font}:text='{caption}'"
-            f":x=(w-text_w)/2:y=h-92:fontsize=34:fontcolor=0xFFD666"
+            f":x=(w-text_w)/2:y=h-92:fontsize=34:fontcolor=0xFFFFFF"
             f":box=1:boxcolor=0x000000@0.75:boxborderw=12"
         )
     chain += ",fade=t=in:st=0:d=0.45,format=yuv420p[v]"

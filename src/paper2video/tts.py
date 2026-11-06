@@ -106,6 +106,44 @@ def normalize_for_tts(text: str) -> str:
     return out
 
 
+class HTTPTTS:
+    """Remote TTS over HTTP (e.g. a GPU box running an open model server).
+
+    POSTs {text, voice} as JSON to `url` and writes the returned audio
+    (WAV bytes) to out_path. Voice is optional server-side preset naming.
+    """
+
+    def __init__(self, url: str | None = None, voice: str | None = None):
+        import os
+
+        self.url = url or os.environ.get("PAPER2VIDEO_TTS_URL", "")
+        self.voice = voice or os.environ.get("PAPER2VIDEO_TTS_VOICE", "")
+        self.token = os.environ.get("PAPER2VIDEO_TTS_TOKEN", "")
+        if not self.url:
+            raise RuntimeError("HTTPTTS needs PAPER2VIDEO_TTS_URL")
+
+    def synthesize(self, text: str, out_path: Path) -> Path:
+        import json
+        import urllib.request
+
+        out_path = Path(out_path)
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        req = urllib.request.Request(
+            self.url,
+            data=json.dumps({"text": text, "voice": self.voice}).encode("utf-8"),
+            headers={"Content-Type": "application/json",
+                     **({"Authorization": f"Bearer {self.token}"} if self.token else {})},
+            method="POST",
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=600) as resp:
+                body = resp.read()
+        except urllib.error.HTTPError as e:
+            raise RuntimeError(f"HTTPTTS server error {e.code}: {e.read()[:200]!r}") from e
+        out_path.write_bytes(body)
+        return out_path
+
+
 class EdgeTTS:
     """Online TTS via Microsoft Edge voices (Korean etc.). Writes 24kHz mono WAV.
 

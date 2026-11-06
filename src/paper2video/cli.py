@@ -286,6 +286,9 @@ def main(argv: list[str] | None = None) -> int:
     elif os.environ.get("PAPER2VIDEO_TTS", "").lower() == "edge":
         from .tts import EdgeTTS
         tts = EdgeTTS()
+    elif os.environ.get("PAPER2VIDEO_TTS", "").lower() == "http":
+        from .tts import HTTPTTS
+        tts = HTTPTTS()
     else:
         try:
             from .tts import KokoroTTS

@@ -43,10 +43,27 @@ def _frame_at(mp4: Path, t: float) -> Image.Image:
     return Image.open(out).convert("RGB")
 
 
+def _white_fraction(img: Image.Image, y0: int, y1: int) -> float:
+    """Fraction of near-white pixels in a row band (x 320..1240).
+
+    Caption glyphs are thin strokes (~<15% of a band); a solid white figure
+    block invading the band reads ~100%. Threshold separates the two.
+    """
+    px = img.load()
+    n = tot = 0
+    for y in range(y0, y1):
+        for x in range(320, 1240, 2):
+            r, g, b = px[x, y]
+            tot += 1
+            if r > 200 and g > 200 and b > 200:
+                n += 1
+    return n / tot
+
+
 def test_zoom_never_invades_overlay_zone(tmp_path):
-    """The animated zoom must stay inside the figure box: at MAX zoom the figure
-    must not render below the safe-area bottom edge (y=620), and the caption
-    strip must show an opaque background rather than figure pixels."""
+    """The animated zoom must stay inside the figure box: at MAX zoom the
+    solid-white figure must not show as a dense block below y=620. White
+    caption GLYPHS are expected in the strip — density tells them apart."""
     fig_dir = _make_fig_dir(tmp_path)
     out_dir = tmp_path / "figure_out"
     mp4 = render_figure_scene(_scene(), duration_sec=5.0, fig_dir=fig_dir, out_dir=out_dir)
@@ -58,19 +75,15 @@ def test_zoom_never_invades_overlay_zone(tmp_path):
     for t in (dur * 0.6, dur - 0.15):
         frame = _frame_at(mp4, t)
         assert frame.size == (1280, 720)
-        px = frame.load()
-        # Bottom band below the safe area (y>=622), excluding the tag zone on
-        # the left (x<320) and caption glyphs themselves: no WHITE figure pixels.
-        for y in range(622, 716, 2):
-            for x in range(320, 1240, 4):
-                r, g, b = px[x, y]
-                assert not (r > 200 and g > 200 and b > 200), \
-                    f"figure pixels leaked into overlay zone at (x={x}, y={y}, t={t})"
+        for y0 in range(622, 716, 8):
+            frac = _white_fraction(frame, y0, min(y0 + 8, 716))
+            assert frac <= 0.45, \
+                f"dense white block at y={y0} (frac={frac:.2f}, t={t}) — figure invaded the overlay zone"
 
 
 def test_caption_band_free_of_figure_pixels(tmp_path):
-    """Rows where the amber caption text lives must contain the caption and its
-    opaque box only — never raw figure content behind the glyphs."""
+    """The caption band must hold only the (white) caption glyphs on their
+    opaque box — never dense figure content behind them."""
     fig_dir = _make_fig_dir(tmp_path)
     out_dir = tmp_path / "figure_out"
     mp4 = render_figure_scene(_scene(), duration_sec=5.0, fig_dir=fig_dir, out_dir=out_dir)
@@ -79,12 +92,8 @@ def test_caption_band_free_of_figure_pixels(tmp_path):
         ["ffprobe", "-v", "error", "-show_entries", "format=duration",
          "-of", "csv=p=0", str(mp4)]))
     frame = _frame_at(mp4, dur - 0.15)
-    px = frame.load()
-    for y in range(626, 670, 2):
-        for x in range(340, 1220, 4):
-            r, g, b = px[x, y]
-            assert not (r > 200 and g > 200 and b > 200), \
-                f"figure content visible in caption band at (x={x}, y={y})"
+    frac = _white_fraction(frame, 626, 670)
+    assert frac <= 0.45, f"dense content in caption band (frac={frac:.2f})"
 
 
 def test_figure_scene_high_quality_encode(tmp_path, monkeypatch):
@@ -128,3 +137,26 @@ def test_no_highlight_box_lines(tmp_path):
     layer = np.array(Image.open(out_dir / "figscene_002_layer.png").convert("RGB"))
     amber = (np.abs(layer.astype(int) - np.array([255, 201, 64])).sum(axis=2) < 90)
     assert amber.sum() == 0, f"highlight lines drawn: {amber.sum()} amber px"
+
+def test_caption_is_white(tmp_path):
+    """Viewer preference: captions white, not amber."""
+    fig_dir = _make_fig_dir(tmp_path)
+    out_dir = tmp_path / "figure_out"
+    mp4 = render_figure_scene(_scene(), duration_sec=5.0, fig_dir=fig_dir, out_dir=out_dir)
+    dur = float(subprocess.check_output(
+        ["ffprobe", "-v", "error", "-show_entries", "format=duration",
+         "-of", "csv=p=0", str(mp4)]))
+    frame = _frame_at(mp4, dur - 0.15)
+    px = frame.load()
+    # caption glyph pixels: near-white, NOT amber (255,214,102)
+    white_glyphs = any(
+        r > 230 and g > 230 and b > 225
+        for y in range(626, 670) for x in range(340, 1220, 2)
+        for r, g, b in [px[x, y]]
+    )
+    amber_glyphs = any(
+        r > 230 and 190 < g < 228 and b < 150
+        for y in range(626, 670) for x in range(340, 1220, 2)
+        for r, g, b in [px[x, y]]
+    )
+    assert white_glyphs and not amber_glyphs, "caption not white"

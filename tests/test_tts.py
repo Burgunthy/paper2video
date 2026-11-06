@@ -45,3 +45,65 @@ def test_tts_pronunciation_glossary():
     assert "비트라" in out
     # Unrelated digits/words untouched
     assert normalize_for_tts("오늘 500개를 3시간에") == "오늘 500개를 3시간에"
+
+
+def test_http_tts_roundtrip(tmp_path):
+    """HTTPTTS POSTs {text, voice} and writes the returned WAV bytes."""
+    import json as _json
+    import threading
+    from http.server import BaseHTTPRequestHandler, HTTPServer
+    from paper2video.tts import HTTPTTS
+
+    seen: dict = {}
+
+    class H(BaseHTTPRequestHandler):
+        def do_POST(self):
+            n = int(self.headers.get("Content-Length", 0))
+            seen["payload"] = _json.loads(self.rfile.read(n))
+            seen["path"] = self.path
+            body = b"RIFF-fake-wav-bytes"
+            self.send_response(200)
+            self.send_header("Content-Type", "audio/wav")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+
+        def log_message(self, *a):
+            pass
+
+    srv = HTTPServer(("127.0.0.1", 0), H)
+    threading.Thread(target=srv.serve_forever, daemon=True).start()
+    try:
+        engine = HTTPTTS(url=f"http://127.0.0.1:{srv.server_port}/tts", voice="Sohee")
+        out = tmp_path / "s.wav"
+        engine.synthesize("안녕하세요", out)
+        assert out.read_bytes() == b"RIFF-fake-wav-bytes"
+        assert seen["path"] == "/tts"
+        assert seen["payload"] == {"text": "안녕하세요", "voice": "Sohee"}
+    finally:
+        srv.shutdown()
+
+
+def test_http_tts_error_raises(tmp_path):
+    import threading
+    from http.server import BaseHTTPRequestHandler, HTTPServer
+    import pytest
+    from paper2video.tts import HTTPTTS
+
+    class H(BaseHTTPRequestHandler):
+        def do_POST(self):
+            self.send_response(500)
+            self.end_headers()
+            self.wfile.write(b"boom")
+
+        def log_message(self, *a):
+            pass
+
+    srv = HTTPServer(("127.0.0.1", 0), H)
+    threading.Thread(target=srv.serve_forever, daemon=True).start()
+    try:
+        engine = HTTPTTS(url=f"http://127.0.0.1:{srv.server_port}/tts")
+        with pytest.raises(RuntimeError, match="500"):
+            engine.synthesize("x", tmp_path / "s.wav")
+    finally:
+        srv.shutdown()
