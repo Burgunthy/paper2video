@@ -22,7 +22,6 @@ ACCENT = (255, 201, 64)        # amber highlight
 MARGIN_X = 56
 MARGIN_TOP = 44
 CAPTION_STRIP_H = 84
-LAYER_SCALE = 2                # figure layer supersampling for smooth zoompan
 
 REGIONS = {
     "full":        (0.0, 0.0, 1.0, 1.0),
@@ -36,6 +35,49 @@ REGIONS = {
     "bottom-left": (0.0, 0.5, 0.5, 1.0),
     "bottom-right":(0.5, 0.5, 1.0, 1.0),
 }
+
+
+def snap_crop_x(arr, x0: float, x1: float, tol: float = 0.20) -> tuple[float, float]:
+    """Snap a fractional horizontal crop to real panel boundaries.
+
+    Multi-panel figures have vertical whitespace gutters; fractional crops
+    (left = 0-50%) cut panels mid-content. Boundaries = centers of contiguous
+    near-uniform column runs; each crop edge snaps to the nearest boundary
+    within `tol`, else keeps the fraction.
+    """
+    import numpy as np
+
+    h, w = arr.shape
+    col_range = arr.max(axis=0).astype(int) - arr.min(axis=0).astype(int)
+    gutter = col_range < 12
+    bounds: list[float] = []
+    run_start = None
+    for x in range(w):
+        if gutter[x]:
+            if run_start is None:
+                run_start = x
+        elif run_start is not None:
+            if x - run_start >= max(6, int(w * 0.015)):
+                bounds.append(((run_start + x) / 2) / w)
+            run_start = None
+    if run_start is not None and w - run_start >= max(6, int(w * 0.015)):
+        bounds.append(((run_start + w) / 2) / w)
+    if not bounds:
+        return x0, x1
+
+    def snap(v: float) -> float:
+        best = min(bounds, key=lambda b: abs(b - v))
+        return best if abs(best - v) <= tol else v
+
+    return snap(x0), snap(x1)
+
+
+def snap_crop_y(arr, y0: float, y1: float, tol: float = 0.20) -> tuple[float, float]:
+    """Same as snap_crop_x for horizontally stacked panels (row gutters)."""
+    import numpy as np
+
+    rotated = np.asarray(arr).T
+    return snap_crop_x(rotated, y0, y1, tol)
 
 
 class FigureRenderError(Exception):
@@ -90,9 +132,16 @@ def _compose_layers(
 
     fig = Image.open(fig_dir / entry["path"]).convert("RGB")
 
-    # Focus crop of the source figure
+    # Focus crop of the source figure, snapped to real panel gutters so a
+    # "left" crop of a 3-panel figure is exactly panel 1 (not 0-50%, which
+    # cuts the middle panel in half).
     fx0, fy0, fx1, fy1 = _region(spec.get("focus"))
     if (fx0, fy0, fx1, fy1) != REGIONS["full"]:
+        import numpy as np
+
+        arr = np.array(fig.convert("L"))
+        fx0, fx1 = snap_crop_x(arr, fx0, fx1)
+        fy0, fy1 = snap_crop_y(arr, fy0, fy1)
         w, h = fig.size
         fig = fig.crop((int(w * fx0), int(h * fy0), int(w * fx1), int(h * fy1)))
 
@@ -107,9 +156,11 @@ def _compose_layers(
 
     bg = Image.new("RGB", (width, height), BG)
 
-    # Figure layer at LAYER_SCALE x — zoompan crops inside it, so extra
-    # resolution directly becomes zoom sharpness.
-    layer = Image.new("RGB", (box_w * LAYER_SCALE, box_h * LAYER_SCALE), BG)
+    # Figure layer at box size. Scenes render STATIC (no zoompan): a zoom
+    # push-in always crops edge content — on multi-panel figures the outer
+    # panels get cut mid-panel ("애매하게 잘림"). Static + panel-snapped crops
+    # never cut content.
+    layer = Image.new("RGB", (box_w, box_h), BG)
     s2 = min(layer.width / fig.width, layer.height / fig.height)
     fw, fh = max(1, int(fig.width * s2)), max(1, int(fig.height * s2))
     fig_scaled = fig.resize((fw, fh), Image.LANCZOS)
@@ -117,11 +168,9 @@ def _compose_layers(
     fy_off = (layer.height - fh) // 2
     layer.paste(fig_scaled, (fx_off, fy_off))
 
-    # NOTE: no highlight boxes. Fractional-region outlines never line up with
-    # real panel boundaries and read as arbitrary vertical/horizontal lines.
-    # The zoom centers on the focus region only.
+    # NOTE: no highlight boxes (fractional outlines read as arbitrary lines),
+    # no zoom (crops edge panels).
 
-    # Focus point for the zoom = center of the focus region
     cx = (fx0 + fx1) / 2
     cy = (fy0 + fy1) / 2
 
@@ -163,14 +212,10 @@ def render_figure_scene(
     tag = f"Figure {fig_id.replace('fig', '')} · p.{page}".replace(":", "\\:")
     font = _find_font()
 
-    # Zoom ONLY the figure layer; the layer is always scaled back to the figure
-    # box, so the figure can never leave the box (caption strip stays clean).
-    zoom_expr = "'min(1+0.0016*on,1.14)'"
+    # Static composition — no zoompan. The figure layer is pasted at its box;
+    # a zoom would crop edge panels on multi-panel figures.
     chain = (
-        f"[1:v]zoompan=z={zoom_expr}"
-        f":x='(iw-iw/zoom)*{fx:.4f}':y='(ih-ih/zoom)*{fy:.4f}'"
-        f":d={frames}:s={bw}x{bh}:fps={fps}[fig];"
-        f"[0:v][fig]overlay={bx}:{by}:shortest=1[comp];"
+        f"[0:v][1:v]overlay={bx}:{by}:shortest=1[comp];"
         f"[comp]drawtext=fontfile={font}:text='{tag}'"
         f":x=w-tw-28:y=10:fontsize=24:fontcolor=0xE8E8EF"
         f":box=1:boxcolor=0x000000@0.55:boxborderw=8"

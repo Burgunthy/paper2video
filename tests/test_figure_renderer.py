@@ -160,3 +160,55 @@ def test_caption_is_white(tmp_path):
         for r, g, b in [px[x, y]]
     )
     assert white_glyphs and not amber_glyphs, "caption not white"
+
+
+def test_no_zoom_animation(tmp_path, monkeypatch):
+    """Zoom crops figure content (edge panels at 1.14x) — figure scenes must be
+    static: no zoompan in the ffmpeg filter."""
+    fig_dir = _make_fig_dir(tmp_path)
+    captured: dict = {}
+
+    class FakeProc:
+        returncode = 0
+        stderr = ""
+
+    def fake_run(cmd, *a, **kw):
+        captured["cmd"] = cmd
+        Path(cmd[-1]).write_bytes(b"x")
+        return FakeProc()
+
+    monkeypatch.setattr("paper2video.renderers.figure_r.subprocess.run", fake_run)
+    render_figure_scene(_scene(), duration_sec=5.0, fig_dir=fig_dir,
+                        out_dir=tmp_path / "o1")
+    assert all("zoompan" not in str(arg) for arg in captured["cmd"]), \
+        "figure scene must render static (no zoompan)"
+
+
+def _make_three_panel_fig(path: Path):
+    """White canvas, 3 dark blocks with clear vertical gutters (like fig2)."""
+    from PIL import Image, ImageDraw
+    img = Image.new("RGB", (900, 300), (255, 255, 255))
+    d = ImageDraw.Draw(img)
+    for i in range(3):
+        x0 = 30 + i * 300
+        d.rectangle((x0, 30, x0 + 240, 270), fill=(40, 40, 40))
+    img.save(path)
+
+
+def test_region_crop_snaps_to_panel_gutters(tmp_path):
+    """Fractional crops (left=0-50%) cut multi-panel figures mid-panel.
+    The crop must snap to detected gutter boundaries: on a 3-panel figure,
+    left -> panel 1, center -> panel 2, right -> panel 3."""
+    from paper2video.renderers.figure_r import snap_crop_x
+    import numpy as np
+    from PIL import Image
+
+    fig_dir = _make_fig_dir(tmp_path)
+    _make_three_panel_fig(fig_dir / "fig1.png")
+    arr = np.array(Image.open(fig_dir / "fig1.png").convert("L"))
+
+    x0, x1 = snap_crop_x(arr, 0.0, 0.5)   # left
+    assert abs(x1 - 1 / 3) < 0.05, f"left crop should end at panel boundary, got {x1:.3f}"
+    x0, x1 = snap_crop_x(arr, 0.25, 0.75)  # center
+    assert abs(x0 - 1 / 3) < 0.05 and abs(x1 - 2 / 3) < 0.05, \
+        f"center crop should be the middle panel, got {x0:.3f}-{x1:.3f}"

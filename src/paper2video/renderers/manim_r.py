@@ -37,6 +37,18 @@ HARD RULES — violating any of these will break the pipeline:
    that are inherently Latin (model/dataset names like Ego4D, SAM3) may stay in
    Latin script — titles, labels, captions, and callouts are Korean.
 10. NO OVERLAPS: text must never sit on top of bars, shapes, or other text.
+
+    WRONG (labels painted onto the bars they describe):
+        bar = Rectangle(...).move_to(DOWN)
+        label = Text("웹 문서").move_to(bar.get_center())   # text ON the bar — unreadable
+        group = VGroup(bar, label)
+
+    RIGHT (label beside its object with clear clearance):
+        bar = Rectangle(...).move_to(DOWN)
+        label = Text("웹 문서", font_size=28)
+        label.next_to(bar, UP, buff=0.35)                   # above, never touching
+        group = VGroup(bar, label)
+
     Place labels beside or above their object with clear spacing (use .arrange()
     with buff, .next_to(obj, direction, buff=0.3), or position bars lower).
     Long Latin names get a smaller font or stack on two lines. Before finishing,
