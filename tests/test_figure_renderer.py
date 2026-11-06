@@ -207,8 +207,36 @@ def test_region_crop_snaps_to_panel_gutters(tmp_path):
     _make_three_panel_fig(fig_dir / "fig1.png")
     arr = np.array(Image.open(fig_dir / "fig1.png").convert("L"))
 
-    x0, x1 = snap_crop_x(arr, 0.0, 0.5)   # left
-    assert abs(x1 - 1 / 3) < 0.05, f"left crop should end at panel boundary, got {x1:.3f}"
-    x0, x1 = snap_crop_x(arr, 0.25, 0.75)  # center
-    assert abs(x0 - 1 / 3) < 0.05 and abs(x1 - 2 / 3) < 0.05, \
+    x0, x1, ok = snap_crop_x(arr, 0.0, 0.5)   # left
+    assert ok and abs(x1 - 1 / 3) < 0.05, f"left crop should end at panel boundary, got {x1:.3f}"
+    x0, x1, ok = snap_crop_x(arr, 0.25, 0.75)  # center
+    assert ok and abs(x0 - 1 / 3) < 0.05 and abs(x1 - 2 / 3) < 0.05, \
         f"center crop should be the middle panel, got {x0:.3f}-{x1:.3f}"
+
+
+def test_no_gutters_means_full_view(tmp_path):
+    """Gutter-less figures (dense architecture diagrams) must NOT get a
+    fractional crop — both crop edges must snap to detected boundaries or the
+    scene falls back to the FULL figure. A mid-panel cut is worse than no cut."""
+    import numpy as np
+    from PIL import Image
+    from paper2video.renderers.figure_r import snap_crop_x
+
+    # Dense figure: ink in every column (no whitespace gutters at all)
+    arr = (np.random.default_rng(0).random((300, 900)) * 100).astype("uint8")
+    x0, x1, snapped = snap_crop_x(arr, 0.25, 0.75)
+    assert snapped is False
+    # And the composer must treat that as full-view (no crop):
+    from paper2video.renderers.figure_r import _compose_layers
+    fig_dir = _make_fig_dir(tmp_path)
+    img = Image.fromarray(arr.astype("uint8")).convert("RGB")
+    img.save(fig_dir / "fig1.png")
+    scene = Scene(id=3, narration="n", visual_type="figure",
+                  visual_spec={"figure_id": "fig1", "focus": "center", "highlight": "", "caption": "캡"},
+                  duration_hint_sec=5.0)
+    _, layer_png, _, _ = _compose_layers(scene, fig_dir, 1280, 720, tmp_path / "o")
+    layer = Image.open(layer_png)
+    # full figure (landscape 3:1) in a landscape box -> layer should be wide,
+    # not a narrow center-crop sliver
+    assert layer.width / layer.height > 1.5, \
+        f"expected full-figure view, got narrow crop {layer.size}"

@@ -37,13 +37,15 @@ REGIONS = {
 }
 
 
-def snap_crop_x(arr, x0: float, x1: float, tol: float = 0.20) -> tuple[float, float]:
+def snap_crop_x(arr, x0: float, x1: float, tol: float = 0.20) -> tuple[float, float, bool]:
     """Snap a fractional horizontal crop to real panel boundaries.
 
     Multi-panel figures have vertical whitespace gutters; fractional crops
     (left = 0-50%) cut panels mid-content. Boundaries = centers of contiguous
     near-uniform column runs; each crop edge snaps to the nearest boundary
-    within `tol`, else keeps the fraction.
+    within `tol`. Returns (x0, x1, both_snapped) — when either edge cannot
+    snap to a detected boundary there are no reliable panel lines, and the
+    caller must fall back to the FULL figure (a mid-panel cut is worse).
     """
     import numpy as np
 
@@ -63,16 +65,19 @@ def snap_crop_x(arr, x0: float, x1: float, tol: float = 0.20) -> tuple[float, fl
     if run_start is not None and w - run_start >= max(6, int(w * 0.015)):
         bounds.append(((run_start + w) / 2) / w)
     if not bounds:
-        return x0, x1
+        return x0, x1, False
 
-    def snap(v: float) -> float:
+    def snap(v: float) -> float | None:
         best = min(bounds, key=lambda b: abs(b - v))
-        return best if abs(best - v) <= tol else v
+        return best if abs(best - v) <= tol else None
 
-    return snap(x0), snap(x1)
+    s0, s1 = snap(x0), snap(x1)
+    if s0 is None or s1 is None:
+        return x0, x1, False
+    return s0, s1, True
 
 
-def snap_crop_y(arr, y0: float, y1: float, tol: float = 0.20) -> tuple[float, float]:
+def snap_crop_y(arr, y0: float, y1: float, tol: float = 0.20) -> tuple[float, float, bool]:
     """Same as snap_crop_x for horizontally stacked panels (row gutters)."""
     import numpy as np
 
@@ -140,10 +145,13 @@ def _compose_layers(
         import numpy as np
 
         arr = np.array(fig.convert("L"))
-        fx0, fx1 = snap_crop_x(arr, fx0, fx1)
-        fy0, fy1 = snap_crop_y(arr, fy0, fy1)
-        w, h = fig.size
-        fig = fig.crop((int(w * fx0), int(h * fy0), int(w * fx1), int(h * fy1)))
+        sx0, sx1, ok_x = snap_crop_x(arr, fx0, fx1)
+        sy0, sy1, ok_y = snap_crop_y(arr, fy0, fy1)
+        if ok_x and ok_y:
+            w, h = fig.size
+            fig = fig.crop((int(w * sx0), int(h * sy0), int(w * sx1), int(h * sy1)))
+        # else: no reliable panel boundaries — keep the FULL figure. A crop
+        # that cuts panels mid-content looks broken; full view never does.
 
     # Figure box on the final canvas — must NEVER overlap the caption strip.
     avail_w = width - 2 * MARGIN_X
