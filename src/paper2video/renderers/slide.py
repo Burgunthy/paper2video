@@ -138,12 +138,21 @@ def render_slide(
             ha="left", va="top", wrap=True,
         )
 
-        # Alternate bullet color between accent and accent2
-        for i, b in enumerate(bullets[:6]):
-            bullet_color = accent2 if i % 2 == 1 else fg
+        if bullets:
+            # Alternate bullet color between accent and accent2
+            for i, b in enumerate(bullets[:6]):
+                bullet_color = accent2 if i % 2 == 1 else fg
+                ax.text(
+                    0.10, 0.62 - i * 0.09, f"\u2022  {b}",
+                    color=bullet_color, fontsize=32, ha="left", va="top", wrap=True,
+                )
+        elif direction:
+            # No bullets -> draw the visual direction as body text so the
+            # slide is not a title-only (reads-as-broken) black frame.
             ax.text(
-                0.10, 0.62 - i * 0.09, f"\u2022  {b}",
-                color=bullet_color, fontsize=32, ha="left", va="top", wrap=True,
+                0.08, 0.62, direction,
+                color=fg, fontsize=28, ha="left", va="top", wrap=True,
+                linespacing=1.6,
             )
 
         if caption:

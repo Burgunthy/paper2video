@@ -1,4 +1,5 @@
 from __future__ import annotations
+import json
 import shutil
 import subprocess
 from pathlib import Path
@@ -176,6 +177,59 @@ def reframe_for_portrait(
     return out_path
 
 
+def _ffprobe_stream(path: Path) -> dict:
+    """Probe the first video stream of a file; {} when probing fails."""
+    probe = shutil.which("ffprobe")
+    if not probe:
+        return {}
+    res = subprocess.run(
+        [probe, "-v", "error", "-select_streams", "v:0",
+         "-show_entries",
+         "stream=codec_name,width,height,pix_fmt,avg_frame_rate:format=duration",
+         "-of", "json", str(path)],
+        capture_output=True, text=True,
+    )
+    if res.returncode != 0:
+        return {}
+    try:
+        data = json.loads(res.stdout)
+        stream = data["streams"][0]
+        stream["format_duration"] = data.get("format", {}).get("duration")
+        return stream
+    except (ValueError, KeyError, IndexError):
+        return {}
+
+
+def should_stream_copy(
+    video_path: Path, audio_path: Path, width: int, height: int, fps: int,
+) -> bool:
+    """True when the visual already matches the target parameters and is long
+    enough for the narration — muxing can then skip a lossy re-encode."""
+    stream = _ffprobe_stream(video_path)
+    if not stream:
+        return False
+    if stream.get("codec_name") != "h264":
+        return False
+    if stream.get("width") != width or stream.get("height") != height:
+        return False
+    if stream.get("pix_fmt") != "yuv420p":
+        return False
+    rate = str(stream.get("avg_frame_rate", ""))
+    try:
+        num, den = rate.split("/")
+        actual_fps = float(num) / float(den) if float(den) else 0.0
+    except ValueError:
+        actual_fps = 0.0
+    if abs(actual_fps - fps) > 0.5:
+        return False
+    audio_dur = _ffprobe_duration(audio_path)
+    video_dur = _ffprobe_duration(video_path)
+    if audio_dur is None or video_dur is None:
+        return False
+    # Visual must cover the narration (small tolerance for container rounding).
+    return video_dur >= audio_dur - 0.10
+
+
 def mux_scene_clip(
     video_path: Path,
     audio_path: Path,
@@ -187,11 +241,30 @@ def mux_scene_clip(
 ) -> Path:
     """Combine a silent video with audio, pad/trim video to match `duration_sec`.
 
-    If the video is shorter than the audio, freeze the last frame (tpad clone).
-    If longer, trim it.
+    When the visual already matches the target resolution/fps/pix_fmt and is at
+    least as long as the audio, the video stream is copied untouched (no
+    generational quality loss) and merely trimmed. Otherwise the clip is
+    scaled/padded, freeze-padded if shorter than the audio, and re-encoded.
     """
     ffmpeg = _ffmpeg()
     out_path.parent.mkdir(parents=True, exist_ok=True)
+
+    audio_args = ["-c:a", "aac", "-b:a", "192k", "-ar", "44100", "-ac", "2",
+                  "-t", f"{duration_sec:.3f}"]
+
+    if should_stream_copy(video_path, audio_path, width, height, fps):
+        cmd = [
+            ffmpeg, "-y",
+            "-i", str(video_path),
+            "-i", str(audio_path),
+            "-map", "0:v:0",
+            "-map", "1:a:0",
+            "-c:v", "copy",
+            *audio_args,
+            str(out_path),
+        ]
+        subprocess.run(cmd, check=True, capture_output=True)
+        return out_path
 
     vf = (
         f"scale={width}:{height}:force_original_aspect_ratio=decrease,"
@@ -209,8 +282,7 @@ def mux_scene_clip(
         "-map", "[v]",
         "-map", "1:a",
         "-c:v", "libx264", "-pix_fmt", "yuv420p",
-        "-c:a", "aac", "-b:a", "192k", "-ar", "44100", "-ac", "2",
-        "-t", f"{duration_sec:.3f}",
+        *audio_args,
         str(out_path),
     ]
     subprocess.run(cmd, check=True, capture_output=True)
@@ -231,12 +303,14 @@ def concat_clips(clip_paths: list[Path], out_path: Path, work_dir: Path) -> Path
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
     # Re-encode on concat to avoid codec-parameter mismatch between clips
-    # (Manim output and image-loop output may differ in subtle ways)
+    # (Manim output and image-loop output may differ in subtle ways).
+    # crf 18 keeps this single final encode visually transparent — figure text
+    # has already lost one generation in the scene render.
     cmd = [
         ffmpeg, "-y",
         "-f", "concat", "-safe", "0",
         "-i", str(concat_file),
-        "-c:v", "libx264", "-pix_fmt", "yuv420p",
+        "-c:v", "libx264", "-crf", "18", "-pix_fmt", "yuv420p",
         "-c:a", "aac", "-b:a", "192k",
         str(out_path),
     ]

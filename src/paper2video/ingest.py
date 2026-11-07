@@ -84,11 +84,44 @@ def extract_from_file(path: Path) -> IngestedDoc:
     return extract_from_html(html, source_url=str(path))
 
 
-def extract_from_url(url: str, timeout: float = 30.0) -> IngestedDoc:
-    req = urllib.request.Request(url, headers={"User-Agent": "paper2video/0.1"})
-    with urllib.request.urlopen(req, timeout=timeout) as resp:
-        raw = resp.read()
+def pdf_url_for(url: str) -> str:
+    """Map known paper-landing URLs to their PDF endpoints.
+
+    An arXiv /abs/ (or OpenReview forum) page otherwise ingests only the
+    abstract HTML — the full text, and with it figure extraction, disappears.
+    """
+    import re
+
+    m = re.match(r"^(https?://(?:www\.)?arxiv\.org)/(abs|pdf)/(.+)$", url)
+    if m:
+        return f"{m.group(1)}/pdf/{m.group(3)}"
+    m = re.match(r"^(https?://(?:www\.)?openreview\.net)/forum\?(.+)$", url)
+    if m:
+        return f"{m.group(1)}/pdf?{m.group(2)}"
+    return url
+
+
+def extract_from_url(url: str, timeout: float = 30.0, keep_pdf: Path | None = None) -> IngestedDoc:
+    import urllib.error
+
+    pdf_url = pdf_url_for(url)
+    req = urllib.request.Request(pdf_url, headers={"User-Agent": "paper2video/0.1"})
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
+            raw = resp.read()
+    except urllib.error.HTTPError:
+        if pdf_url == url:
+            raise
+        # Resolved PDF endpoint failed — fall back to the original page.
+        req = urllib.request.Request(url, headers={"User-Agent": "paper2video/0.1"})
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
+            raw = resp.read()
     if raw[:4] == b"%PDF":
+        if keep_pdf is not None:
+            keep_pdf.parent.mkdir(parents=True, exist_ok=True)
+            keep_pdf.write_bytes(raw)
+            doc = extract_from_pdf(keep_pdf)
+            return IngestedDoc(text=doc.text, title=doc.title, source_url=url)
         import tempfile
         with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as f:
             f.write(raw)

@@ -218,3 +218,11 @@ class MainScene(Scene):
 """
     errors = lint_manim_code(bad)
     assert any("def fit" in e for e in errors)
+
+
+def test_codegen_prompt_requires_korean_text_and_no_overlap():
+    """Generated manim scenes came out with English labels overlapping bars."""
+    from paper2video.renderers.manim_r import CODEGEN_SYSTEM
+    low = CODEGEN_SYSTEM.lower()
+    assert "korean" in low
+    assert "overlap" in low

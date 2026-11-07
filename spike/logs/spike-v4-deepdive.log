@@ -1,0 +1,284 @@
+
+===== 18:49:07 launch deepdive =====
+2026-11-02 18:49:18,372 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:49:18,373 [anthropic._base_client] Retrying request to /v1/messages in 0.449835 seconds
+2026-11-02 18:49:19,059 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:49:19,060 [anthropic._base_client] Retrying request to /v1/messages in 0.917950 seconds
+2026-11-02 18:49:20,445 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:49:23,656 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:49:23,658 [anthropic._base_client] Retrying request to /v1/messages in 0.466432 seconds
+2026-11-02 18:49:24,284 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:49:24,286 [anthropic._base_client] Retrying request to /v1/messages in 0.914782 seconds
+2026-11-02 18:49:25,402 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:49:33,593 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:49:33,595 [anthropic._base_client] Retrying request to /v1/messages in 0.497633 seconds
+2026-11-02 18:49:34,288 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:49:34,289 [anthropic._base_client] Retrying request to /v1/messages in 0.754370 seconds
+2026-11-02 18:49:35,216 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:49:55,519 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:49:55,521 [anthropic._base_client] Retrying request to /v1/messages in 0.472957 seconds
+2026-11-02 18:49:56,183 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:49:56,184 [anthropic._base_client] Retrying request to /v1/messages in 0.971237 seconds
+2026-11-02 18:49:57,430 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:50:42,652 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:50:42,653 [anthropic._base_client] Retrying request to /v1/messages in 0.403236 seconds
+2026-11-02 18:50:43,238 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:50:43,239 [anthropic._base_client] Retrying request to /v1/messages in 0.957934 seconds
+2026-11-02 18:50:44,384 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:52:14,610 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:52:14,610 [anthropic._base_client] Retrying request to /v1/messages in 0.443046 seconds
+2026-11-02 18:52:15,419 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+2026-11-02 18:52:15,420 [anthropic._base_client] Retrying request to /v1/messages in 0.968116 seconds
+2026-11-02 18:52:16,575 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 429 Too Many Requests"
+[pipeline] === run_id=spike-v4-deepdive ===
+[pipeline] stage: ingest
+[pipeline]   title='paper' chars=137948
+[pipeline] stage: figures
+[pipeline]   extracted 14 figures: ['fig1', 'fig2', 'fig3', 'fig4', 'fig5', 'fig6', 'fig7', 'fig8', 'fig9', 'fig10', 'fig11', 'fig12', 'fig13', 'fig14']
+[pipeline] stage: research
+Traceback (most recent call last):
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/bin/paper2video", line 6, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/cli.py", line 356, in main
+    result = run_pipeline(args.source, cfg, llm=llm, tts=tts)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/pipeline.py", line 167, in run_pipeline
+    research_result: ResearchResult = research(doc, llm=llm, enable_search=config.enable_search)
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/research.py", line 82, in research
+    concepts_raw = llm.complete_json(CONCEPTS_PROMPT.format(text=doc.text[:_text_cap()]))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/llm.py", line 100, in complete_json
+    raw = self.complete(p, sys_prompt.strip())
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/llm.py", line 85, in complete
+    raise last_exc
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/llm.py", line 65, in complete
+    msg = self._client.messages.create(**kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/_utils/_utils.py", line 294, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/resources/messages/messages.py", line 1070, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/_base_client.py", line 1679, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/_base_client.py", line 1230, in request
+    return self._request(cast_to, options, stream=stream, stream_cls=stream_cls)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/lib/python3.12/site-packages/anthropic/_base_client.py", line 1333, in _request
+    raise self._make_status_error_from_response(response) from None
+anthropic.RateLimitError: Error code: 429 - {'type': 'error', 'error': {'type': 'rate_limit_error', 'code': '1308', 'message': '[1308][Usage limit reached for 5 hour. Your limit will reset at 2026-11-02 19:20:34][20261102175216751eac8adb944e5b]'}, 'request_id': '20261102175216751eac8adb944e5b'}
+
+===== 20:23:27 launch deepdive =====
+2026-11-02 20:23:48,093 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 20:24:32,705 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 20:27:56,492 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 20:32:00,893 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 20:35:52,544 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 20:39:04,351 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 20:42:50,768 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+[pipeline] === run_id=spike-v4-deepdive ===
+[pipeline] stage: ingest
+[pipeline]   title='paper' chars=137948
+[pipeline] stage: figures
+[pipeline]   extracted 14 figures: ['fig1', 'fig2', 'fig3', 'fig4', 'fig5', 'fig6', 'fig7', 'fig8', 'fig9', 'fig10', 'fig11', 'fig12', 'fig13', 'fig14']
+[pipeline] stage: research
+[pipeline]   concepts=['Reinforcement Learning (RL)', 'Human-in-the-Loop Corrections', 'Imitation Learning', 'Sample Efficiency', 'Classifier-Based Reward Functions']
+[pipeline] stage: script
+Traceback (most recent call last):
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/llm.py", line 116, in _parse_json_payload
+    return json.loads(raw)
+           ^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 353, in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+json.decoder.JSONDecodeError: Unterminated string starting at: line 127 column 20 (char 6623)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/.venv/bin/paper2video", line 6, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/cli.py", line 356, in main
+    result = run_pipeline(args.source, cfg, llm=llm, tts=tts)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/pipeline.py", line 176, in run_pipeline
+    script_doc = write_script(research_result, llm=llm, figure_manifest=figure_manifest)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/script.py", line 378, in write_script
+    raw = llm.complete_json(prompt)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/llm.py", line 106, in complete_json
+    raise err
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/llm.py", line 102, in complete_json
+    return _parse_json_payload(raw)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/llm.py", line 121, in _parse_json_payload
+    return json.loads(raw[start:end + 1])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 353, in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+json.decoder.JSONDecodeError: Expecting ',' delimiter: line 124 column 6 (char 6580)
+
+===== 20:47:38 launch deepdive =====
+2026-11-02 20:47:59,718 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 20:49:10,204 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 20:51:57,791 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 20:52:59,057 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 20:54:09,194 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 20:54:52,709 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 20:55:58,641 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 20:56:36,942 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 20:57:05,841 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 21:03:38,347 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 21:07:54,483 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 21:13:02,185 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 21:18:08,291 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 21:23:17,223 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 21:29:19,947 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 51032 (\N{HANGUL SYLLABLE YI}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 50557 (\N{HANGUL SYLLABLE YAG}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 49549 (\N{HANGUL SYLLABLE SOG}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 44284 (\N{HANGUL SYLLABLE GWA}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 49464 (\N{HANGUL SYLLABLE SE}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 44032 (\N{HANGUL SYLLABLE GA}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 51648 (\N{HANGUL SYLLABLE JI}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 48317 (\N{HANGUL SYLLABLE BYEOG}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 51060 (\N{HANGUL SYLLABLE I}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 49892 (\N{HANGUL SYLLABLE SIL}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 44228 (\N{HANGUL SYLLABLE GYE}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 51012 (\N{HANGUL SYLLABLE EUL}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 47561 (\N{HANGUL SYLLABLE MAG}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 50520 (\N{HANGUL SYLLABLE ASS}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 45796 (\N{HANGUL SYLLABLE DA}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+2026-11-02 21:35:26,609 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 21:41:32,792 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 21:47:34,311 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 21:52:58,974 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 21:59:34,426 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 22:05:41,920 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 47784 (\N{HANGUL SYLLABLE MO}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 48169 (\N{HANGUL SYLLABLE BANG}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 54617 (\N{HANGUL SYLLABLE HAG}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 49845 (\N{HANGUL SYLLABLE SEUB}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 51008 (\N{HANGUL SYLLABLE EUN}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 52380 (\N{HANGUL SYLLABLE CEON}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 51109 (\N{HANGUL SYLLABLE JANG}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 51080 (\N{HANGUL SYLLABLE ISS}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 48373 (\N{HANGUL SYLLABLE BOG}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 49324 (\N{HANGUL SYLLABLE SA}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 45716 (\N{HANGUL SYLLABLE NEUN}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 51064 (\N{HANGUL SYLLABLE IN}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 44036 (\N{HANGUL SYLLABLE GAN}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 50500 (\N{HANGUL SYLLABLE A}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 47000 (\N{HANGUL SYLLABLE RAE}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 50640 (\N{HANGUL SYLLABLE E}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 47672 (\N{HANGUL SYLLABLE MEO}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+/home/jth/taehyeon-assistant/third_party/paper2video/src/paper2video/renderers/slide.py:161: UserWarning: Glyph 47928 (\N{HANGUL SYLLABLE MUN}) missing from font(s) DejaVu Sans.
+  fig.savefig(out_path, dpi=dpi, facecolor=bg)
+2026-11-02 22:10:34,551 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 22:15:31,675 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 22:20:21,185 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+
+===== 22:22:08 launch deepdive =====
+[pipeline] === run_id=spike-v4-deepdive ===
+[pipeline] stage: script (CACHED — reusing script.json)
+[pipeline]   title='사람이 옆에서 봐주는 강화학습: HIL-SERL' scenes=21
+[pipeline] stage: tts
+[pipeline]   scene 1: audio 28.80s
+[pipeline]   scene 2: audio 29.35s
+[pipeline]   scene 3: audio 27.46s
+[pipeline]   scene 4: audio 32.81s
+[pipeline]   scene 5: audio 30.60s
+[pipeline]   scene 6: audio 30.14s
+[pipeline]   scene 7: audio 33.24s
+[pipeline]   scene 8: audio 32.50s
+[pipeline]   scene 9: audio 33.00s
+[pipeline]   scene 10: audio 32.78s
+[pipeline]   scene 11: audio 29.33s
+[pipeline]   scene 12: audio 34.42s
+[pipeline]   scene 13: audio 42.19s
+[pipeline]   scene 14: audio 39.67s
+[pipeline]   scene 15: audio 42.14s
+[pipeline]   scene 16: audio 39.00s
+[pipeline]   scene 17: audio 29.40s
+[pipeline]   scene 18: audio 33.86s
+[pipeline]   scene 19: audio 38.45s
+[pipeline]   scene 20: audio 32.40s
+[pipeline]   scene 21: audio 44.78s
+[pipeline] stage: render visuals
+[pipeline]   scene 1: figure OK -> figscene_001.mp4
+[pipeline]   scene 2: manim OK -> scene_002.mp4
+[pipeline]   scene 3: manim OK -> scene_003.mp4
+[pipeline]   scene 4: manim OK -> scene_004.mp4
+[pipeline]   scene 5: figure OK -> figscene_005.mp4
+[pipeline]   scene 6: figure OK -> figscene_006.mp4
+[pipeline]   scene 7: manim OK -> scene_007.mp4
+[pipeline]   scene 8: manim OK -> scene_008.mp4
+[pipeline]   scene 9: manim OK -> scene_009.mp4
+[pipeline]   scene 10: manim OK -> scene_010.mp4
+[pipeline]   scene 11: figure OK -> figscene_011.mp4
+[pipeline]   scene 12: manim OK -> scene_012.mp4
+[pipeline]   scene 13: figure OK -> figscene_013.mp4
+[pipeline]   scene 14: figure OK -> figscene_014.mp4
+[pipeline]   scene 15: manim OK -> scene_015.mp4
+[pipeline]   scene 16: manim OK -> scene_016.mp4
+[pipeline]   scene 17: figure OK -> figscene_017.mp4
+[pipeline]   scene 18: figure OK -> figscene_018.mp4
+[pipeline]   scene 19: figure OK -> figscene_019.mp4
+[pipeline]   scene 20: manim OK -> scene_020.mp4
+[pipeline]   scene 21: manim OK -> scene_021.mp4
+[pipeline] stage: mux + concat
+[pipeline] DONE: out/spike-v4-deepdive/video.mp4
+video: out/spike-v4-deepdive/video.mp4
+run dir: out/spike-v4-deepdive

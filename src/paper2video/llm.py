@@ -1,6 +1,7 @@
 from __future__ import annotations
 import json
 import os
+import subprocess
 import time
 from typing import Protocol
 
@@ -8,6 +9,10 @@ from typing import Protocol
 class LLMClient(Protocol):
     def complete(self, prompt: str, system: str | None = None) -> str: ...
     def complete_json(self, prompt: str, system: str | None = None) -> dict: ...
+
+
+class EmptyCompletionError(RuntimeError):
+    """Model returned no text blocks (e.g. thinking consumed the whole budget)."""
 
 
 class FakeLLMClient:
@@ -40,7 +45,7 @@ class AnthropicClient:
         import anthropic  # lazy
         kwargs = {
             "model": self.model,
-            "max_tokens": 4096,
+            "max_tokens": int(os.environ.get("PAPER2VIDEO_MAX_TOKENS", "4096")),
             "messages": [{"role": "user", "content": prompt}],
         }
         if system:
@@ -51,13 +56,22 @@ class AnthropicClient:
             anthropic.APIConnectionError,
             anthropic.APITimeoutError,
             anthropic.InternalServerError,
+            EmptyCompletionError,
         )
         backoff_schedule = [3, 8, 20, 45, 90]  # ~166s total, then raise
         last_exc: Exception | None = None
         for attempt, wait in enumerate([*backoff_schedule, None]):
             try:
                 msg = self._client.messages.create(**kwargs)
-                return msg.content[0].text
+                # GLM-style responses may lead with thinking blocks; keep all
+                # text blocks and skip empty payloads.
+                parts = [
+                    getattr(b, "text", "") for b in msg.content
+                    if getattr(b, "type", "") == "text"
+                ]
+                if not parts:
+                    raise EmptyCompletionError("response contained no text blocks")
+                return "".join(parts)
             except retryable as e:
                 last_exc = e
             except anthropic.APIStatusError as e:
@@ -72,10 +86,152 @@ class AnthropicClient:
 
     def complete_json(self, prompt: str, system: str | None = None) -> dict:
         sys_prompt = (system or "") + "\n\nRespond with valid JSON only. No prose, no code fences."
-        raw = self.complete(prompt, sys_prompt.strip())
-        raw = raw.strip()
-        if raw.startswith("```"):
-            raw = raw.split("\n", 1)[1]
-            if raw.endswith("```"):
-                raw = raw.rsplit("```", 1)[0]
+        err: json.JSONDecodeError | None = None
+        for attempt in range(3):
+            p = prompt
+            if attempt > 0 and err is not None:
+                p = (
+                    prompt
+                    + f"\n\nNOTE: your previous reply was not valid JSON "
+                    f"(error near position {err.pos}: {err.msg}). "
+                    "Resend the COMPLETE corrected JSON. Escape every double quote "
+                    "inside string values (\\\") or replace inner double quotes with single quotes."
+                )
+            raw = self.complete(p, sys_prompt.strip())
+            try:
+                return _parse_json_payload(raw)
+            except json.JSONDecodeError as e:
+                err = e
+        assert err is not None
+        raise err
+
+
+def _parse_json_payload(raw: str) -> dict:
+    raw = raw.strip()
+    if raw.startswith("```"):
+        raw = raw.split("\n", 1)[1]
+        if raw.endswith("```"):
+            raw = raw.rsplit("```", 1)[0]
+    try:
         return json.loads(raw)
+    except json.JSONDecodeError:
+        # Salvage: some models wrap JSON in prose or truncate trailing fences.
+        start, end = raw.find("{"), raw.rfind("}")
+        if start >= 0 and end > start:
+            return json.loads(raw[start:end + 1])
+        raise
+
+
+class CodexCLIClient:
+    """LLM client backed by `codex exec` (uses local Codex CLI auth, e.g. gpt-6-luna)."""
+
+    def __init__(self, model: str | None = None):
+        self.model = model or os.environ.get("PAPER2VIDEO_MODEL", "gpt-6-luna")
+        self._codex_home = self._prepare_codex_home()
+
+    @staticmethod
+    def _prepare_codex_home() -> Path:
+        """Clean CODEX_HOME with only auth symlinked.
+
+        The user's interactive codex setup (OmO plugins/MCP/hooks) must not
+        affect pipeline codegen — an auth-expired MCP server there made
+        `codex exec` exit 1 on every call. Override the dir with
+        PAPER2VIDEO_CODEX_HOME if needed.
+        """
+        from pathlib import Path as _P
+        home = _P(os.environ.get(
+            "PAPER2VIDEO_CODEX_HOME",
+            str(_P.home() / ".cache" / "paper2video" / "codex-home"),
+        ))
+        try:
+            home.mkdir(parents=True, exist_ok=True)
+            dst = home / "auth.json"
+            if dst.is_symlink() or dst.exists():
+                dst.unlink()
+            dst.symlink_to(_P.home() / ".codex" / "auth.json")
+        except OSError:
+            return None  # fall back to the default CODEX_HOME
+        return home
+
+    def complete(self, prompt: str, system: str | None = None) -> str:
+        full_prompt = f"{system}\n\n{prompt}" if system else prompt
+        cmd = [
+            "codex", "exec",
+            "-s", "read-only",
+            "--ephemeral",
+            "--skip-git-repo-check",
+            "--json",
+            "-c", "mcp_servers={}",  # isolate from user MCP health (auth-expiry fatals)
+            "-m", self.model,
+            full_prompt,
+        ]
+        # Retry transient failures (non-zero exit, missing agent_message, timeout).
+        backoff_schedule = [5, 15, 45]
+        last_exc: Exception | None = None
+        run_env = {**os.environ}
+        if self._codex_home is not None:
+            run_env["CODEX_HOME"] = str(self._codex_home)
+        for wait in [*backoff_schedule, None]:
+            try:
+                proc = subprocess.run(
+                    cmd, capture_output=True, text=True, timeout=900,
+                    stdin=subprocess.DEVNULL, env=run_env,
+                )
+                if proc.returncode == 0:
+                    text = _last_agent_message(proc.stdout)
+                    if text is not None:
+                        return text
+                    last_exc = RuntimeError(
+                        "codex exec produced no agent_message; stderr tail: "
+                        + proc.stderr[-500:]
+                    )
+                else:
+                    last_exc = RuntimeError(
+                        f"codex exec exited {proc.returncode}; stderr tail: {proc.stderr[-500:]}"
+                    )
+            except subprocess.TimeoutExpired as e:
+                last_exc = e
+            if wait is None:
+                break
+            time.sleep(wait)
+        assert last_exc is not None
+        raise last_exc
+
+    def complete_json(self, prompt: str, system: str | None = None) -> dict:
+        sys_prompt = (system or "") + "\n\nRespond with valid JSON only. No prose, no code fences."
+        err: json.JSONDecodeError | None = None
+        for attempt in range(3):
+            p = prompt
+            if attempt > 0 and err is not None:
+                p = (
+                    prompt
+                    + f"\n\nNOTE: your previous reply was not valid JSON "
+                    f"(error near position {err.pos}: {err.msg}). "
+                    "Resend the COMPLETE corrected JSON. Escape every double quote "
+                    "inside string values (\\\") or replace inner double quotes with single quotes."
+                )
+            raw = self.complete(p, sys_prompt.strip())
+            try:
+                return _parse_json_payload(raw)
+            except json.JSONDecodeError as e:
+                err = e
+        assert err is not None
+        raise err
+
+
+def _last_agent_message(stdout: str) -> str | None:
+    """Extract the final agent_message text from `codex exec --json` JSONL output."""
+    text: str | None = None
+    for line in stdout.splitlines():
+        line = line.strip()
+        if not line.startswith("{"):
+            continue
+        try:
+            ev = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if ev.get("type") == "item.completed":
+            item = ev.get("item") or {}
+            if item.get("type") == "agent_message":
+                text = item.get("text")
+    return text
