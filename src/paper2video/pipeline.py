@@ -231,6 +231,23 @@ def run_pipeline(
 
     video_path = run_dir / "video.mp4"
     concat_clips(scene_clips, video_path, work_dir)
+
+    # 내레이션 대사 자막 번닝 — 하단 배치(피규어 캡션 스트립과 무겹침)
+    try:
+        from .captions import build_srt, burn_subtitles
+
+        srt_path = run_dir / "narration.srt"
+        srt_path.write_text(
+            build_srt(script_doc.scenes, [a.duration_sec for a in scene_audios]),
+            encoding="utf-8",
+        )
+        burned = run_dir / "video_subtitled.mp4"
+        burn_subtitles(video_path, srt_path, burned)
+        burned.replace(video_path)
+        _log(run_dir, "stage: narration subtitles burned")
+    except Exception as e:
+        _log(run_dir, f"subtitle burn failed (non-fatal): {e}")
+
     _log(run_dir, f"DONE: {video_path}")
 
     return PipelineResult(run_dir=run_dir, video_path=video_path, script=script_doc)

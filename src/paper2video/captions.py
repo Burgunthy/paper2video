@@ -91,6 +91,34 @@ def write_srt(path: Path, scenes: list[Scene], durations: list[float]) -> Path:
     return path
 
 
+def portrait_subtitle_style() -> str:
+    """Portrait: explicit PlayResY to match our 1920px frame — without it,
+    ffmpeg's ASS renderer assumes 288 and scales MarginV proportionally,
+    placing subtitles in the wrong position."""
+    return (
+        "PlayResX=1080,PlayResY=1920,"
+        "FontName=Arial,FontSize=52,Bold=1,PrimaryColour=&H00FFFFFF,"
+        "OutlineColour=&H00000000,BorderStyle=1,Outline=3,Shadow=0,"
+        "Alignment=2,MarginV=120,MarginL=60,MarginR=60"
+    )
+
+
+def landscape_subtitle_style() -> str:
+    """Narration subtitles for the 1280x720 master.
+
+    Anchored to the very bottom (MarginV<=20 keeps the text BELOW the figure
+    scenes' caption strip at y~628-668, so the two never collide). Explicit
+    PlayRes stops the ASS renderer from assuming 288 and floating the text
+    mid-screen.
+    """
+    return (
+        "PlayResX=1280,PlayResY=720,"
+        "FontName=Noto Sans CJK KR,FontSize=26,PrimaryColour=&H00FFFFFF,"
+        "OutlineColour=&H00000000,BorderStyle=1,Outline=2,Shadow=1,"
+        "Alignment=2,MarginV=16,MarginL=40,MarginR=40"
+    )
+
+
 def burn_subtitles(
     video_path: Path,
     captions_path: Path,
@@ -102,22 +130,9 @@ def burn_subtitles(
     out_path.parent.mkdir(parents=True, exist_ok=True)
     captions_filter = str(captions_path.resolve()).replace("\\", "/").replace(":", "\\:")
 
-    if portrait:
-        # Portrait: use force_style with explicit PlayResY to match our 1920px frame.
-        # Without PlayResY, ffmpeg's ASS renderer assumes 288 and scales MarginV
-        # proportionally, placing subtitles in the wrong position.
-        style = (
-            "PlayResX=1080,PlayResY=1920,"
-            "FontName=Arial,FontSize=52,Bold=1,PrimaryColour=&H00FFFFFF,"
-            "OutlineColour=&H00000000,BorderStyle=1,Outline=3,Shadow=0,"
-            "Alignment=2,MarginV=120,MarginL=60,MarginR=60"
-        )
-    else:
-        style = (
-            "FontName=Arial,FontSize=22,PrimaryColour=&H00FFFFFF,"
-            "OutlineColour=&H00000000,BorderStyle=1,Outline=2,Shadow=0,"
-            "Alignment=2,MarginV=120"
-        )
+    style = (
+        portrait_subtitle_style() if portrait else landscape_subtitle_style()
+    )
 
     cmd = [
         ffmpeg,
@@ -126,6 +141,7 @@ def burn_subtitles(
         str(video_path),
         "-vf",
         f"subtitles='{captions_filter}':force_style='{style}'",
+        "-c:v", "libx264", "-crf", "18", "-preset", "medium",
         "-c:a",
         "copy",
         str(out_path),

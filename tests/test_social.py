@@ -217,3 +217,18 @@ def test_process_telegram_updates_handles_revise_flow(tmp_path, monkeypatch):
     assert reviewer.answered[0][0] == "cb-1"
     assert store.get_item(item.source_id).revision_count == 1
     assert len(reviewer.sent_drafts) == 2
+
+
+def test_burn_subtitles_landscape_style_bottom_anchored():
+    """Narration subtitles must sit at the very bottom of a 720p frame with
+    explicit PlayRes — ffmpeg's ASS renderer assumes PlayResY=288 otherwise
+    and floats the text mid-screen (the portrait gotcha, in landscape)."""
+    from paper2video.captions import landscape_subtitle_style
+    style = landscape_subtitle_style()
+    assert "PlayResX=1280" in style and "PlayResY=720" in style
+    assert "Alignment=2" in style
+    # bottom margin small enough to stay BELOW the figure-caption strip (y~668)
+    import re
+    mv = int(re.search(r"MarginV=(\d+)", style).group(1))
+    assert mv <= 20
+    assert "CJK" in style or "Noto" in style
