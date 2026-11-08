@@ -168,11 +168,35 @@ def render_slide(
         elif direction:
             # No bullets -> draw the visual direction as body text so the
             # slide is not a title-only (reads-as-broken) black frame.
-            ax.text(
-                0.08, 0.62, direction,
-                color=fg, fontsize=28, ha="left", va="top", wrap=True,
-                linespacing=1.6,
-            )
+            # Long directions wrap; measure the wrapped height and shrink the
+            # font until the text stays above the subtitle band (y>=650px),
+            # truncating only as a last resort.
+            fig.canvas.draw()
+            for fs in (28, 24, 21, 18, 16):
+                for artist in list(ax.texts):
+                    if getattr(artist, "_is_direction", False):
+                        artist.remove()
+                t = ax.text(
+                    0.08, 0.62, direction,
+                    color=fg, fontsize=fs, ha="left", va="top", wrap=True,
+                    linespacing=1.6,
+                )
+                t._is_direction = True
+                fig.canvas.draw()
+                # display px, origin bottom-left: text bottom above the
+                # subtitle band (y<650 top-coords) <=> y0 >= 70 display px
+                y0 = t.get_window_extent(renderer=fig.canvas.get_renderer()).y0
+                if y0 >= 70:
+                    break
+            else:
+                # 16pt에도 안 들어가면 말줄임 (밴드 침범은 어떤 경우도 허용 안 함)
+                t.remove()
+                cut = int(len(direction) * 0.6)
+                t = ax.text(
+                    0.08, 0.62, direction[:cut] + " …",
+                    color=fg, fontsize=16, ha="left", va="top", wrap=True,
+                    linespacing=1.6,
+                )
 
         if caption:
             # 하단 밴드(y>=650px, 0.096)는 내레이션 자막 예약 — caption은 그 위

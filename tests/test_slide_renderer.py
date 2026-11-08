@@ -103,3 +103,62 @@ def test_slide_korean_font_and_clear_band(tmp_path):
     ref = band[0, 0]
     occ = float((np.abs(band - ref).sum(axis=2) > 40).mean())
     assert occ < 0.02, f"slide content in subtitle band: {occ:.3f}"
+
+
+def test_slide_many_long_bullets_stay_clear_of_band(tmp_path):
+    """Long bullets wrap and used to spill into the subtitle band. The layout
+    must measure text heights and shrink the font until everything fits above
+    the band."""
+    import numpy as np
+    from PIL import Image
+    from paper2video.types import Scene
+    from paper2video.renderers.slide import render_slide
+
+    scene = Scene(id=9, narration="n", visual_type="slide",
+                  visual_spec={
+                      "title": "아주 긴 제목이 들어가는 경우의 슬라이드 테스트",
+                      "bullets": [
+                          "첫 번째 불릿인데 내용이 매우 길어서 두 줄 이상으로 줄바꿈이 일어나는 경우를 테스트합니다",
+                          "두 번째 불릿도 길게 작성하여 여러 줄로 감싸지는 것을 확인하기 위한 문장입니다",
+                          "세 번째 불릿 — 역시 길게 작성해서 전체 높이가 슬라이드를 넘으려는 상황을 만듭니다",
+                          "네 번째 불릿 마지막 문장도 충분히 깁니다",
+                          "다섯 번째",
+                          "여섯 번째 불릿",
+                      ],
+                      "caption": "캡션"},
+                  duration_hint_sec=5.0)
+    png = render_slide(scene, tmp_path, size=(1280, 720))
+    a = np.array(Image.open(png).convert('RGB')).astype(int)
+    band = a[650:716, 150:1130]
+    occ = float((np.abs(band - band[0, 0]).sum(axis=2) > 40).mean())
+    assert occ < 0.02, f"long bullets spilled into band: {occ:.3f}"
+    # 본문은 존재해야 함 (폰트를 과도하게 줄여 없애버리면 안 됨)
+    body = a[200:600, 100:1180]
+    assert (np.abs(body - body[0, 0]).sum(axis=2) > 40).mean() > 0.005
+
+
+def test_slide_long_direction_stays_clear_of_band(tmp_path):
+    """Manim-fallback specs carry a LONG visual direction — anchored at 0.62
+    with wrap it spills hundreds of pixels into the subtitle band."""
+    import numpy as np
+    from PIL import Image
+    from paper2video.types import Scene
+    from paper2video.renderers.slide import render_slide
+
+    scene = Scene(id=2, narration="n", visual_type="slide",
+                  visual_spec={
+                      "title": "카메라 좌표와 월드 좌표",
+                      "direction": ("머리에 카메라를 단 작업자 아이콘이 등장하고 왼쪽에서 손 모양이 "
+                                    "나타나 카메라 좌표계 안에 갇혀 있는 모습을 보여준다. 이어서 월드 "
+                                    "좌표계 격자가 펼쳐지며 손이 그 위로 옮겨지는 변환을 화살표로 "
+                                    "보여주고, 오른쪽에는 두 방법의 비교 표가 위에서부터 차례로 "
+                                    "내려오면서 각 셀의 숫자가 카운트업된다. 마지막에 두 축의 스케일 "
+                                    "차이를 강조하는 확대 애니메이션으로 마무리한다. 이 문장은 실제 "
+                                    "manim direction 필드처럼 매우 길게 작성되었다."),
+                      "caption": "캡션"},
+                  duration_hint_sec=5.0)
+    png = render_slide(scene, tmp_path, size=(1280, 720))
+    a = np.array(Image.open(png).convert('RGB')).astype(int)
+    band = a[650:716, 150:1130]
+    occ = float((np.abs(band - band[0, 0]).sum(axis=2) > 40).mean())
+    assert occ < 0.02, f"long direction spilled into band: {occ:.3f}"
