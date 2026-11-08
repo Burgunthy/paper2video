@@ -390,7 +390,7 @@ Produce ONLY a JSON outline with this exact shape:
   "scenes": [
     {{
       "id": 1,
-      "beat": "what this scene teaches, 1-2 sentences",
+      "beat": "what this scene teaches — ONE short sentence (under 30 characters of Korean). Do NOT elaborate here; details come later in the scene chunks.",
       "visual_type": "manim",
       "figure_id": "fig2 or empty"
     }}
