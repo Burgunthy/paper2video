@@ -465,6 +465,24 @@ def _check_subtitle_band(mp4: Path) -> str | None:
     return None
 
 
+def _fit_avoid_band(mp4: Path) -> Path:
+    """Deterministic fallback for scenes that still invade the subtitle band
+    after all codegen retries: scale to 85% height, anchor to the top, pad the
+    rest with background. Content bottom (y716) maps to ~y609 — clear of the
+    subtitle band (y>=640)."""
+    import subprocess as sp
+
+    out = mp4.with_name(mp4.stem + "_bandfit.mp4")
+    sp.run(
+        ["ffmpeg", "-y", "-loglevel", "error", "-i", str(mp4),
+         "-vf", "scale=1280:612:force_original_aspect_ratio=decrease,"
+                "pad=1280:720:(ow-iw)/2:0:color=black",
+         "-c:v", "libx264", "-crf", "18", "-pix_fmt", "yuv420p", str(out)],
+        check=True, capture_output=True,
+    )
+    return out
+
+
 def lint_manim_code(code: str, social_mode: bool = False) -> list[str]:
     """Static checks against the patterns we know cause cutoffs and render failures.
 
@@ -550,6 +568,14 @@ def lint_manim_code(code: str, social_mode: bool = False) -> list[str]:
             errors.append(
                 f"Line {i}: Rotate with axis=UP/DOWN mirrors Text to a mirror image. "
                 f"Rotate about Z only (2D), or use Flash/Circumscribe/Indicate for emphasis."
+            )
+        if "to_edge(DOWN" in stripped or "to_corner(DOWN" in stripped \
+                or "to_corner(*DOWN" in stripped or "to_corner(LEFT+DOWN" in stripped \
+                or "to_corner(RIGHT+DOWN" in stripped:
+            errors.append(
+                f"Line {i}: to_edge(DOWN)/to_corner(...DOWN) pins objects to the frame "
+                f"bottom — inside the RESERVED subtitle band (below y=-2.6). Position with "
+                f".move_to(DOWN * 1.5) or lower=DOWN, buff>=1.2 instead."
             )
         if ".flip(" in stripped or ".scale(-" in stripped:
             errors.append(
@@ -851,6 +877,8 @@ pass the same font (it covers Latin). Never call Text() without the font argumen
                 last_err = band_feedback
                 last_lint = []  # render-레벨 재시도 경로로
                 continue
+            if band_feedback:
+                rendered = _fit_avoid_band(rendered)
             final = out_dir / f"scene_{scene.id:03d}.mp4"
             shutil.copy2(rendered, final)
             return final

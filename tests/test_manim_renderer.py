@@ -269,3 +269,19 @@ def test_subtitle_band_occupancy_detector(tmp_path):
     ImageDraw.Draw(dirty).rectangle((300, 660, 900, 710), fill=(240, 240, 240))
     dirty.save(tmp_path / "dirty.png")
     assert subtitle_band_occupancy(tmp_path / "dirty.png") > 0.02
+
+
+def test_lint_forbids_to_edge_down():
+    """.to_edge(DOWN) pins objects to the frame bottom — inside the reserved
+    subtitle band. Models keep using it despite prompt rules (measured 6
+    scenes invading). The lint must reject it before rendering."""
+    from paper2video.renderers.manim_r import lint_manim_code
+    code = """
+from manim import *
+class MainScene(Scene):
+    def construct(self):
+        t = Text("한글", font="Noto Sans CJK KR")
+        t.to_edge(DOWN, buff=0.3)
+"""
+    errors = lint_manim_code(code, social_mode=False)
+    assert any("to_edge(DOWN" in e for e in errors), errors
