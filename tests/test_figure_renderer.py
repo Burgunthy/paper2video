@@ -139,7 +139,8 @@ def test_no_highlight_box_lines(tmp_path):
     assert amber.sum() == 0, f"highlight lines drawn: {amber.sum()} amber px"
 
 def test_caption_is_white(tmp_path):
-    """Viewer preference: captions white, not amber."""
+    """Viewer preference: figure captions white, top-left (narration subs own
+    the bottom strip now)."""
     fig_dir = _make_fig_dir(tmp_path)
     out_dir = tmp_path / "figure_out"
     mp4 = render_figure_scene(_scene(), duration_sec=5.0, fig_dir=fig_dir, out_dir=out_dir)
@@ -148,18 +149,18 @@ def test_caption_is_white(tmp_path):
          "-of", "csv=p=0", str(mp4)]))
     frame = _frame_at(mp4, dur - 0.15)
     px = frame.load()
-    # caption glyph pixels: near-white, NOT amber (255,214,102)
+    # caption glyph pixels in the TOP margin band: near-white, NOT amber
     white_glyphs = any(
         r > 230 and g > 230 and b > 225
-        for y in range(626, 670) for x in range(340, 1220, 2)
+        for y in range(6, 40) for x in range(30, 900, 2)
         for r, g, b in [px[x, y]]
     )
     amber_glyphs = any(
         r > 230 and 190 < g < 228 and b < 150
-        for y in range(626, 670) for x in range(340, 1220, 2)
+        for y in range(6, 40) for x in range(30, 900, 2)
         for r, g, b in [px[x, y]]
     )
-    assert white_glyphs and not amber_glyphs, "caption not white"
+    assert white_glyphs and not amber_glyphs, "caption not white/top-left"
 
 
 def test_no_zoom_animation(tmp_path, monkeypatch):

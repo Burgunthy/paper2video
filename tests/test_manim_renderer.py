@@ -226,3 +226,18 @@ def test_codegen_prompt_requires_korean_text_and_no_overlap():
     low = CODEGEN_SYSTEM.lower()
     assert "korean" in low
     assert "overlap" in low
+
+
+def test_lint_rejects_text_mirroring():
+    """Rotate(axis=UP/DOWN) flips text to a mirror image (DPP 14:16 bug),
+    and .flip(/scale(- mirror too. The static check must reject them."""
+    from paper2video.renderers.manim_r import lint_manim_code
+    code = """
+from manim import *
+class MainScene(Scene):
+    def construct(self):
+        card = VGroup(Text("한글", font="Noto Sans CJK KR"))
+        self.play(Rotate(card, angle=PI, axis=UP), run_time=0.6)
+"""
+    errors = lint_manim_code(code, social_mode=False)
+    assert any("axis=UP" in e or "mirror" in e.lower() for e in errors), errors

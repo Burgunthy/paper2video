@@ -15,7 +15,7 @@ def format_srt_timestamp(total_seconds: float) -> str:
     return f"{hours:02d}:{minutes:02d}:{seconds:02d},{millis:03d}"
 
 
-def _split_narration(text: str, max_words: int = 6) -> list[str]:
+def _split_narration(text: str, max_words: int = 4) -> list[str]:
     """Split a narration string into short chunks suitable for subtitles.
 
     Each chunk is at most `max_words` words, splitting on sentence boundaries
@@ -113,9 +113,9 @@ def landscape_subtitle_style() -> str:
     """
     return (
         "PlayResX=1280,PlayResY=720,"
-        "FontName=Noto Sans CJK KR,FontSize=26,PrimaryColour=&H00FFFFFF,"
+        "FontName=Noto Sans CJK KR,FontSize=38,PrimaryColour=&H00FFFFFF,"
         "OutlineColour=&H00000000,BorderStyle=1,Outline=2,Shadow=1,"
-        "Alignment=2,MarginV=16,MarginL=40,MarginR=40"
+        "Alignment=2,MarginV=14,MarginL=30,MarginR=30"
     )
 
 

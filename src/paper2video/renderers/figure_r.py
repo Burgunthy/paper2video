@@ -229,10 +229,11 @@ def render_figure_scene(
         f":box=1:boxcolor=0x000000@0.55:boxborderw=8"
     )
     if caption:
+        # 상단 좌측 — 하단 스트립은 큰 내레이션 자막의 영역
         chain += (
             f",drawtext=fontfile={font}:text='{caption}'"
-            f":x=(w-text_w)/2:y=h-92:fontsize=34:fontcolor=0xFFFFFF"
-            f":box=1:boxcolor=0x000000@0.75:boxborderw=12"
+            f":x=28:y=10:fontsize=26:fontcolor=0xFFFFFF"
+            f":box=1:boxcolor=0x000000@0.55:boxborderw=10"
         )
     chain += ",fade=t=in:st=0:d=0.45,format=yuv420p[v]"
 

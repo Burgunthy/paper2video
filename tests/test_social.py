@@ -232,3 +232,17 @@ def test_burn_subtitles_landscape_style_bottom_anchored():
     mv = int(re.search(r"MarginV=(\d+)", style).group(1))
     assert mv <= 20
     assert "CJK" in style or "Noto" in style
+
+
+def test_narration_subtitle_youtube_size():
+    """Viewer: subs must match the size real YouTubers burn in — the 26px
+    default was unreadable on mobile."""
+    import re
+    from paper2video.captions import landscape_subtitle_style, _split_narration
+
+    style = landscape_subtitle_style()
+    fs = int(re.search(r"FontSize=(\d+)", style).group(1))
+    assert fs >= 36, f"FontSize {fs} too small"
+    # shorter cues keep big-font subs on one line
+    chunks = _split_narration("세로축이 오류를 나타내고 아래로 갈수록 좋다는 뜻입니다 표에서 이 행을 보세요")
+    assert max(len(c.split()) for c in chunks) <= 4

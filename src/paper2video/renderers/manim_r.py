@@ -499,6 +499,23 @@ def lint_manim_code(code: str, social_mode: bool = False) -> list[str]:
                 )
                 break
 
+    # 5z. NO TEXT MIRRORING — Rotate about a vertical 3D axis (axis=UP/DOWN)
+    #     leaves shapes unchanged but flips every Text INSIDE to a mirror image
+    #     (seen in production: card titles came out 거울상). Same for .flip()/
+    #     negative scales. Emphasize with Circumscribe/Flash/Indicate instead.
+    for i, line in enumerate(lines, start=1):
+        stripped = line.split("#", 1)[0]
+        if "axis=UP" in stripped or "axis=DOWN" in stripped or "axis = UP" in stripped:
+            errors.append(
+                f"Line {i}: Rotate with axis=UP/DOWN mirrors Text to a mirror image. "
+                f"Rotate about Z only (2D), or use Flash/Circumscribe/Indicate for emphasis."
+            )
+        if ".flip(" in stripped or ".scale(-" in stripped:
+            errors.append(
+                f"Line {i}: .flip()/negative scale mirrors Text. Use rotate(PI) on "
+                f"shapes only, never on anything containing Text."
+            )
+
     # 6. Must not import anything other than from manim
     for i, line in enumerate(lines, start=1):
         s = line.strip()
