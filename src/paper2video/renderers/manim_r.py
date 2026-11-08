@@ -53,10 +53,10 @@ HARD RULES — violating any of these will break the pipeline:
     with buff, .next_to(obj, direction, buff=0.3), or position bars lower).
     Long Latin names get a smaller font or stack on two lines. Before finishing,
     mentally check every Text's bounding box against nearby objects — the frame
-    is ~14.2 x 8 units; keep everything inside x=[-6.8, 6.8], y=[-2.6, 3.5].
-    CRITICAL: the band below y=-2.6 (bottom of the frame) is RESERVED for
-    narration subtitles that are burned in later — any object placed there
-    will be covered by subtitle text. Keep ALL objects above y=-2.6.
+    is ~14.2 x 8 units; keep everything inside x=[-6.8, 6.8], y=[-3.0, 3.5].
+    CRITICAL: the bottom band below y=-3.0 (bottom ~90px of the frame) is
+    RESERVED for narration subtitles burned in later — any object there will
+    be covered by subtitle text. Keep ALL objects above y=-3.0.
 
 === ENTRANCE-POSITIONING RULE — CRITICAL ===
 
@@ -372,10 +372,10 @@ TARGET DURATION: {duration:.1f} seconds. Pace your run_time values to fill it.
 
 CODEGEN_USER = """Generate a Manim scene for scene {scene_id} of an explainer video.
 
-LAYOUT CONSTRAINT (hard requirement): the bottom of the frame — everything
-below y=-2.6 in manim units — is RESERVED for narration subtitles. No object,
-text, or shape may be placed or animated below y=-2.6. Keep all content in
-y=[-2.6, 3.5].
+LAYOUT CONSTRAINT (hard requirement): the bottom ~90px of the frame —
+everything below y=-3.0 in manim units — is RESERVED for narration
+subtitles. No object, text, or shape may be placed or animated below
+y=-3.0. Keep all content in y=[-3.0, 3.5].
 
 NARRATION (this is what the viewer hears — your animation must illustrate it):
 \"\"\"
@@ -434,13 +434,13 @@ class ManimRenderError(Exception):
 
 def subtitle_band_occupancy(frame_png: Path) -> float:
     """Fraction of non-background pixels in the reserved subtitle band
-    (y 640-716 of a 1280x720 frame). High = animation content will collide
+    (y 650-716 of a 1280x720 frame). High = animation content will collide
     with burned narration subtitles."""
     import numpy as np
     from PIL import Image
 
     a = np.array(Image.open(frame_png).convert("RGB")).astype(int)
-    band = a[640:716, 150:1130]
+    band = a[650:716, 150:1130]
     ref = band[0, 0]
     return float((np.abs(band - ref).sum(axis=2) > 40).mean())
 
@@ -463,9 +463,9 @@ def _check_subtitle_band(mp4: Path) -> str | None:
     if worst > 0.015:
         return (
             f"Your animation content occupies the bottom subtitle band of the frame "
-            f"({worst:.0%} coverage). The bottom band (below y=-2.6 in manim units) is "
+            f"({worst:.0%} coverage). The bottom band (below y=-3.0 in manim units) is "
             f"RESERVED for narration subtitles. Move ALL objects up so nothing sits "
-            f"below y=-2.6."
+            f"below y=-3.0."
         )
     return None
 

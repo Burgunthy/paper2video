@@ -247,7 +247,7 @@ def test_codegen_prompt_reserves_subtitle_band():
     """The bottom of the frame is reserved for burned narration subtitles —
     manim content must stay above it (viewer: '자막 쓸 공간은 남기도록')."""
     from paper2video.renderers.manim_r import CODEGEN_SYSTEM
-    assert "y=[-2.6" in CODEGEN_SYSTEM
+    assert "y=[-3.0" in CODEGEN_SYSTEM
     assert "subtitle" in CODEGEN_SYSTEM.lower() or "자막" in CODEGEN_SYSTEM
 
 
@@ -292,4 +292,4 @@ def test_codegen_user_prompt_carries_band_constraint():
     ignored by the model (measured: 6 invading scenes)."""
     from paper2video.renderers.manim_r import CODEGEN_USER
     assert CODEGEN_USER.index("LAYOUT CONSTRAINT") < CODEGEN_USER.index("NARRATION")
-    assert "y=-2.6" in CODEGEN_USER
+    assert "y=-3.0" in CODEGEN_USER

@@ -31,6 +31,24 @@ _THEMES = [
 ]
 
 
+def _setup_korean_font() -> None:
+    """matplotlib 기본 폰트(DejaVu)엔 한글이 없어 네모 박스로 렌더된다."""
+    import matplotlib
+    matplotlib.use("Agg")
+    from matplotlib import font_manager
+    for path in (
+        "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",
+        "/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc",
+    ):
+        try:
+            font_manager.fontManager.addfont(path)
+        except Exception:
+            continue
+    import matplotlib.pyplot as plt
+    plt.rcParams["font.family"] = "sans-serif"
+    plt.rcParams["font.sans-serif"] = ["Noto Sans CJK KR", "Noto Sans CJK SC", "DejaVu Sans"]
+
+
 def _pick_theme(seed: str | None) -> dict:
     """Deterministically pick a theme from a seed string (e.g. source_id)."""
     if seed is None:
@@ -68,6 +86,7 @@ def render_slide(
     """
     import matplotlib
     matplotlib.use("Agg")
+    _setup_korean_font()
     import matplotlib.pyplot as plt
     from matplotlib.patches import Rectangle
 
@@ -156,13 +175,14 @@ def render_slide(
             )
 
         if caption:
+            # 하단 밴드(y>=650px, 0.096)는 내레이션 자막 예약 — caption은 그 위
             ax.text(
-                0.08, 0.08, caption,
+                0.08, 0.12, caption,
                 color=accent, fontsize=24, style="italic", ha="left", va="bottom",
             )
 
     ax.text(
-        0.98, 0.04, f"{scene.id:02d}",
+        0.98, 0.12, f"{scene.id:02d}",
         color="#888", fontsize=18, ha="right", va="bottom",
     )
 

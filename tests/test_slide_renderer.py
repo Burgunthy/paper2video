@@ -81,3 +81,25 @@ def test_landscape_slide_renders_body_text(tmp_path):
     nb = (np.abs(im.astype(int) - bg.astype(int)).sum(axis=2) > 40)
     # body zone (between title ~y<250 and caption ~y>620) must have content
     assert nb[300:580].mean() > 0.005, "landscape slide rendered no body text"
+
+
+def test_slide_korean_font_and_clear_band(tmp_path):
+    """Slides must (a) render Hangul with a CJK font (not DejaVu tofu boxes)
+    and (b) keep the bottom subtitle band (y>=650) free — the old layout put
+    the caption and scene number inside it."""
+    import numpy as np
+    from PIL import Image
+    from paper2video.types import Scene
+    from paper2video.renderers.slide import render_slide
+
+    scene = Scene(id=7, narration="한글 내레이션", visual_type="slide",
+                  visual_spec={"title": "한글 제목 테스트",
+                               "direction": "본문 방향 설명 한글 문장",
+                               "caption": "하단 캡션"},
+                  duration_hint_sec=5.0)
+    png = render_slide(scene, tmp_path, size=(1280, 720))
+    a = np.array(Image.open(png).convert("RGB")).astype(int)
+    band = a[650:718, 150:1130]
+    ref = band[0, 0]
+    occ = float((np.abs(band - ref).sum(axis=2) > 40).mean())
+    assert occ < 0.02, f"slide content in subtitle band: {occ:.3f}"
