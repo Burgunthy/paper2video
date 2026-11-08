@@ -241,3 +241,31 @@ class MainScene(Scene):
 """
     errors = lint_manim_code(code, social_mode=False)
     assert any("axis=UP" in e or "mirror" in e.lower() for e in errors), errors
+
+
+def test_codegen_prompt_reserves_subtitle_band():
+    """The bottom of the frame is reserved for burned narration subtitles —
+    manim content must stay above it (viewer: '자막 쓸 공간은 남기도록')."""
+    from paper2video.renderers.manim_r import CODEGEN_SYSTEM
+    assert "y=[-2.6" in CODEGEN_SYSTEM
+    assert "subtitle" in CODEGEN_SYSTEM.lower() or "자막" in CODEGEN_SYSTEM
+
+
+def test_subtitle_band_occupancy_detector(tmp_path):
+    """Frame-level detector: content in y640-716 must be measurable so the
+    renderer can retry scenes that invade the subtitle band."""
+    import numpy as np
+    from PIL import Image
+    from paper2video.renderers.manim_r import subtitle_band_occupancy
+
+    # 빈 프레임(배경만) — 0에 가깝게
+    bg = Image.new("RGB", (1280, 720), (16, 16, 20))
+    bg.save(tmp_path / "clean.png")
+    assert subtitle_band_occupancy(tmp_path / "clean.png") < 0.01
+
+    # 하단 밴드에 흰 사각형 — 높게
+    dirty = bg.copy()
+    from PIL import ImageDraw
+    ImageDraw.Draw(dirty).rectangle((300, 660, 900, 710), fill=(240, 240, 240))
+    dirty.save(tmp_path / "dirty.png")
+    assert subtitle_band_occupancy(tmp_path / "dirty.png") > 0.02

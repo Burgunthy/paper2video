@@ -53,7 +53,10 @@ HARD RULES — violating any of these will break the pipeline:
     with buff, .next_to(obj, direction, buff=0.3), or position bars lower).
     Long Latin names get a smaller font or stack on two lines. Before finishing,
     mentally check every Text's bounding box against nearby objects — the frame
-    is ~14.2 x 8 units; keep everything inside x=[-6.8, 6.8], y=[-3.6, 3.6].
+    is ~14.2 x 8 units; keep everything inside x=[-6.8, 6.8], y=[-2.6, 3.5].
+    CRITICAL: the band below y=-2.6 (bottom of the frame) is RESERVED for
+    narration subtitles that are burned in later — any object placed there
+    will be covered by subtitle text. Keep ALL objects above y=-2.6.
 
 === ENTRANCE-POSITIONING RULE — CRITICAL ===
 
@@ -422,6 +425,44 @@ class ManimRenderError(Exception):
 
     def __str__(self) -> str:
         return self.message
+
+
+def subtitle_band_occupancy(frame_png: Path) -> float:
+    """Fraction of non-background pixels in the reserved subtitle band
+    (y 640-716 of a 1280x720 frame). High = animation content will collide
+    with burned narration subtitles."""
+    import numpy as np
+    from PIL import Image
+
+    a = np.array(Image.open(frame_png).convert("RGB")).astype(int)
+    band = a[640:716, 150:1130]
+    ref = band[0, 0]
+    return float((np.abs(band - ref).sum(axis=2) > 40).mean())
+
+
+def _check_subtitle_band(mp4: Path) -> str | None:
+    """Sample frames from a rendered scene; return feedback if the animation
+    invades the reserved subtitle band, else None."""
+    import subprocess as sp
+
+    dur = float(sp.check_output(
+        ["ffprobe", "-v", "error", "-show_entries", "format=duration",
+         "-of", "csv=p=0", str(mp4)]))
+    tmp = mp4.parent / f"{mp4.stem}_bandchk.png"
+    worst = 0.0
+    for frac in (0.25, 0.5, 0.75):
+        sp.run(["ffmpeg", "-y", "-loglevel", "error", "-ss", str(dur * frac),
+                "-i", str(mp4), "-frames:v", "1", str(tmp)], check=True)
+        worst = max(worst, subtitle_band_occupancy(tmp))
+    tmp.unlink(missing_ok=True)
+    if worst > 0.015:
+        return (
+            f"Your animation content occupies the bottom subtitle band of the frame "
+            f"({worst:.0%} coverage). The bottom band (below y=-2.6 in manim units) is "
+            f"RESERVED for narration subtitles. Move ALL objects up so nothing sits "
+            f"below y=-2.6."
+        )
+    return None
 
 
 def lint_manim_code(code: str, social_mode: bool = False) -> list[str]:
@@ -805,6 +846,11 @@ pass the same font (it covers Latin). Never call Text() without the font argumen
 
         returncode, err_tail, rendered = _run_manim(code_file, media_dir, quality=quality, resolution=resolution)
         if returncode == 0 and rendered is not None:
+            band_feedback = _check_subtitle_band(rendered)
+            if band_feedback and attempt < max_retries:
+                last_err = band_feedback
+                last_lint = []  # render-레벨 재시도 경로로
+                continue
             final = out_dir / f"scene_{scene.id:03d}.mp4"
             shutil.copy2(rendered, final)
             return final
