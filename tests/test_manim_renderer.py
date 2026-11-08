@@ -285,3 +285,11 @@ class MainScene(Scene):
 """
     errors = lint_manim_code(code, social_mode=False)
     assert any("to_edge(DOWN" in e for e in errors), errors
+
+
+def test_codegen_user_prompt_carries_band_constraint():
+    """The band rule must lead the USER prompt too — system-only rules get
+    ignored by the model (measured: 6 invading scenes)."""
+    from paper2video.renderers.manim_r import CODEGEN_USER
+    assert CODEGEN_USER.index("LAYOUT CONSTRAINT") < CODEGEN_USER.index("NARRATION")
+    assert "y=-2.6" in CODEGEN_USER
