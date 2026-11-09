@@ -274,3 +274,46 @@ def test_figure_box_never_invades_caption_band(tmp_path):
     # 캡션 텍스트 자체는 ffmpeg 단계에서 그려지므로 프리뷰의 이 영역은
     # 그림 콘텐츠(흰색 덩어리)가 아니어야 한다
     assert _white_fraction(band, 5, min(MARGIN_TOP + CAPTION_BAND_H - 2, 80)) < 0.5
+
+
+def test_full_span_axis_needs_no_snap(tmp_path):
+    """focus bottom(전체 폭)은 x축 스냅 없이 세로만 잘려야 한다.
+
+    좌우 여백(거터)이 없는 그림 — 예전엔 x축 스냅 실패로 full 폴백해
+    bottom이 무시됐다(2026-11-10 재생성 검증에서 발견). 또한 y1=1.0은
+    내부 거터로 스냅하면 안 되고 그림 가장자리로 유지된다.
+    """
+    import numpy as np
+    from paper2video.renderers.figure_r import _compose_layers
+
+    fig_dir = tmp_path / "figures"
+    fig_dir.mkdir()
+    rng = np.random.default_rng(7)
+    arr = np.full((900, 600, 3), 255, dtype=np.uint8)
+    # 3개 밴드: 좌우 끝까지 내용(가장자리 여백 없음), 밴드 사이 흰 거터.
+    # 밴드 내부는 기본색+드문 노이즈 — 단색이면 유니폼 행이 거터로 오판된다.
+    base = [(40, 60, 120), (80, 60, 120), (120, 60, 120)]
+    for i, y0 in enumerate((0, 310, 620)):
+        arr[y0:y0 + 280] = base[i]
+        noise = rng.random((280, 600)) < 0.05
+        arr[y0:y0 + 280][noise] = rng.integers(0, 255, (int(noise.sum()), 3))
+    Image.fromarray(arr).save(fig_dir / "fig1.png")
+    manifest = [{"id": "fig1", "number": 1, "page": 3, "caption": "c", "path": "fig1.png",
+                 "width_px": 600, "height_px": 900}]
+    (fig_dir / "figures.json").write_text(json.dumps(manifest), encoding="utf-8")
+
+    scene = Scene(id=1, narration="n", visual_type="figure",
+                  visual_spec={"figure_id": "fig1", "focus": "bottom", "highlight": "",
+                               "caption": "캡션"},
+                  duration_hint_sec=5.0)
+    _compose_layers(scene, fig_dir, 1280, 720, tmp_path)
+    layer = np.array(Image.open(tmp_path / "figscene_001_layer.png").convert("RGB"))
+
+    # 노이즈 픽셀 일부는 어떤 색 근처에도 올 수 있으니 절대량으로 판정.
+    # tol은 밴드간 색차(ΔR=40)의 절반 이하로 — 허용치 겹침 방지.
+    def near(color, tol=15):
+        m = (np.abs(layer.astype(int) - color) <= tol).all(axis=2)
+        return m.sum()
+
+    assert near(base[0]) < 300, f"top band must be cropped away: {near(base[0])}"
+    assert near(base[2]) > 20000, f"bottom band must dominate: {near(base[2])}"

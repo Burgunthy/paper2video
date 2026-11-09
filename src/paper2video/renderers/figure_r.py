@@ -73,6 +73,10 @@ def snap_crop_x(arr, x0: float, x1: float, tol: float = 0.20) -> tuple[float, fl
         return x0, x1, False
 
     def snap(v: float) -> float | None:
+        if v <= 0.02 or v >= 0.98:
+            # 요청 자체가 그림 가장자리 — 내부 거터로 스냅하면 안 된다
+            # (하단 내용이 끝까지 차 있는 그림에서 y1=1.0이 스냅 실패하던 버그).
+            return v
         best = min(bounds, key=lambda b: abs(b - v))
         return best if abs(best - v) <= tol else None
 
@@ -150,11 +154,17 @@ def _compose_layers(
         import numpy as np
 
         arr = np.array(fig.convert("L"))
-        sx0, sx1, ok_x = snap_crop_x(arr, fx0, fx1)
-        sy0, sy1, ok_y = snap_crop_y(arr, fy0, fy1)
+        w_img, h_img = fig.size
+        # 범위가 이미 전체(0..1)인 축은 자를 필요가 없다 — 스냅도 불요.
+        # (내부 거터만 있는 그림에서 "bottom"(전체 폭)이 x축 스냅 실패로
+        # full 폴백하던 버그: 2026-11-10 재생성 검증에서 발견)
+        want_x = not (fx0 <= 0.0 and fx1 >= 1.0)
+        want_y = not (fy0 <= 0.0 and fy1 >= 1.0)
+        sx0, sx1, ok_x = (snap_crop_x(arr, fx0, fx1) if want_x else (fx0, fx1, True))
+        sy0, sy1, ok_y = (snap_crop_y(arr, fy0, fy1) if want_y else (fy0, fy1, True))
         if ok_x and ok_y:
-            w, h = fig.size
-            fig = fig.crop((int(w * sx0), int(h * sy0), int(w * sx1), int(h * sy1)))
+            fig = fig.crop((int(w_img * sx0), int(h_img * sy0),
+                            int(w_img * sx1), int(h_img * sy1)))
         # else: no reliable panel boundaries — keep the FULL figure. A crop
         # that cuts panels mid-content looks broken; full view never does.
 
