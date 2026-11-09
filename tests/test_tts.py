@@ -107,3 +107,64 @@ def test_http_tts_error_raises(tmp_path):
             engine.synthesize("x", tmp_path / "s.wav")
     finally:
         srv.shutdown()
+
+
+def _scene(nid: int = 1) -> Scene:
+    return Scene(id=nid, narration="테스트 내레이션", visual_type="slide",
+                 visual_spec={"title": "t"}, duration_hint_sec=3.0)
+
+
+def test_scene_audio_reuses_cached_wav(tmp_path):
+    """같은 run-id 재실행 시 이미 합성된 장면 오디오는 건너뛴다."""
+    calls = []
+
+    class CountingTTS(FakeTTS):
+        def synthesize(self, text, out_path):
+            calls.append(text)
+            return super().synthesize(text, out_path)
+
+    scene = _scene()
+    first = synthesize_scene_audio(scene, CountingTTS(), tmp_path)
+    second = synthesize_scene_audio(scene, CountingTTS(), tmp_path)
+    assert len(calls) == 1
+    assert first.audio_path == second.audio_path
+    assert first.duration_sec == second.duration_sec
+
+
+def test_scene_audio_skips_partial_wav(tmp_path):
+    """크래시로 잘린 wav는 무효 — 재합성한다."""
+    scene = _scene()
+    (tmp_path / "scene_001.wav").write_bytes(b"RIFF\x00\x00")  # 깨진 헤더
+    result = synthesize_scene_audio(scene, FakeTTS(), tmp_path)
+    assert result.duration_sec > 0
+
+
+def test_scene_audio_retries_transient_failure(tmp_path):
+    """일시 엔진 실패는 재시도로 회복 — 한 번의 실패로 전체가 죽지 않는다."""
+    class FlakyTTS(FakeTTS):
+        def __init__(self):
+            super().__init__()
+            self.calls = 0
+
+        def synthesize(self, text, out_path):
+            self.calls += 1
+            if self.calls < 3:
+                raise RuntimeError("connection refused")
+            return super().synthesize(text, out_path)
+
+    engine = FlakyTTS()
+    result = synthesize_scene_audio(_scene(), engine, tmp_path, retry_waits=(0, 0, 0))
+    assert engine.calls == 3
+    assert result.duration_sec > 0
+
+
+def test_scene_audio_raises_after_exhausted_retries(tmp_path):
+    """계속 실패하면 마지막 예외를 그대로 올린다."""
+    class DeadTTS(FakeTTS):
+        def synthesize(self, text, out_path):
+            raise RuntimeError("connection refused")
+
+    import pytest
+    with pytest.raises(RuntimeError, match="connection refused"):
+        synthesize_scene_audio(_scene(), DeadTTS(), tmp_path, retry_waits=(0, 0))
+    assert not (tmp_path / "scene_001.wav").exists()  # 부분 출력 정리됨

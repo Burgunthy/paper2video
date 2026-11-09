@@ -4,6 +4,7 @@ import os
 import struct
 import subprocess
 import tempfile
+import time
 import wave
 from dataclasses import dataclass
 from pathlib import Path
@@ -181,8 +182,42 @@ def _wav_duration(path: Path) -> float:
         return w.getnframes() / float(w.getframerate())
 
 
-def synthesize_scene_audio(scene: Scene, engine: TTSEngine, out_dir: Path) -> SceneAudio:
+def _valid_wav(path: Path) -> bool:
+    """읽을 수 있고 유의미한 길이인 wav — 크래시 직후의 잘린 파일은 걸러진다."""
+    try:
+        return path.exists() and _wav_duration(path) > 0.1
+    except (wave.Error, EOFError, OSError):
+        return False
+
+
+def synthesize_scene_audio(
+    scene: Scene,
+    engine: TTSEngine,
+    out_dir: Path,
+    retry_waits: tuple[int, ...] = (0, 5, 15),
+) -> SceneAudio:
+    """장면 내레이션 합성 — 재시도 + 장면별 오디오 캐시.
+
+    - 이미 유효한 wav가 있으면 재합성하지 않는다(같은 run-id 재실행 시 성공 장면 재사용).
+    - 일시 실패(edge-tts 스로틀, TTS 서버 순단)는 백오프 재시도로 흡수 —
+      한 장면 실패가 파이프라인 전체를 죽이지 않게 한다(2026-11-09 사고).
+    """
     out_dir = Path(out_dir)
     path = out_dir / f"scene_{scene.id:03d}.wav"
-    engine.synthesize(normalize_for_tts(scene.narration), path)
-    return SceneAudio(scene_id=scene.id, audio_path=path, duration_sec=_wav_duration(path))
+    if _valid_wav(path):
+        return SceneAudio(scene_id=scene.id, audio_path=path, duration_sec=_wav_duration(path))
+    text = normalize_for_tts(scene.narration)
+    last_exc: Exception | None = None
+    for wait in retry_waits:
+        if wait:
+            time.sleep(wait)
+        try:
+            engine.synthesize(text, path)
+            return SceneAudio(
+                scene_id=scene.id, audio_path=path, duration_sec=_wav_duration(path)
+            )
+        except Exception as e:  # 엔진·네트워크 일시 오류
+            last_exc = e
+            path.unlink(missing_ok=True)  # 실패 시 부분 출력 제거
+    assert last_exc is not None
+    raise last_exc
