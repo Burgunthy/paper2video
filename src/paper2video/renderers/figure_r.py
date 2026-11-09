@@ -36,6 +36,11 @@ REGIONS = {
     "bottom-right":(0.5, 0.5, 1.0, 1.0),
 }
 
+# 캡션/출처 태그는 상단(y=10, fontsize 26, box 여백 10)에 그려진다 — 텍스트 하단이
+# y≈61까지 내려온다. 그림 박스는 캡션이 있을 때 이만큼 더 아래에서 시작해야
+# 캡션 박스가 그림 상단을 덮지 않는다(2026-11-10 QA: "그림/글 겹침").
+CAPTION_BAND_H = 40
+
 
 def snap_crop_x(arr, x0: float, x1: float, tol: float = 0.20) -> tuple[float, float, bool]:
     """Snap a fractional horizontal crop to real panel boundaries.
@@ -153,14 +158,17 @@ def _compose_layers(
         # else: no reliable panel boundaries — keep the FULL figure. A crop
         # that cuts panels mid-content looks broken; full view never does.
 
-    # Figure box on the final canvas — must NEVER overlap the caption strip.
+    # Figure box on the final canvas — must NEVER overlap the caption strip
+    # (bottom) nor the caption/tag text band (top, y≈10..61 when caption exists).
+    has_caption = bool(str((scene.visual_spec or {}).get("caption", "")).strip())
+    top_margin = MARGIN_TOP + (CAPTION_BAND_H if has_caption else 0)
     avail_w = width - 2 * MARGIN_X
-    avail_h = height - MARGIN_TOP - CAPTION_STRIP_H - 16
+    avail_h = height - top_margin - CAPTION_STRIP_H - 16
     scale = min(avail_w / fig.width, avail_h / fig.height)
     box_w = max(2, int(fig.width * scale)) & ~1   # even dims for yuv420p safety
     box_h = max(2, int(fig.height * scale)) & ~1
     box_x = (width - box_w) // 2
-    box_y = MARGIN_TOP + max(0, (avail_h - box_h) // 2)
+    box_y = top_margin + max(0, (avail_h - box_h) // 2)
 
     bg = Image.new("RGB", (width, height), BG)
 
