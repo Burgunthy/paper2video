@@ -119,6 +119,8 @@ class HTTPTTS:
 
         self.url = url or os.environ.get("PAPER2VIDEO_TTS_URL", "")
         self.voice = voice or os.environ.get("PAPER2VIDEO_TTS_VOICE", "")
+        # Qwen3-TTS CustomVoice 등 instruct 지원 서버용 톤 지시(없으면 미전송)
+        self.instruct = os.environ.get("PAPER2VIDEO_TTS_INSTRUCT", "")
         self.token = os.environ.get("PAPER2VIDEO_TTS_TOKEN", "")
         if not self.url:
             raise RuntimeError("HTTPTTS needs PAPER2VIDEO_TTS_URL")
@@ -129,9 +131,12 @@ class HTTPTTS:
 
         out_path = Path(out_path)
         out_path.parent.mkdir(parents=True, exist_ok=True)
+        payload = {"text": text, "voice": self.voice}
+        if self.instruct:
+            payload["instruct"] = self.instruct
         req = urllib.request.Request(
             self.url,
-            data=json.dumps({"text": text, "voice": self.voice}).encode("utf-8"),
+            data=json.dumps(payload).encode("utf-8"),
             headers={"Content-Type": "application/json",
                      **({"Authorization": f"Bearer {self.token}"} if self.token else {})},
             method="POST",

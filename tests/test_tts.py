@@ -168,3 +168,37 @@ def test_scene_audio_raises_after_exhausted_retries(tmp_path):
     with pytest.raises(RuntimeError, match="connection refused"):
         synthesize_scene_audio(_scene(), DeadTTS(), tmp_path, retry_waits=(0, 0))
     assert not (tmp_path / "scene_001.wav").exists()  # 부분 출력 정리됨
+
+
+def test_http_tts_instruct_forwarded(tmp_path, monkeypatch):
+    """PAPER2VIDEO_TTS_INSTRUCT가 지정되면 payload에 instruct가 실린다."""
+    import json as _json
+    import threading
+    from http.server import BaseHTTPRequestHandler, HTTPServer
+    from paper2video.tts import HTTPTTS
+
+    seen: dict = {}
+
+    class H(BaseHTTPRequestHandler):
+        def do_POST(self):
+            n = int(self.headers.get("Content-Length", 0))
+            seen["payload"] = _json.loads(self.rfile.read(n))
+            body = b"RIFF-fake-wav-bytes"
+            self.send_response(200)
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+
+        def log_message(self, *a):
+            pass
+
+    monkeypatch.setenv("PAPER2VIDEO_TTS_INSTRUCT", "빠르고 에너지 있는 톤으로")
+    srv = HTTPServer(("127.0.0.1", 0), H)
+    threading.Thread(target=srv.serve_forever, daemon=True).start()
+    try:
+        engine = HTTPTTS(url=f"http://127.0.0.1:{srv.server_port}/tts", voice="Sohee")
+        engine.synthesize("안녕하세요", tmp_path / "s.wav")
+        assert seen["payload"]["instruct"] == "빠르고 에너지 있는 톤으로"
+        assert seen["payload"]["voice"] == "Sohee"
+    finally:
+        srv.shutdown()
