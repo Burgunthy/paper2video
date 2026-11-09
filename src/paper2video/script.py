@@ -272,6 +272,7 @@ FIGURE_SCENE_SCHEMA = """When the best visual is the paper's OWN figure, emit a 
 Rules for figure scenes:
 - figure_id MUST be copied exactly from the AVAILABLE FIGURES list. Never invent one.
 - focus points the camera at the part of the figure the narration discusses.
+- TALL FIGURES (height/width >= 1.5 in the AVAILABLE FIGURES pixel sizes): focus "full" is FORBIDDEN — the whole-figure fit shrinks it to an unreadable sliver. Pick the band the narration walks (top/bottom for row-stacked panels; left/right for column-stacked) or split the figure across two scenes, one band each.
 - highlight: leave empty (deprecated — the renderer ignores it).
 - NARRATION MUST WALK THE VIEWER THROUGH THE FIGURE, not talk past it: name what
   is on screen in reading order — the panel ("왼쪽 (a) 패널"), the axis or curve
@@ -449,6 +450,7 @@ For figure scenes instead use:
 Rules:
 - duration_hint_sec ≈ narration spoken length (Korean ~5 chars/sec).
 - figure_id must come from the AVAILABLE FIGURES list only.
+- TALL FIGURES (height/width >= 1.5): never focus "full" — pick the band the narration walks (top/bottom/left/right) or one band per scene across two scenes.
 - Output ONLY: {{"scenes": [...]}} with exactly the {n} requested scenes, in order.
 - No prose, no code fences."""
 

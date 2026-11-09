@@ -241,3 +241,36 @@ def test_no_gutters_means_full_view(tmp_path):
     # not a narrow center-crop sliver
     assert layer.width / layer.height > 1.5, \
         f"expected full-figure view, got narrow crop {layer.size}"
+
+
+def test_figure_box_never_invades_caption_band(tmp_path):
+    """캡션 텍스트(상단 y≈10..61)와 그림 박스가 겹치면 안 된다 (2026-11-10 QA).
+
+    높이 제약 그림(박스가 avail 전체를 쓰는 경우)이 최악의 경우 — 캡션이
+    있으면 박스 상단이 캡션 밴드 아래로 내려가야 한다.
+    """
+    from paper2video.renderers.figure_r import (
+        _compose_layers, MARGIN_TOP, CAPTION_BAND_H,
+    )
+
+    fig_dir = _make_fig_dir(tmp_path)
+
+    with_caption = _scene("실기 zero-shot 90 · 85 · 65%")
+    _, _, box_c, _ = _compose_layers(with_caption, fig_dir, 1280, 720, tmp_path)
+
+    no_caption = _scene("")
+    _, _, box_n, _ = _compose_layers(no_caption, fig_dir, 1280, 720, tmp_path)
+
+    bx, by, bw, bh = box_c
+    # 캡션 하단(≈61px)보다 아래에서 시작
+    assert by >= MARGIN_TOP + CAPTION_BAND_H, f"box top {by} invades caption band"
+    # 높이 제약 그림: 캡션 없을 때와 달리 박스가 아래로 내려갔는지 확인
+    assert box_n[1] == MARGIN_TOP  # 캡션 없으면 기존 상단 유지
+    assert by > box_n[1]
+    # 캡션 밴드(y 10..61) 내에 그림 픽셀이 없음 — 프리뷰에서 검증
+    from PIL import Image
+    preview = Image.open(tmp_path / "figscene_001.png").convert("RGB")
+    band = preview.crop((0, 0, 1280, MARGIN_TOP + CAPTION_BAND_H))
+    # 캡션 텍스트 자체는 ffmpeg 단계에서 그려지므로 프리뷰의 이 영역은
+    # 그림 콘텐츠(흰색 덩어리)가 아니어야 한다
+    assert _white_fraction(band, 5, min(MARGIN_TOP + CAPTION_BAND_H - 2, 80)) < 0.5
