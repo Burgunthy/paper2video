@@ -182,6 +182,35 @@ def run_pipeline(
         _write_json(script_cache, script_doc.model_dump())
         _log(run_dir, f"  title={script_doc.title!r} scenes={len(script_doc.scenes)}")
 
+    # 수치 그라운딩 검증(TAE-56) — 원문에 없는 환각 수치를 렌더 전에 잡아
+    # 해당 씬을 교정한다. 캐시 재실행 경로에서도 매번 검증한다.
+    if os.environ.get("PAPER2VIDEO_GROUNDING", "1") != "0":
+        src_text = ""
+        ing = run_dir / "ingest.json"
+        if ing.exists():
+            try:
+                src_text = str(json.loads(ing.read_text(encoding="utf-8")).get("text", ""))
+            except (json.JSONDecodeError, OSError):
+                src_text = ""
+        if src_text:
+            from .grounding import correct_scenes, report_dict, verify
+
+            g = verify(script_doc, src_text)
+            if g.unverified:
+                _log(run_dir, f"  grounding: {len(g.unverified)} table-sourced numbers "
+                              f"logged as unverified")
+            if g.ungrounded:
+                _log(run_dir, f"  grounding: {len(g.ungrounded)} ungrounded numbers "
+                              f"({', '.join(sorted({b.number for b in g.ungrounded}))}) -> correcting")
+                script_doc, n_fixed = correct_scenes(script_doc, g.ungrounded, llm)
+                g2 = verify(script_doc, src_text)
+                _write_json(run_dir / "grounding_report.json", report_dict(g, g2))
+                _write_json(script_cache, script_doc.model_dump())  # 교정본으로 캐시 갱신
+                _log(run_dir, f"  grounding: corrected {n_fixed} scenes, "
+                              f"remaining {len(g2.ungrounded)}")
+            elif g.unverified:
+                _write_json(run_dir / "grounding_report.json", report_dict(g, g))
+
     # 4. TTS FIRST — so we know per-scene durations before rendering visuals.
     _log(run_dir, "stage: tts")
     audio_dir = run_dir / "audio"

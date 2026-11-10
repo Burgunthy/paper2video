@@ -66,6 +66,10 @@ Produce JSON with this exact shape:
 Rules:
 - Notes should be factual claims grounded in the article or search results.
 - key_points should be the story beats for the video, in order.
+- NUMBERS: every concrete figure (percentages, counts, sizes) must appear
+  VERBATIM in the article text. Extracted tables can arrive with scrambled
+  cells — if you cannot trace a number to clear prose, do NOT state it.
+  Prefer qualitative wording over an unverified number.
 - Output JSON only.
 """
 
