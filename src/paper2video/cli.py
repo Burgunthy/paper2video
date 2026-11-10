@@ -261,12 +261,34 @@ def main(argv: list[str] | None = None) -> int:
     if args.uninstall_scheduler:
         return _uninstall_scheduler()
 
-    from .llm import AnthropicClient
-    llm = AnthropicClient()
+    if os.environ.get("PAPER2VIDEO_LLM", "").lower() == "codex":
+        from .llm import CodexCLIClient
+        llm = CodexCLIClient()
+    else:
+        from .llm import AnthropicClient
+        llm = AnthropicClient()
+
+    # Optional split: research/script on one client, manim codegen on another.
+    # GLM writes the best long-form scripts but stalls on codegen (thinking-only
+    # responses); codex/gpt-6-luna is the opposite. PAPER2VIDEO_CODEGEN_LLM=codex
+    # selects the codex client for codegen while the script stays on the main LLM.
+    codegen_llm = llm
+    codegen_choice = os.environ.get("PAPER2VIDEO_CODEGEN_LLM", "").lower()
+    if codegen_choice == "codex" and os.environ.get("PAPER2VIDEO_LLM", "").lower() != "codex":
+        from .llm import CodexCLIClient
+        # Explicit default: PAPER2VIDEO_MODEL names the SCRIPT model (e.g. glm-5.3);
+        # codex would reject it with model_not_found. Override separately if ever needed.
+        codegen_llm = CodexCLIClient(model=os.environ.get("PAPER2VIDEO_CODEGEN_MODEL", "gpt-6-luna"))
 
     if args.fake_tts:
         from .tts import FakeTTS
         tts = FakeTTS()
+    elif os.environ.get("PAPER2VIDEO_TTS", "").lower() == "edge":
+        from .tts import EdgeTTS
+        tts = EdgeTTS()
+    elif os.environ.get("PAPER2VIDEO_TTS", "").lower() == "http":
+        from .tts import HTTPTTS
+        tts = HTTPTTS()
     else:
         try:
             from .tts import KokoroTTS
@@ -346,7 +368,7 @@ def main(argv: list[str] | None = None) -> int:
         height=args.height,
         fps=args.fps,
     )
-    result = run_pipeline(args.source, cfg, llm=llm, tts=tts)
+    result = run_pipeline(args.source, cfg, llm=llm, tts=tts, codegen_llm=codegen_llm)
     print(f"video: {result.video_path}")
     print(f"run dir: {result.run_dir}")
     return 0

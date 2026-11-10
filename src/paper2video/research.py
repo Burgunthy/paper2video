@@ -1,9 +1,24 @@
 from __future__ import annotations
+import os
 from dataclasses import dataclass
 from typing import Callable
 from .ingest import IngestedDoc
 from .llm import LLMClient
 from .types import ResearchNote, Source
+
+
+def _text_cap(default: int = 12000) -> int:
+    try:
+        return int(os.environ.get("PAPER2VIDEO_TEXT_CAP", str(default)))
+    except ValueError:
+        return default
+
+
+def _keypoint_target(default: int = 6) -> int:
+    try:
+        return int(os.environ.get("PAPER2VIDEO_KEYPOINTS", str(default)))
+    except ValueError:
+        return default
 
 
 SearchFn = Callable[[str, int], list[dict]]
@@ -51,6 +66,10 @@ Produce JSON with this exact shape:
 Rules:
 - Notes should be factual claims grounded in the article or search results.
 - key_points should be the story beats for the video, in order.
+- NUMBERS: every concrete figure (percentages, counts, sizes) must appear
+  VERBATIM in the article text. Extracted tables can arrive with scrambled
+  cells — if you cannot trace a number to clear prose, do NOT state it.
+  Prefer qualitative wording over an unverified number.
 - Output JSON only.
 """
 
@@ -64,7 +83,7 @@ def research(
 ) -> ResearchResult:
     search = search or _default_search
 
-    concepts_raw = llm.complete_json(CONCEPTS_PROMPT.format(text=doc.text[:12000]))
+    concepts_raw = llm.complete_json(CONCEPTS_PROMPT.format(text=doc.text[:_text_cap()]))
     if isinstance(concepts_raw, list):
         concepts = [str(c) for c in concepts_raw][:max_concepts]
     else:
@@ -86,8 +105,24 @@ def research(
 
     search_context = "\n".join(search_context_parts) if search_context_parts else "(none)"
 
+    n_kp = _keypoint_target()
+    synthesis_prompt = SYNTHESIS_PROMPT.replace(
+        '"key_points": ["3-6 short bullet points capturing the main ideas"]',
+        f'"key_points": ["{max(3, n_kp - 2)}-{n_kp + 2} short bullet points capturing the main ideas, in narrative order"]',
+    )
+    lang = os.environ.get("PAPER2VIDEO_LANG", "").lower()
+    if lang == "ko":
+        synthesis_prompt += (
+            "\n\nLANGUAGE: write key_points in natural Korean (한국어). "
+            "Keep widely-used English technical terms as-is where natural. "
+            "notes claims may stay in English.\n"
+            "STYLE (중요): 연구자의 리뷰 노트 어조로 쓸 것 — 각 항목은 '주장 + 근거/인과'를 "
+            "단정 서술한다(~이다/~한다/~때문에 ~할 수 없다). 수사적 표현 금지: 은유, "
+            "극적 전개('갈등의 뿌리', '길이 열린다' 류), 감탄, 나열형 채움말. "
+            "'문제는 ~에 있다' 식의 직접 문제 제기가 좋은 예다."
+        )
     synthesis = llm.complete_json(
-        SYNTHESIS_PROMPT.format(text=doc.text[:12000], search_context=search_context)
+        synthesis_prompt.format(text=doc.text[:_text_cap()], search_context=search_context)
     )
     notes = [
         ResearchNote(

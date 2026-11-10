@@ -1,5 +1,10 @@
 from __future__ import annotations
+import asyncio
+import os
 import struct
+import subprocess
+import tempfile
+import time
 import wave
 from dataclasses import dataclass
 from pathlib import Path
@@ -66,13 +71,158 @@ class KokoroTTS:
         return out_path
 
 
+# Korean TTS mispronounces common tech terms (SAM3 -> 삼삼, Ego4D -> 에고4디).
+# Map them to the intended spoken form before synthesis. Longest-first so
+# "Ego-Exo4D" wins over "Ego4D". Word-boundary regex keeps "4D" inside other
+# tokens untouched.
+_TTS_GLOSSARY: list[tuple[str, str]] = [
+    ("Ego-Exo4D", "에고엑소포디"),
+    ("Ego4D", "에고포디"),
+    ("Ego-Exo", "에고엑소"),
+    ("EPIC-KITCHENS", "에픽키친즈"),
+    ("EPIC KITCHENS", "에픽키친즈"),
+    ("Something-Something", "썸싱썸싱"),
+    ("Depth Anything 3", "뎁스애니띵쓰리"),
+    ("Depth Anything", "뎁스애니띵"),
+    ("ZoeDepth", "조우뎁스"),
+    ("SAM3", "샘쓰리"),
+    ("SAM 3", "샘쓰리"),
+    ("HaWoR", "하워"),
+    ("WiLoR", "윌로"),
+    ("VITRA", "비트라"),
+    ("MANO", "마노"),
+    ("ARCTIC", "아틱틱"),
+    ("HOT3D", "핫쓰리디"),
+    ("HACO", "하코"),
+    ("DexYCB", "덱스와이씨비"),
+]
+
+
+def normalize_for_tts(text: str) -> str:
+    import re
+
+    out = text
+    for term, spoken in sorted(_TTS_GLOSSARY, key=lambda t: -len(t[0])):
+        out = re.sub(rf"(?<![A-Za-z0-9]){re.escape(term)}(?![A-Za-z0-9])", spoken, out)
+    return out
+
+
+class HTTPTTS:
+    """Remote TTS over HTTP (e.g. a GPU box running an open model server).
+
+    POSTs {text, voice} as JSON to `url` and writes the returned audio
+    (WAV bytes) to out_path. Voice is optional server-side preset naming.
+    """
+
+    def __init__(self, url: str | None = None, voice: str | None = None):
+        import os
+
+        self.url = url or os.environ.get("PAPER2VIDEO_TTS_URL", "")
+        self.voice = voice or os.environ.get("PAPER2VIDEO_TTS_VOICE", "")
+        # Qwen3-TTS CustomVoice 등 instruct 지원 서버용 톤 지시(없으면 미전송)
+        self.instruct = os.environ.get("PAPER2VIDEO_TTS_INSTRUCT", "")
+        self.token = os.environ.get("PAPER2VIDEO_TTS_TOKEN", "")
+        if not self.url:
+            raise RuntimeError("HTTPTTS needs PAPER2VIDEO_TTS_URL")
+
+    def synthesize(self, text: str, out_path: Path) -> Path:
+        import json
+        import urllib.request
+
+        out_path = Path(out_path)
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        payload = {"text": text, "voice": self.voice}
+        if self.instruct:
+            payload["instruct"] = self.instruct
+        req = urllib.request.Request(
+            self.url,
+            data=json.dumps(payload).encode("utf-8"),
+            headers={"Content-Type": "application/json",
+                     **({"Authorization": f"Bearer {self.token}"} if self.token else {})},
+            method="POST",
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=600) as resp:
+                body = resp.read()
+        except urllib.error.HTTPError as e:
+            raise RuntimeError(f"HTTPTTS server error {e.code}: {e.read()[:200]!r}") from e
+        out_path.write_bytes(body)
+        return out_path
+
+
+class EdgeTTS:
+    """Online TTS via Microsoft Edge voices (Korean etc.). Writes 24kHz mono WAV.
+
+    Kokoro does not support Korean, so this engine covers ko (and any other
+    edge-tts voice) at neural quality without an API key.
+    """
+
+    def __init__(self, voice: str | None = None):
+        import edge_tts  # type: ignore
+        self._edge_tts = edge_tts
+        self.voice = voice or os.environ.get("PAPER2VIDEO_TTS_VOICE", "ko-KR-SunHiNeural")
+        self.sample_rate = 24000
+
+    def synthesize(self, text: str, out_path: Path) -> Path:
+        out_path = Path(out_path)
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        with tempfile.NamedTemporaryFile(suffix=".mp3", delete=False) as f:
+            tmp = Path(f.name)
+        try:
+            asyncio.run(self._edge_tts.Communicate(text, self.voice).save(str(tmp)))
+            ffmpeg = os.environ.get("PAPER2VIDEO_FFMPEG", "ffmpeg")
+            subprocess.run(
+                [ffmpeg, "-y", "-v", "error", "-i", str(tmp),
+                 "-ar", str(self.sample_rate), "-ac", "1", "-sample_fmt", "s16",
+                 str(out_path)],
+                check=True, stdin=subprocess.DEVNULL,
+            )
+        finally:
+            tmp.unlink(missing_ok=True)
+        return out_path
+
+
 def _wav_duration(path: Path) -> float:
     with wave.open(str(path)) as w:
         return w.getnframes() / float(w.getframerate())
 
 
-def synthesize_scene_audio(scene: Scene, engine: TTSEngine, out_dir: Path) -> SceneAudio:
+def _valid_wav(path: Path) -> bool:
+    """읽을 수 있고 유의미한 길이인 wav — 크래시 직후의 잘린 파일은 걸러진다."""
+    try:
+        return path.exists() and _wav_duration(path) > 0.1
+    except (wave.Error, EOFError, OSError):
+        return False
+
+
+def synthesize_scene_audio(
+    scene: Scene,
+    engine: TTSEngine,
+    out_dir: Path,
+    retry_waits: tuple[int, ...] = (0, 5, 15),
+) -> SceneAudio:
+    """장면 내레이션 합성 — 재시도 + 장면별 오디오 캐시.
+
+    - 이미 유효한 wav가 있으면 재합성하지 않는다(같은 run-id 재실행 시 성공 장면 재사용).
+    - 일시 실패(edge-tts 스로틀, TTS 서버 순단)는 백오프 재시도로 흡수 —
+      한 장면 실패가 파이프라인 전체를 죽이지 않게 한다(2026-11-09 사고).
+    """
     out_dir = Path(out_dir)
     path = out_dir / f"scene_{scene.id:03d}.wav"
-    engine.synthesize(scene.narration, path)
-    return SceneAudio(scene_id=scene.id, audio_path=path, duration_sec=_wav_duration(path))
+    if _valid_wav(path):
+        return SceneAudio(scene_id=scene.id, audio_path=path, duration_sec=_wav_duration(path))
+    text = normalize_for_tts(scene.narration)
+    last_exc: Exception | None = None
+    for wait in retry_waits:
+        if wait:
+            time.sleep(wait)
+        try:
+            engine.synthesize(text, path)
+            return SceneAudio(
+                scene_id=scene.id, audio_path=path, duration_sec=_wav_duration(path)
+            )
+        except Exception as e:  # 엔진·네트워크 일시 오류
+            last_exc = e
+            path.unlink(missing_ok=True)  # 실패 시 부분 출력 제거
+    assert last_exc is not None
+    raise last_exc

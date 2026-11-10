@@ -1,0 +1,38 @@
+[launch] spike-v5-compact (pid 284309)
+[launch] spike-v2-figurewalk (pid 284310)
+[OK  ] spike-v5-compact rc=0 video=9.2MB
+[launch] spike-v1-deep (pid 471002)
+[OK  ] spike-v2-figurewalk rc=0 video=12.7MB
+[launch] spike-v3-hybrid (pid 856092)
+[FAIL] spike-v3-hybrid rc=1 video=-
+[launch] spike-v4-deepdive (pid 871612)
+[FAIL] spike-v4-deepdive rc=1 video=-
+[OK  ] spike-v1-deep rc=0 video=11.5MB
+
+=== summary ===
+  spike-v5-compact: rc=0 9.2MB
+  spike-v2-figurewalk: rc=0 12.7MB
+  spike-v3-hybrid: rc=1 missing
+  spike-v4-deepdive: rc=1 missing
+  spike-v1-deep: rc=0 11.5MB
+[plan] running: ['hybrid', 'deepdive']
+[launch] spike-v3-hybrid (pid 1319560)
+[launch] spike-v4-deepdive (pid 1319561)
+[FAIL] spike-v3-hybrid rc=1 video=-
+[FAIL] spike-v4-deepdive rc=1 video=-
+
+=== summary ===
+  spike-v3-hybrid: rc=1 missing
+  spike-v4-deepdive: rc=1 missing
+[plan] running: ['hybrid', 'deepdive']
+[launch] spike-v3-hybrid (pid 1435067)
+[launch] spike-v4-deepdive (pid 1435068)
+[plan] running: ['hybrid', 'deepdive']
+[launch] spike-v3-hybrid (pid 1885478)
+[launch] spike-v4-deepdive (pid 1885479)
+[OK  ] spike-v3-hybrid rc=0 video=20.4MB
+[OK  ] spike-v4-deepdive rc=0 video=27.7MB
+
+=== summary ===
+  spike-v3-hybrid: rc=0 20.4MB
+  spike-v4-deepdive: rc=0 27.7MB

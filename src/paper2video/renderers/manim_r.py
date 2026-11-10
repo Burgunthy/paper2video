@@ -7,6 +7,7 @@ Flow:
   4. Return the path to the rendered mp4 (silent video).
 """
 from __future__ import annotations
+import os
 import shutil
 import subprocess
 import sys
@@ -32,6 +33,30 @@ HARD RULES — violating any of these will break the pipeline:
 7. Use a dark background (Manim's default) with light text. Good colors: WHITE, YELLOW, BLUE, GREEN, RED, GREY_A.
 8. Animations should feel like 3Blue1Brown: smooth transforms, progressive reveals,
    highlights, arrows, diagrams. NOT a static slide with a title and bullets.
+9. ALL on-screen Text must be KOREAN (the narration language). Only proper nouns
+   that are inherently Latin (model/dataset names like Ego4D, SAM3) may stay in
+   Latin script — titles, labels, captions, and callouts are Korean.
+10. NO OVERLAPS: text must never sit on top of bars, shapes, or other text.
+
+    WRONG (labels painted onto the bars they describe):
+        bar = Rectangle(...).move_to(DOWN)
+        label = Text("웹 문서").move_to(bar.get_center())   # text ON the bar — unreadable
+        group = VGroup(bar, label)
+
+    RIGHT (label beside its object with clear clearance):
+        bar = Rectangle(...).move_to(DOWN)
+        label = Text("웹 문서", font_size=28)
+        label.next_to(bar, UP, buff=0.35)                   # above, never touching
+        group = VGroup(bar, label)
+
+    Place labels beside or above their object with clear spacing (use .arrange()
+    with buff, .next_to(obj, direction, buff=0.3), or position bars lower).
+    Long Latin names get a smaller font or stack on two lines. Before finishing,
+    mentally check every Text's bounding box against nearby objects — the frame
+    is ~14.2 x 8 units; keep everything inside x=[-6.8, 6.8], y=[-3.0, 3.5].
+    CRITICAL: the bottom band below y=-3.0 (bottom ~90px of the frame) is
+    RESERVED for narration subtitles burned in later — any object there will
+    be covered by subtitle text. Keep ALL objects above y=-3.0.
 
 === ENTRANCE-POSITIONING RULE — CRITICAL ===
 
@@ -347,6 +372,11 @@ TARGET DURATION: {duration:.1f} seconds. Pace your run_time values to fill it.
 
 CODEGEN_USER = """Generate a Manim scene for scene {scene_id} of an explainer video.
 
+LAYOUT CONSTRAINT (hard requirement): the bottom ~90px of the frame —
+everything below y=-3.0 in manim units — is RESERVED for narration
+subtitles. No object, text, or shape may be placed or animated below
+y=-3.0. Keep all content in y=[-3.0, 3.5].
+
 NARRATION (this is what the viewer hears — your animation must illustrate it):
 \"\"\"
 {narration}
@@ -402,6 +432,44 @@ class ManimRenderError(Exception):
         return self.message
 
 
+def subtitle_band_occupancy(frame_png: Path) -> float:
+    """Fraction of non-background pixels in the reserved subtitle band
+    (y 650-716 of a 1280x720 frame). High = animation content will collide
+    with burned narration subtitles."""
+    import numpy as np
+    from PIL import Image
+
+    a = np.array(Image.open(frame_png).convert("RGB")).astype(int)
+    band = a[650:716, 150:1130]
+    ref = band[0, 0]
+    return float((np.abs(band - ref).sum(axis=2) > 40).mean())
+
+
+def _check_subtitle_band(mp4: Path) -> str | None:
+    """Sample frames from a rendered scene; return feedback if the animation
+    invades the reserved subtitle band, else None."""
+    import subprocess as sp
+
+    dur = float(sp.check_output(
+        ["ffprobe", "-v", "error", "-show_entries", "format=duration",
+         "-of", "csv=p=0", str(mp4)]))
+    tmp = mp4.parent / f"{mp4.stem}_bandchk.png"
+    worst = 0.0
+    for frac in (0.25, 0.5, 0.75):
+        sp.run(["ffmpeg", "-y", "-loglevel", "error", "-ss", str(dur * frac),
+                "-i", str(mp4), "-frames:v", "1", str(tmp)], check=True)
+        worst = max(worst, subtitle_band_occupancy(tmp))
+    tmp.unlink(missing_ok=True)
+    if worst > 0.015:
+        return (
+            f"Your animation content occupies the bottom subtitle band of the frame "
+            f"({worst:.0%} coverage). The bottom band (below y=-3.0 in manim units) is "
+            f"RESERVED for narration subtitles. Move ALL objects up so nothing sits "
+            f"below y=-3.0."
+        )
+    return None
+
+
 def lint_manim_code(code: str, social_mode: bool = False) -> list[str]:
     """Static checks against the patterns we know cause cutoffs and render failures.
 
@@ -419,6 +487,26 @@ def lint_manim_code(code: str, social_mode: bool = False) -> list[str]:
         stripped = line.split("#", 1)[0]  # ignore comments
         if "MathTex(" in stripped or "Tex(" in stripped and "Text(" not in stripped:
             errors.append(f"Line {i}: uses Tex/MathTex which requires LaTeX. Use Text() instead.")
+
+    # 2b. Korean mode: a text-mobject constructor whose line contains Hangul needs an
+    #     explicit Hangul font, otherwise Pango falls back to a font without Korean
+    #     glyphs (renders as boxes). Line-scoped: multi-line calls put font= on another
+    #     line, and pure-ASCII labels (numbers, English terms) render fine regardless.
+    if os.environ.get("PAPER2VIDEO_LANG", "").lower() == "ko":
+        import re as _re
+        text_ctor = _re.compile(r"\b(Text|MarkupText|Paragraph|Title)\s*\(")
+        has_hangul = _re.compile(r"[가-힣]")
+        for i, line in enumerate(lines, start=1):
+            stripped = line.split("#", 1)[0]
+            if (
+                text_ctor.search(stripped)
+                and has_hangul.search(stripped)
+                and "font" not in stripped
+            ):
+                errors.append(
+                    f"Line {i}: Text/MarkupText/Paragraph call with Korean text but no font= — "
+                    f"Korean renders as boxes without font=\"Noto Sans CJK KR\"."
+                )
 
     # 3. CRITICAL: scale_to_fit_width / scale_to_fit_height called directly on text-like
     #    objects scales them UP if they're smaller than the target. We forbid these calls
@@ -456,6 +544,31 @@ def lint_manim_code(code: str, social_mode: bool = False) -> list[str]:
                     f"FadeIn(obj, shift=SMALL_VECTOR) for a subtle reveal."
                 )
                 break
+
+    # 5z. NO TEXT MIRRORING — Rotate about a vertical 3D axis (axis=UP/DOWN)
+    #     leaves shapes unchanged but flips every Text INSIDE to a mirror image
+    #     (seen in production: card titles came out 거울상). Same for .flip()/
+    #     negative scales. Emphasize with Circumscribe/Flash/Indicate instead.
+    for i, line in enumerate(lines, start=1):
+        stripped = line.split("#", 1)[0]
+        if "axis=UP" in stripped or "axis=DOWN" in stripped or "axis = UP" in stripped:
+            errors.append(
+                f"Line {i}: Rotate with axis=UP/DOWN mirrors Text to a mirror image. "
+                f"Rotate about Z only (2D), or use Flash/Circumscribe/Indicate for emphasis."
+            )
+        if "to_edge(DOWN" in stripped or "to_corner(DOWN" in stripped \
+                or "to_corner(*DOWN" in stripped or "to_corner(LEFT+DOWN" in stripped \
+                or "to_corner(RIGHT+DOWN" in stripped:
+            errors.append(
+                f"Line {i}: to_edge(DOWN)/to_corner(...DOWN) pins objects to the frame "
+                f"bottom — inside the RESERVED subtitle band (below y=-2.6). Position with "
+                f".move_to(DOWN * 1.5) or lower=DOWN, buff>=1.2 instead."
+            )
+        if ".flip(" in stripped or ".scale(-" in stripped:
+            errors.append(
+                f"Line {i}: .flip()/negative scale mirrors Text. Use rotate(PI) on "
+                f"shapes only, never on anything containing Text."
+            )
 
     # 6. Must not import anything other than from manim
     for i, line in enumerate(lines, start=1):
@@ -700,6 +813,18 @@ Common fixes:
     system_prompt = CODEGEN_SYSTEM.format(duration=duration_sec)
     if is_portrait:
         system_prompt += PORTRAIT_ADDENDUM.format(duration=duration_sec)
+    if os.environ.get("PAPER2VIDEO_LANG", "").lower() == "ko":
+        system_prompt += """
+
+=== KOREAN TEXT RULES (OVERRIDES FONT DEFAULTS) ===
+All on-screen text is in Korean. The default Manim font has NO Hangul glyphs — without
+an explicit font, Korean renders as empty boxes. Therefore every Text()/MarkupText()/
+Paragraph() call MUST pass font="Noto Sans CJK KR":
+    title = Text("로봇 핸드의 관절", font="Noto Sans CJK KR", font_size=44)
+English technical terms inside labels (e.g. "Keypoint") may stay in English, but still
+pass the same font (it covers Latin). Never call Text() without the font argument.
+=== END KOREAN TEXT RULES ===
+"""
 
     last_code = ""
     last_err = ""
@@ -734,6 +859,11 @@ Common fixes:
 
         returncode, err_tail, rendered = _run_manim(code_file, media_dir, quality=quality, resolution=resolution)
         if returncode == 0 and rendered is not None:
+            band_feedback = _check_subtitle_band(rendered)
+            if band_feedback:
+                last_err = band_feedback
+                last_lint = []  # render-레벨 재시도 경로로
+                continue
             final = out_dir / f"scene_{scene.id:03d}.mp4"
             shutil.copy2(rendered, final)
             return final

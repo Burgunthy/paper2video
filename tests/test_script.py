@@ -41,3 +41,54 @@ def test_write_script_enforces_scene_ids():
     }"""])
     doc = write_script(research_result, llm=llm)
     assert [s.id for s in doc.scenes] == [1, 2]
+
+
+def test_figure_block_demands_visual_walkthrough_narration():
+    """Figure scenes must be narrated THROUGH the figure: the prompt has to
+    force explicit panel/axis/curve/table-row pointers, give the writer the
+    full caption (not 150 chars) and the figure's pixel size."""
+    from paper2video.script import _figure_block, VARIANTS
+
+    manifest = [{
+        "id": "fig2", "page": 4,
+        "caption": "cap " * 120,          # 480 chars
+        "width_px": 1134, "height_px": 584,
+    }]
+    block = _figure_block(manifest, VARIANTS["deepdive"])
+
+    low = block.lower()
+    # Narration-side rule: explicit visual pointers required
+    assert "narration" in low
+    assert "panel" in low or "subplot" in low
+    assert "walk" in low
+    # Writer sees the full caption (>=400 chars), not a 150-char stub
+    assert "cap " * 120 in block or len([l for l in block.splitlines() if "fig2" in l and "cap" in l][0]) > 400
+    # Writer sees figure geometry (helps infer multi-panel layouts)
+    assert "1134" in block
+
+
+def test_scene_chunk_prompt_carries_figure_narration_rule():
+    from paper2video.script import SCENE_CHUNK_PROMPT, FIGURE_SCENE_SCHEMA
+
+    # The chunk writer is what actually produces narration for long variants;
+    # the rule must live in the shared figure schema it embeds.
+    assert "panel" in FIGURE_SCENE_SCHEMA.lower()
+    assert "narration" in FIGURE_SCENE_SCHEMA.lower()
+    assert "{figure_block}" in SCENE_CHUNK_PROMPT
+
+
+def test_figure_reference_spoken_form_rule():
+    """"그림 6 (a) 패널" is heard as "그림 6개의 패널" — the schema must force
+    the possessive form with a position word."""
+    from paper2video.script import FIGURE_SCENE_SCHEMA
+    assert "그림 6의" in FIGURE_SCENE_SCHEMA
+
+
+def test_external_tool_grounding_rule():
+    """Naming an external model/dataset/tracker requires a one-line identity
+    (what it does) and, when the paper's figure shows it, a pointer there."""
+    from paper2video.script import FIGURE_SCENE_SCHEMA, SCRIPT_PROMPT_V2
+    blob = FIGURE_SCENE_SCHEMA + SCRIPT_PROMPT_V2
+    low = blob.lower()
+    assert "external" in low or "외부" in blob
+    assert "identity" in low or "정체" in blob or "무엇을 하는" in blob

@@ -1,0 +1,50 @@
+
+===== 16:45:06 launch compact =====
+2026-11-02 16:45:28,173 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 16:46:16,654 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 16:48:20,521 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 16:54:45,578 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 16:57:11,959 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 16:57:40,620 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 17:02:57,184 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 17:06:47,126 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 17:08:46,900 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 17:09:18,733 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 17:13:02,218 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 17:13:40,571 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 17:18:02,012 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 17:21:22,782 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+2026-11-02 17:21:56,040 [httpx2] HTTP Request: POST https://api.z.ai/api/anthropic/v1/messages "HTTP/1.1 200 OK"
+[pipeline] === run_id=spike-v5-compact ===
+[pipeline] stage: ingest
+[pipeline]   title='paper' chars=137948
+[pipeline] stage: figures
+[pipeline]   extracted 14 figures: ['fig1', 'fig2', 'fig3', 'fig4', 'fig5', 'fig6', 'fig7', 'fig8', 'fig9', 'fig10', 'fig11', 'fig12', 'fig13', 'fig14']
+[pipeline] stage: research
+[pipeline]   concepts=['Reinforcement Learning (trial-and-error learning)', 'Human-in-the-Loop Corrections', 'Demonstrations as Prior Data', 'Classifier-Based Sparse Rewards', 'Sample Efficiency in Real-World Training']
+[pipeline] stage: script
+[pipeline]   title='사람이 살짝 도와주는 강화학습: HIL-SERL' scenes=9
+[pipeline] stage: tts
+[pipeline]   scene 1: audio 20.28s
+[pipeline]   scene 2: audio 22.03s
+[pipeline]   scene 3: audio 28.99s
+[pipeline]   scene 4: audio 21.05s
+[pipeline]   scene 5: audio 22.18s
+[pipeline]   scene 6: audio 26.78s
+[pipeline]   scene 7: audio 22.99s
+[pipeline]   scene 8: audio 28.99s
+[pipeline]   scene 9: audio 21.22s
+[pipeline] stage: render visuals
+[pipeline]   scene 1: figure OK -> figscene_001.mp4
+[pipeline]   scene 2: manim OK -> scene_002.mp4
+[pipeline]   scene 3: figure OK -> figscene_003.mp4
+[pipeline]   scene 4: manim OK -> scene_004.mp4
+[pipeline]   scene 5: figure OK -> figscene_005.mp4
+[pipeline]   scene 6: figure OK -> figscene_006.mp4
+[pipeline]   scene 7: manim OK -> scene_007.mp4
+[pipeline]   scene 8: figure OK -> figscene_008.mp4
+[pipeline]   scene 9: manim OK -> scene_009.mp4
+[pipeline] stage: mux + concat
+[pipeline] DONE: out/spike-v5-compact/video.mp4
+video: out/spike-v5-compact/video.mp4
+run dir: out/spike-v5-compact

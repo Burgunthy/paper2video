@@ -217,3 +217,32 @@ def test_process_telegram_updates_handles_revise_flow(tmp_path, monkeypatch):
     assert reviewer.answered[0][0] == "cb-1"
     assert store.get_item(item.source_id).revision_count == 1
     assert len(reviewer.sent_drafts) == 2
+
+
+def test_burn_subtitles_landscape_style_bottom_anchored():
+    """Narration subtitles must sit at the very bottom of a 720p frame with
+    explicit PlayRes — ffmpeg's ASS renderer assumes PlayResY=288 otherwise
+    and floats the text mid-screen (the portrait gotcha, in landscape)."""
+    from paper2video.captions import landscape_subtitle_style
+    style = landscape_subtitle_style()
+    assert "PlayResX=1280" in style and "PlayResY=720" in style
+    assert "Alignment=2" in style
+    # bottom margin small enough to stay BELOW the figure-caption strip (y~668)
+    import re
+    mv = int(re.search(r"MarginV=(\d+)", style).group(1))
+    assert mv <= 20
+    assert "CJK" in style or "Noto" in style
+
+
+def test_narration_subtitle_youtube_size():
+    """Viewer: subs must match the size real YouTubers burn in — the 26px
+    default was unreadable on mobile."""
+    import re
+    from paper2video.captions import landscape_subtitle_style, _split_narration
+
+    style = landscape_subtitle_style()
+    fs = int(re.search(r"FontSize=(\d+)", style).group(1))
+    assert fs >= 36, f"FontSize {fs} too small"
+    # shorter cues keep big-font subs on one line
+    chunks = _split_narration("세로축이 오류를 나타내고 아래로 갈수록 좋다는 뜻입니다 표에서 이 행을 보세요")
+    assert max(len(c.split()) for c in chunks) <= 4

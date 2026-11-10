@@ -31,6 +31,24 @@ _THEMES = [
 ]
 
 
+def _setup_korean_font() -> None:
+    """matplotlib 기본 폰트(DejaVu)엔 한글이 없어 네모 박스로 렌더된다."""
+    import matplotlib
+    matplotlib.use("Agg")
+    from matplotlib import font_manager
+    for path in (
+        "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",
+        "/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc",
+    ):
+        try:
+            font_manager.fontManager.addfont(path)
+        except Exception:
+            continue
+    import matplotlib.pyplot as plt
+    plt.rcParams["font.family"] = "sans-serif"
+    plt.rcParams["font.sans-serif"] = ["Noto Sans CJK KR", "Noto Sans CJK SC", "DejaVu Sans"]
+
+
 def _pick_theme(seed: str | None) -> dict:
     """Deterministically pick a theme from a seed string (e.g. source_id)."""
     if seed is None:
@@ -68,6 +86,7 @@ def render_slide(
     """
     import matplotlib
     matplotlib.use("Agg")
+    _setup_korean_font()
     import matplotlib.pyplot as plt
     from matplotlib.patches import Rectangle
 
@@ -138,22 +157,56 @@ def render_slide(
             ha="left", va="top", wrap=True,
         )
 
-        # Alternate bullet color between accent and accent2
-        for i, b in enumerate(bullets[:6]):
-            bullet_color = accent2 if i % 2 == 1 else fg
-            ax.text(
-                0.10, 0.62 - i * 0.09, f"\u2022  {b}",
-                color=bullet_color, fontsize=32, ha="left", va="top", wrap=True,
-            )
+        if bullets:
+            # Alternate bullet color between accent and accent2
+            for i, b in enumerate(bullets[:6]):
+                bullet_color = accent2 if i % 2 == 1 else fg
+                ax.text(
+                    0.10, 0.62 - i * 0.09, f"\u2022  {b}",
+                    color=bullet_color, fontsize=32, ha="left", va="top", wrap=True,
+                )
+        elif direction:
+            # No bullets -> draw the visual direction as body text so the
+            # slide is not a title-only (reads-as-broken) black frame.
+            # Long directions wrap; measure the wrapped height and shrink the
+            # font until the text stays above the subtitle band (y>=650px),
+            # truncating only as a last resort.
+            fig.canvas.draw()
+            for fs in (28, 24, 21, 18, 16):
+                for artist in list(ax.texts):
+                    if getattr(artist, "_is_direction", False):
+                        artist.remove()
+                t = ax.text(
+                    0.08, 0.62, direction,
+                    color=fg, fontsize=fs, ha="left", va="top", wrap=True,
+                    linespacing=1.6,
+                )
+                t._is_direction = True
+                fig.canvas.draw()
+                # display px, origin bottom-left: text bottom above the
+                # subtitle band (y<650 top-coords) <=> y0 >= 70 display px
+                y0 = t.get_window_extent(renderer=fig.canvas.get_renderer()).y0
+                if y0 >= 70:
+                    break
+            else:
+                # 16pt에도 안 들어가면 말줄임 (밴드 침범은 어떤 경우도 허용 안 함)
+                t.remove()
+                cut = int(len(direction) * 0.6)
+                t = ax.text(
+                    0.08, 0.62, direction[:cut] + " …",
+                    color=fg, fontsize=16, ha="left", va="top", wrap=True,
+                    linespacing=1.6,
+                )
 
         if caption:
+            # 하단 밴드(y>=650px, 0.096)는 내레이션 자막 예약 — caption은 그 위
             ax.text(
-                0.08, 0.08, caption,
+                0.08, 0.12, caption,
                 color=accent, fontsize=24, style="italic", ha="left", va="bottom",
             )
 
     ax.text(
-        0.98, 0.04, f"{scene.id:02d}",
+        0.98, 0.12, f"{scene.id:02d}",
         color="#888", fontsize=18, ha="right", va="bottom",
     )
 

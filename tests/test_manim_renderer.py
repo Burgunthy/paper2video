@@ -218,3 +218,78 @@ class MainScene(Scene):
 """
     errors = lint_manim_code(bad)
     assert any("def fit" in e for e in errors)
+
+
+def test_codegen_prompt_requires_korean_text_and_no_overlap():
+    """Generated manim scenes came out with English labels overlapping bars."""
+    from paper2video.renderers.manim_r import CODEGEN_SYSTEM
+    low = CODEGEN_SYSTEM.lower()
+    assert "korean" in low
+    assert "overlap" in low
+
+
+def test_lint_rejects_text_mirroring():
+    """Rotate(axis=UP/DOWN) flips text to a mirror image (DPP 14:16 bug),
+    and .flip(/scale(- mirror too. The static check must reject them."""
+    from paper2video.renderers.manim_r import lint_manim_code
+    code = """
+from manim import *
+class MainScene(Scene):
+    def construct(self):
+        card = VGroup(Text("한글", font="Noto Sans CJK KR"))
+        self.play(Rotate(card, angle=PI, axis=UP), run_time=0.6)
+"""
+    errors = lint_manim_code(code, social_mode=False)
+    assert any("axis=UP" in e or "mirror" in e.lower() for e in errors), errors
+
+
+def test_codegen_prompt_reserves_subtitle_band():
+    """The bottom of the frame is reserved for burned narration subtitles —
+    manim content must stay above it (viewer: '자막 쓸 공간은 남기도록')."""
+    from paper2video.renderers.manim_r import CODEGEN_SYSTEM
+    assert "y=[-3.0" in CODEGEN_SYSTEM
+    assert "subtitle" in CODEGEN_SYSTEM.lower() or "자막" in CODEGEN_SYSTEM
+
+
+def test_subtitle_band_occupancy_detector(tmp_path):
+    """Frame-level detector: content in y640-716 must be measurable so the
+    renderer can retry scenes that invade the subtitle band."""
+    import numpy as np
+    from PIL import Image
+    from paper2video.renderers.manim_r import subtitle_band_occupancy
+
+    # 빈 프레임(배경만) — 0에 가깝게
+    bg = Image.new("RGB", (1280, 720), (16, 16, 20))
+    bg.save(tmp_path / "clean.png")
+    assert subtitle_band_occupancy(tmp_path / "clean.png") < 0.01
+
+    # 하단 밴드에 흰 사각형 — 높게
+    dirty = bg.copy()
+    from PIL import ImageDraw
+    ImageDraw.Draw(dirty).rectangle((300, 660, 900, 710), fill=(240, 240, 240))
+    dirty.save(tmp_path / "dirty.png")
+    assert subtitle_band_occupancy(tmp_path / "dirty.png") > 0.02
+
+
+def test_lint_forbids_to_edge_down():
+    """.to_edge(DOWN) pins objects to the frame bottom — inside the reserved
+    subtitle band. Models keep using it despite prompt rules (measured 6
+    scenes invading). The lint must reject it before rendering."""
+    from paper2video.renderers.manim_r import lint_manim_code
+    code = """
+from manim import *
+class MainScene(Scene):
+    def construct(self):
+        t = Text("한글", font="Noto Sans CJK KR")
+        t.to_edge(DOWN, buff=0.3)
+"""
+    errors = lint_manim_code(code, social_mode=False)
+    assert any("to_edge(DOWN" in e for e in errors), errors
+
+
+def test_codegen_user_prompt_carries_band_constraint():
+    """The band rule must lead the USER prompt too — system-only rules get
+    ignored by the model (measured: 6 invading scenes)."""
+    from paper2video.renderers.manim_r import CODEGEN_USER
+    assert CODEGEN_USER.index("LAYOUT CONSTRAINT") < CODEGEN_USER.index("NARRATION")
+    assert "y=-3.0" in CODEGEN_USER
